@@ -1,0 +1,45 @@
+# Build results
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+*.exe
+*.dll
+*.app
+*.log
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio working folder
+.vs/
+.vscode/
+
+# Rider / JetBrains
+.idea/
+*.iml
+
+# ASP.NET Core configs
+appsettings.*.json    # ignore environment-specific configs (may contain secrets)
+!appsettings.json     # but keep the base config
+
+# Logs / temp
+*.log
+*.tlog
+*.tmp
+*.temp
+
+# Publish output
+publish/
+*.pubxml
+*.publishproj
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
