@@ -1,6 +1,11 @@
 using backend.Database;
+using DRCS.Extensions;
+using DRCS.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +15,32 @@ builder.Services.AddControllers();
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<DrcsContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DrcsDb")));
+
+// Register services
+builder.Services.AddApplicationServices();
+
+
+
+// JWT Authentication setup
+var jwtSecretKey = builder.Configuration["Jwt:Secret"] ?? "ThisIsASecretKeyForDemoOnly!";
+var key = Encoding.ASCII.GetBytes(jwtSecretKey);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
 
 // Configure Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();
@@ -22,32 +53,59 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API Documentation for DRCS project"
     });
 
-    // Optional: include XML comments if available
+    // XML comments
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
     {
         c.IncludeXmlComments(xmlPath);
     }
+
+    // Add JWT Authentication to Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT Bearer token **_only_**"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 var app = builder.Build();
 
-// Middleware order
+// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "DRCS API v1");
-        // Keep default RoutePrefix so /swagger/index.html works
     });
 }
 
-// Keep HTTPS redirection optional but compatible
 app.UseHttpsRedirection();
 
+// Apply Authentication & Authorization
+app.UseAuthentication();
+app.UseMiddleware<AuthMiddleware>(); // Optional, if need custom logic
 app.UseAuthorization();
-app.MapControllers();
 
+app.MapControllers();
 app.Run();
