@@ -1,5 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace DRCS.Middleware
@@ -17,30 +20,29 @@ namespace DRCS.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var path = context.Request.Path.Value?.ToLower();
+            var path = context.Request.Path.Value?.ToLower() ?? "";
 
-            // Skip auth for public endpoints
-            if (path == "/auth/register" || path == "/auth/login")
+            // Skip authentication for public paths
+            if (path.StartsWith("/auth") || path.StartsWith("/swagger") ||
+                path.StartsWith("/css") || path.StartsWith("/js"))
             {
                 await _next(context);
                 return;
             }
 
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
-            if (token == null)
+            var token = context.Request.Cookies["access_token"];
+            if (string.IsNullOrEmpty(token))
             {
                 context.Response.StatusCode = 401;
-                await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Access token not provided" });
+                await context.Response.WriteAsJsonAsync(new { success = false, message = "Access token not provided" });
                 return;
             }
 
             try
             {
-                var secret = _config["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret is not configured.");
-                var key = Encoding.ASCII.GetBytes(secret);
-
+                var key = Encoding.UTF8.GetBytes(_config["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret missing"));
                 var tokenHandler = new JwtSecurityTokenHandler();
+
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -50,43 +52,32 @@ namespace DRCS.Middleware
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
-                var jwtToken = (JwtSecurityToken)validatedToken;
+                var jwt = validatedToken as JwtSecurityToken;
 
-                // Check token type
-                var type = jwtToken.Claims.FirstOrDefault(c => c.Type == "type")?.Value;
-                if (type != "access")
+                var claims = new List<Claim>
                 {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Invalid access token" });
-                    return;
-                }
+                    new Claim(ClaimTypes.NameIdentifier, jwt.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value),
+                    new Claim(ClaimTypes.Role, jwt.Claims.First(c => c.Type == ClaimTypes.Role).Value)
+                };
 
-                // Get userId and role safely
-                var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
-                var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
-
-                if (!int.TryParse(userIdClaim, out int userId))
-                {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Invalid access token claims" });
-                    return;
-                }
-
-                context.Items["userId"] = userId;
-                context.Items["role"] = roleClaim ?? "User"; // <-- store role
+                var identity = new ClaimsIdentity(claims, "Custom");
+                context.User = new ClaimsPrincipal(identity);
 
                 await _next(context);
             }
-            catch (SecurityTokenExpiredException)
+            catch
             {
                 context.Response.StatusCode = 401;
-                await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Access token expired" });
+                await context.Response.WriteAsJsonAsync(new { success = false, message = "Invalid access token" });
             }
-            catch (Exception)
-            {
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Invalid access token" });
-            }
+        }
+    }
+
+    public static class AuthMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseAuthMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<AuthMiddleware>();
         }
     }
 }

@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<h2 class="text-center mt-4">Create Account</h2>
+
+<div class="container mt-4" style="max-width: 400px;">
+    <form method="post" action="/api/AuthApi/register">
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-success w-100">Sign Up</button>
+    </form>
+</div>

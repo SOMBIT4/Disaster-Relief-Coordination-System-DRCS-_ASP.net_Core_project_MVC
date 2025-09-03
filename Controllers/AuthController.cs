@@ -30,28 +30,13 @@ namespace DRCS.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request, [FromQuery] int? assignedCenter = null)
         {
-            // Check if role is Volunteer and required fields are provided
             if (request.RoleName.Equals("Volunteer", StringComparison.OrdinalIgnoreCase))
             {
                 if (!assignedCenter.HasValue)
-                {
-                    return BadRequest(new
-                    {
-                        success = false,
-                        error = true,
-                        message = "For role 'Volunteer', you must provide an assigned center."
-                    });
-                }
+                    return BadRequest(new { success = false, error = true, message = "Assigned center required" });
 
                 if (request.SkillIds == null || !request.SkillIds.Any())
-                {
-                    return BadRequest(new
-                    {
-                        success = false,
-                        error = true,
-                        message = "For role 'Volunteer', you must provide at least one skill."
-                    });
-                }
+                    return BadRequest(new { success = false, error = true, message = "At least one skill required" });
             }
 
             User user = new User
@@ -63,36 +48,26 @@ namespace DRCS.Controllers
                 RoleName = request.RoleName
             };
 
-            User? createdUser;
-
-            if (user.RoleName == "Volunteer" && assignedCenter.HasValue && request.SkillIds.Any())
-            {
-                // Pass skill ids to service
-                createdUser = await _authService.RegisterVolunteerAsync(
-                    user,
-                    assignedCenter.Value,
-                    user.PhoneNo,
-                    request.SkillIds
-                );
-            }
-            else
-            {
-                createdUser = await _authService.RegisterUserAsync(user);
-            }
+            User? createdUser = request.RoleName == "Volunteer" && assignedCenter.HasValue && request.SkillIds.Any()
+                ? await _authService.RegisterVolunteerAsync(user, assignedCenter.Value, user.PhoneNo, request.SkillIds)
+                : await _authService.RegisterUserAsync(user);
 
             if (createdUser == null)
                 return BadRequest(new { success = false, message = "Registration failed" });
 
-            var tokens = GenerateTokens(createdUser);
+            var token = GenerateAccessToken(user);
+            var refreshToken = GenerateRefreshToken(user);
+
+            // Set cookies
+            SetCookie("access_token", token, 4);
+            SetCookie("refresh_token", refreshToken, 5);
 
             return Created("", new
             {
                 success = true,
                 error = false,
                 message = "Registration successful",
-                user_info = createdUser,
-                access_token = tokens.accessToken,
-                refresh_token = tokens.refreshToken
+                user_info = createdUser
             });
         }
 
@@ -101,29 +76,28 @@ namespace DRCS.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
             if (string.IsNullOrEmpty(login.Email) || string.IsNullOrEmpty(login.Password))
-                return BadRequest(new { success = false, message = "Email and Password are required" });
+                return BadRequest(new { success = false, message = "Email and Password required" });
 
-            // Call AuthService.LoginAsync → returns JWT string
             var jwtToken = await _authService.LoginAsync(login.Email, login.Password);
             if (jwtToken == null)
                 return Unauthorized(new { success = false, error = true, message = "Invalid email or password" });
 
-            // Fetch user info for response
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == login.Email);
             if (user == null)
                 return Unauthorized(new { success = false, error = true, message = "User not found" });
 
-            // Generate refresh token
             var refreshToken = GenerateRefreshToken(user);
+
+            // Set cookies
+            SetCookie("access_token", jwtToken, 4);
+            SetCookie("refresh_token", refreshToken, 5);
 
             return Ok(new
             {
                 success = true,
                 error = false,
                 message = "Login successful",
-                user_info = user,
-                access_token = jwtToken,
-                refresh_token = refreshToken
+                user_info = user
             });
         }
 
@@ -131,161 +105,80 @@ namespace DRCS.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            if (HttpContext.Items["userId"] is int userId && _authService.Logout(userId))
-                return Ok(new { success = true, error = false, message = "Logged out successfully" });
-
-            return StatusCode(500, new { success = false, error = true, message = "Failed to log out" });
+            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("refresh_token");
+            return Ok(new { success = true, error = false, message = "Logged out successfully" });
         }
 
-        // CURRENT USER INFO
-        [HttpGet("me")]
-        public IActionResult Me()
+        // HELPER: Create tokens
+        private string GenerateAccessToken(User user)
         {
-            if (HttpContext.Items["userId"] is not int userId)
-                return Unauthorized();
-
-            var role = HttpContext.Items["role"]?.ToString() ?? "User";
-
-            return Ok(new { userId, role });
-        }
-
-        // REFRESH TOKEN
-        [HttpGet("token/refresh")]
-        public IActionResult RefreshToken([FromHeader(Name = "X-Refresh-Token")] string? refreshToken)
-        {
-            if (string.IsNullOrEmpty(refreshToken))
-                return Unauthorized(new { message = "Refresh token not provided" });
-
-            var principal = ValidateToken(refreshToken, "refresh");
-            if (principal == null) return Unauthorized(new { message = "Invalid refresh token" });
-
-            var userIdClaim = principal.FindFirst("userId")?.Value;
-            var roleClaim = principal.FindFirst("role")?.Value;
-
-            if (!int.TryParse(userIdClaim, out int userId))
-                return Unauthorized(new { message = "Invalid refresh token claims" });
-
-            var secret = _config["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret is not configured.");
-            var key = Encoding.ASCII.GetBytes(secret);
+            var key = Encoding.UTF8.GetBytes(_config["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret missing"));
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var accessToken = tokenHandler.WriteToken(new JwtSecurityToken(
-                claims: new[] {
-                    new Claim("userId", userId.ToString()),
-                    new Claim("role", roleClaim ?? "User"),
-                    new Claim("type", "access")
-                },
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                new Claim(ClaimTypes.Role, user.RoleName),
+                new Claim("type", "access")
+            };
+
+            var token = new JwtSecurityToken(
+                claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(60),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-            ));
+            );
 
-            return Ok(new { access_token = accessToken });
-        }
-
-        // =======================
-        // HELPER METHODS
-        // =======================
-        private (string accessToken, string refreshToken) GenerateTokens(User user)
-        {
-            var secret = _config["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret is not configured.");
-            var key = Encoding.ASCII.GetBytes(secret);
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var accessToken = tokenHandler.WriteToken(new JwtSecurityToken(
-                claims: new[] {
-                    new Claim("userId", user.UserID.ToString()),
-                    new Claim("role", user.RoleName),
-                    new Claim("type", "access")
-                },
-                expires: DateTime.UtcNow.AddMinutes(60),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-            ));
-
-            var refreshToken = tokenHandler.WriteToken(new JwtSecurityToken(
-                claims: new[] {
-                    new Claim("userId", user.UserID.ToString()),
-                    new Claim("role", user.RoleName),
-                    new Claim("type", "refresh")
-                },
-                expires: DateTime.UtcNow.AddHours(5),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-            ));
-
-            return (accessToken, refreshToken);
+            return tokenHandler.WriteToken(token);
         }
 
         private string GenerateRefreshToken(User user)
         {
-            var secret = _config["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret is not configured.");
-            var key = Encoding.ASCII.GetBytes(secret);
+            var key = Encoding.UTF8.GetBytes(_config["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret missing"));
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var refreshToken = tokenHandler.WriteToken(new JwtSecurityToken(
-                claims: new[] {
-                    new Claim("userId", user.UserID.ToString()),
-                    new Claim("role", user.RoleName),
-                    new Claim("type", "refresh")
-                },
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                new Claim(ClaimTypes.Role, user.RoleName),
+                new Claim("type", "refresh")
+            };
+
+            var token = new JwtSecurityToken(
+                claims: claims,
                 expires: DateTime.UtcNow.AddHours(5),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-            ));
+            );
 
-            return refreshToken;
+            return tokenHandler.WriteToken(token);
         }
 
-        private ClaimsPrincipal? ValidateToken(string token, string expectedType)
+        private void SetCookie(string name, string value, int hours)
         {
-            var secret = _config["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret is not configured.");
-            var key = Encoding.ASCII.GetBytes(secret);
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            try
+            Response.Cookies.Append(name, value, new CookieOptions
             {
-                var principal = tokenHandler.ValidateToken(token, new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
-
-                var jwtToken = validatedToken as JwtSecurityToken;
-                var typeClaim = jwtToken?.Claims.FirstOrDefault(c => c.Type == "type")?.Value;
-                if (typeClaim != expectedType) return null;
-
-                return principal;
-            }
-            catch
-            {
-                return null;
-            }
+                HttpOnly = true,
+                Secure = true, // false for localhost
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddHours(hours)
+            });
         }
     }
-    //DTO
+
+    // DTOs
     public class LoginRequest
     {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-        [Required]
-        public string Password { get; set; } = string.Empty;
+        [Required, EmailAddress] public string Email { get; set; } = string.Empty;
+        [Required] public string Password { get; set; } = string.Empty;
     }
+
     public class RegisterRequest
     {
-        [Required]
-        public string Name { get; set; } = string.Empty;
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-        [Required]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long")]
-        public string Password { get; set; } = string.Empty;
-        [Required]
-        [Phone]
-        public string PhoneNo { get; set; } = string.Empty;
-        
+        [Required] public string Name { get; set; } = string.Empty;
+        [Required, EmailAddress] public string Email { get; set; } = string.Empty;
+        [Required, MinLength(6)] public string Password { get; set; } = string.Empty;
+        [Required, Phone] public string PhoneNo { get; set; } = string.Empty;
         public string RoleName { get; set; } = "User";
-        public List<int> SkillIds { get; set; } = new List<int>();
+        public List<int> SkillIds { get; set; } = new();
     }
 }
