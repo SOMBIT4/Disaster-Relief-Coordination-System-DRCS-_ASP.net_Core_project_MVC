@@ -19,13 +19,23 @@ namespace DRCS.Middleware
         {
             var path = context.Request.Path.Value?.ToLower();
 
-            // Skip auth for public endpoints
-            if (path == "/auth/register" || path == "/auth/login")
+            //  Skip if NOT an API request
+            if (!path.StartsWith("/api"))
             {
                 await _next(context);
                 return;
             }
 
+            //  Allow public API routes (login/register)
+            if (path.StartsWith("/api/auth", StringComparison.OrdinalIgnoreCase)||
+                path.StartsWith("/api/relief-centers", StringComparison.OrdinalIgnoreCase) ||
+    path.StartsWith("/api/skill", StringComparison.OrdinalIgnoreCase))
+            {
+                await _next(context);
+                return;
+            }
+
+            // 🔒 Everything else under /api/* requires JWT
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token == null)
@@ -52,16 +62,6 @@ namespace DRCS.Middleware
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
 
-                // Check token type
-                var type = jwtToken.Claims.FirstOrDefault(c => c.Type == "type")?.Value;
-                if (type != "access")
-                {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Invalid access token" });
-                    return;
-                }
-
-                // Get userId and role safely
                 var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
                 var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
 
@@ -73,7 +73,7 @@ namespace DRCS.Middleware
                 }
 
                 context.Items["userId"] = userId;
-                context.Items["role"] = roleClaim ?? "User"; // <-- store role
+                context.Items["role"] = roleClaim ?? "User";
 
                 await _next(context);
             }
@@ -88,5 +88,6 @@ namespace DRCS.Middleware
                 await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Invalid access token" });
             }
         }
+
     }
 }

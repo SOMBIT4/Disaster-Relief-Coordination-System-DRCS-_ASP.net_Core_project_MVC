@@ -10,7 +10,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controllers
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<DrcsContext>(options =>
@@ -98,7 +98,30 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "DRCS API v1");
     });
+
+    // Auto-open Home page in a second tab
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "DRCS API v1");
+        });
+
+        // Auto-open Home page in a second tab
+        Task.Run(() =>
+        {
+            var url = "https://localhost:7291/swagger/index.html";
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        });
+    }
+
 }
+
 
 app.UseHttpsRedirection();
 
@@ -106,6 +129,11 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseMiddleware<AuthMiddleware>(); // Optional, if need custom logic
 app.UseAuthorization();
+app.UseRouting();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllers();
 app.Run();

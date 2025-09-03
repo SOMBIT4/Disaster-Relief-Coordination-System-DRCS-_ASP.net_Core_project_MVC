@@ -28,8 +28,10 @@ namespace DRCS.Controllers
 
         // REGISTER
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request, [FromQuery] int? assignedCenter = null)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request/*, [FromQuery] int? assignedCenter = null*/)
         {
+            var assignedCenter = request.AssignedCenterId;
+
             // Check if role is Volunteer and required fields are provided
             if (request.RoleName.Equals("Volunteer", StringComparison.OrdinalIgnoreCase))
             {
@@ -84,6 +86,7 @@ namespace DRCS.Controllers
                 return BadRequest(new { success = false, message = "Registration failed" });
 
             var tokens = GenerateTokens(createdUser);
+            SetTokenCookies(Response, tokens.accessToken, tokens.refreshToken);
 
             return Created("", new
             {
@@ -115,6 +118,7 @@ namespace DRCS.Controllers
 
             // Generate refresh token
             var refreshToken = GenerateRefreshToken(user);
+            SetTokenCookies(Response, jwtToken, refreshToken);
 
             return Ok(new
             {
@@ -131,6 +135,9 @@ namespace DRCS.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
+            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("refresh_token");
+
             if (HttpContext.Items["userId"] is int userId && _authService.Logout(userId))
                 return Ok(new { success = true, error = false, message = "Logged out successfully" });
 
@@ -261,6 +268,20 @@ namespace DRCS.Controllers
                 return null;
             }
         }
+        private void SetTokenCookies(HttpResponse response, string accessToken, string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(60)
+            };
+            response.Cookies.Append("access_token", accessToken, cookieOptions);
+
+            cookieOptions.Expires = DateTimeOffset.UtcNow.AddHours(5);
+            response.Cookies.Append("refresh_token", refreshToken, cookieOptions);
+        }
     }
     //DTO
     public class LoginRequest
@@ -287,5 +308,6 @@ namespace DRCS.Controllers
         
         public string RoleName { get; set; } = "User";
         public List<int> SkillIds { get; set; } = new List<int>();
+        public int? AssignedCenterId { get; set; }
     }
 }

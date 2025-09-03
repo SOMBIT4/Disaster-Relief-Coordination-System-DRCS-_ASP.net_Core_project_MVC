@@ -1,0 +1,174 @@
+﻿@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<h2 class="text-center mt-4">Create Account</h2>
+
+<div class="container mt-4" style="max-width: 500px;">
+    <form id="signupForm" method="post" action="/api/AuthApi/register">
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" name="phoneNo" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required />
+        </div>
+
+         <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword" class="form-control" required />
+        </div> 
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="isVolunteer" />
+            <label class="form-check-label" for="isVolunteer">
+                Sign up as Volunteer
+            </label>
+        </div>
+
+        <!-- Volunteer-specific fields -->
+        <div id="volunteerFields" style="display: none;">
+            <div class="mb-3">
+                <label class="form-label">Assigned Center</label>
+                <select name="assignedCenterId" class="form-select">
+                    <option value="">Select a center</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Select Skills</label>
+                <div id="skillsContainer" class="d-flex flex-wrap gap-2">
+                    <!-- Skill buttons populated from backend -->
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Sign Up</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const isVolunteerCheckbox = document.getElementById('isVolunteer');
+        const volunteerFields = document.getElementById('volunteerFields');
+        const assignedCenterSelect = document.querySelector('select[name="assignedCenterId"]');
+        const skillsContainer = document.getElementById('skillsContainer');
+        const selectedSkills = new Set(); // Track selected skill IDs
+
+        // Toggle volunteer fields
+        isVolunteerCheckbox.addEventListener('change', function () {
+            volunteerFields.style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Fetch centers from backend
+        fetch('/api/relief-centers')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    data.data.forEach(center => {
+                        const option = document.createElement('option');
+                        option.value = center.centerID; // Correct property
+                        option.textContent = center.centerName; // Correct property
+                        assignedCenterSelect.appendChild(option);
+                    });
+                }
+            })
+            .catch(err => console.error("Failed to load centers:", err));
+
+        // Fetch skills from backend and create button-style selection
+        fetch('/api/skill')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    data.data.forEach(skill => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.textContent = skill.skillName;
+                        button.className = 'btn btn-outline-primary btn-sm';
+
+                        // Toggle selection
+                        button.addEventListener('click', () => {
+                            if (selectedSkills.has(skill.skillID)) {
+                                selectedSkills.delete(skill.skillID);
+                                button.classList.remove('btn-primary');
+                                button.classList.add('btn-outline-primary');
+                            } else {
+                                selectedSkills.add(skill.skillID);
+                                button.classList.remove('btn-outline-primary');
+                                button.classList.add('btn-primary');
+                            }
+                        });
+
+                        skillsContainer.appendChild(button);
+                    });
+                }
+            })
+            .catch(err => console.error("Failed to load skills:", err));
+
+        // Handle form submission
+        const signupForm = document.getElementById('signupForm');
+        signupForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(signupForm);
+                const password = formData.get('password');
+        const confirmPassword = formData.get('confirmPassword');
+
+        // Password match check
+        if (password !== confirmPassword) {
+            alert("Passwords do not match.");
+            return; // stop submission
+        }
+            const payload = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phoneNo: formData.get('phoneNo'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword'),
+                roleName: isVolunteerCheckbox.checked ? "Volunteer" : "User",
+                assignedCenterId: isVolunteerCheckbox.checked
+                                  ? (assignedCenterSelect.value || null)
+                                  : null,
+                skillIds: Array.from(selectedSkills)
+            };
+
+            console.log("Payload to send:", payload);
+
+            fetch('/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Server response:", data);
+                // Optionally, redirect or show success message
+                 if (data.success) {
+            // Redirect based on role
+            const role = data.user_info.roleName;
+
+             if (role === "Volunteer") {
+                window.location.href = '/Dashboard/Volunteer';
+            } else {
+                window.location.href = '/Dashboard/User';
+            }
+        } else {
+            alert(data.message || "Registration failed");
+        }
+            })
+            .catch(err => console.error("Registration failed:", err));
+        });
+    </script>
+}
