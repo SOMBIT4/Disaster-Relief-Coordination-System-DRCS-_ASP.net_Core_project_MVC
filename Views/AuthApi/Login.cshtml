@@ -1,8 +1,13 @@
 ﻿@{
     ViewData["Title"] = "Sign In";
 }
-
-<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+<!-- Loader -->
+<div id="loader" class="d-flex justify-content-center align-items-center vh-100" style="display:none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Checking login...</span>
+    </div>
+</div>
+<div id="form-container" class="d-flex justify-content-center align-items-center vh-100 bg-light" style="display:none;">
     <div class="card shadow-lg p-4" style="width: 400px; max-width: 90%; border-radius: 15px;">
         <!-- Header -->
         <div class="text-center mb-4">
@@ -55,7 +60,30 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', async function () {
+                const loader = document.getElementById('loader');
+        const container = document.getElementById('form-container');
+
+        loader.style.display = 'flex';    // Show loader
+        container.style.display = 'none'; // Hide form
+
+         //  Check if already logged in
+        try {
+            const checkResponse = await fetch('/api/auth/login-check', { credentials: 'include' });
+            const checkData = await checkResponse.json();
+
+            if (checkData.loggedIn) {
+                window.location.href = checkData.redirectUrl;
+                return;
+            }
+        } catch (e) {
+            console.warn("Login-check failed", e);
+        }
+        finally {
+            loader.style.display = 'none';    // Hide loader
+            container.style.display = 'flex'; // Show form
+        }
+          //handle login form
         const form = document.getElementById('loginForm');
 
         form.addEventListener('submit', async function (e) {
@@ -66,7 +94,7 @@
 
             try {
                 // Call backend login
-                const loginResponse = await fetch('/auth/login', {
+                const loginResponse = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password }),

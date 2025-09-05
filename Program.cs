@@ -124,12 +124,12 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
 // Apply Authentication & Authorization
 app.UseAuthentication();
 app.UseMiddleware<AuthMiddleware>(); // Optional, if need custom logic
 app.UseAuthorization();
-app.UseRouting();
+
 
 app.MapControllerRoute(
     name: "default",

@@ -31,7 +31,8 @@ namespace DRCS.Services
                 throw new InvalidOperationException("Email already exists");
 
             user.Password = HashPassword(user.Password);
-            user.RoleName = "User";
+            if (string.IsNullOrEmpty(user.RoleName))
+                user.RoleName = "User";
             user.CreatedAt = DateTime.UtcNow;
             user.UpdatedAt = DateTime.UtcNow;
 

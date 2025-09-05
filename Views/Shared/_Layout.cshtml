@@ -56,9 +56,9 @@
 
     <!-- Navbar dynamic script -->
     <script>
-                document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             try {
-                const res = await fetch('/auth/me', {
+                const res = await fetch('/api/auth/me', {
                     method: 'GET',
                     credentials: 'include'
                 });
@@ -67,24 +67,40 @@
                     // Not logged in → show guest links
                     document.getElementById('guest-links').style.display = 'flex';
                     document.getElementById('user-links').style.display = 'none';
+                    localStorage.removeItem("userRole");
                     return;
                 }
 
                 const data = await res.json();
                 if (data.userId) {
+                    // Logged in → show user links, hide guest links
                     document.getElementById('guest-links').style.display = 'none';
                     document.getElementById('user-links').style.display = 'flex';
+
+                    // Save fresh role
+                    localStorage.setItem("userRole", data.role);
+
+                    // Optional: redirect immediately based on role
+                    const currentPath = window.location.pathname.toLowerCase();
+                    if (currentPath === '/authapi/login' || currentPath === '/authapi/register') {
+                        // Redirect to dashboard for current role
+                        window.location.href = `/Dashboard/${data.role}`;
+                    }
                 } else {
+                    // Fallback: treat as not logged in
                     document.getElementById('guest-links').style.display = 'flex';
                     document.getElementById('user-links').style.display = 'none';
+                    localStorage.removeItem("userRole");
                 }
             } catch (err) {
                 console.error(err);
                 document.getElementById('guest-links').style.display = 'flex';
                 document.getElementById('user-links').style.display = 'none';
+                localStorage.removeItem("userRole");
             }
         });
     </script>
+
     <!-- Render page-specific scripts -->
     @RenderSection("Scripts", required: false)
 

@@ -12,7 +12,7 @@ using System.Text;
 namespace DRCS.Controllers
 {
     [ApiController]
-    [Route("auth")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;
@@ -146,14 +146,46 @@ namespace DRCS.Controllers
 
         // CURRENT USER INFO
         [HttpGet("me")]
-        public IActionResult Me()
+        public async Task<IActionResult> Me()
         {
-            if (HttpContext.Items["userId"] is not int userId)
-                return Unauthorized();
+            try
+            {
+                // 1️⃣ Get token from Cookie or Authorization header
+                var token = Request.Cookies["access_token"]
+                            ?? Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-            var role = HttpContext.Items["role"]?.ToString() ?? "User";
+                if (string.IsNullOrEmpty(token))
+                    return Unauthorized(new { success = false, error = true, message = "Access token not provided" });
 
-            return Ok(new { userId, role });
+                // 2️⃣ Validate JWT
+                var principal = ValidateToken(token, "access");
+                if (principal == null)
+                    return Unauthorized(new { success = false, error = true, message = "Invalid access token" });
+
+                // 3️⃣ Extract claims
+                var userIdClaim = principal.FindFirst("userId")?.Value;
+                var roleClaim = principal.FindFirst("role")?.Value;
+
+                if (string.IsNullOrEmpty(userIdClaim))
+                    return Unauthorized(new { success = false, error = true, message = "Invalid token claims" });
+
+                if (!int.TryParse(userIdClaim, out int userId))
+                    return Unauthorized(new { success = false, error = true, message = "Invalid userId in token" });
+
+                // 4️⃣ Fetch user from database to ensure role is up-to-date
+                var user = await _db.Users.FirstOrDefaultAsync(u => u.UserID == userId);
+                if (user == null)
+                    return Unauthorized(new { success = false, error = true, message = "User not found" });
+
+                // 5️⃣ Return correct role from database, fallback to token claim
+                var role = string.IsNullOrEmpty(user.RoleName) ? (roleClaim ?? "User") : user.RoleName;
+
+                return Ok(new { success = true, userId, role });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, error = true, message = ex.Message });
+            }
         }
 
         // REFRESH TOKEN
@@ -187,6 +219,25 @@ namespace DRCS.Controllers
             ));
 
             return Ok(new { access_token = accessToken });
+        }
+        [HttpGet("login-check")]
+        public IActionResult LoginCheck()
+        {
+            var token = Request.Cookies["access_token"];
+            if (string.IsNullOrEmpty(token))
+                return Ok(new { loggedIn = false });
+
+            var principal = ValidateToken(token, "access");
+            if (principal == null)
+                return Ok(new { loggedIn = false });
+
+            var role = principal.FindFirst("role")?.Value ?? "User";
+            return Ok(new
+            {
+                loggedIn = true,
+                role,
+                redirectUrl = $"/Dashboard/{role}"
+            });
         }
 
         // =======================
@@ -273,8 +324,8 @@ namespace DRCS.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddMinutes(60)
             };
             response.Cookies.Append("access_token", accessToken, cookieOptions);

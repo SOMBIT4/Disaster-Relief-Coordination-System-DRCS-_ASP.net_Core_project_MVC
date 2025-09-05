@@ -37,7 +37,11 @@ namespace DRCS.Middleware
 
             // 🔒 Everything else under /api/* requires JWT
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
+            // ✅ fallback: read from cookie if no header
+            if (string.IsNullOrEmpty(token))
+            {
+                token = context.Request.Cookies["access_token"];
+            }
             if (token == null)
             {
                 context.Response.StatusCode = 401;

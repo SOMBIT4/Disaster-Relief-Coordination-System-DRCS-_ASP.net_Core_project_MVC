@@ -1,10 +1,18 @@
 ﻿@{
     ViewData["Title"] = "Sign Up";
 }
+<!-- Loader -->
+<div id="loader" class="d-flex justify-content-center align-items-center vh-100" style="display:none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Checking login...</span>
+    </div>
+</div>
 
-<h2 class="text-center mt-4">Create Account</h2>
+<!-- Form Container -->
 
-<div class="container mt-4" style="max-width: 500px;">
+ <div id="form-container" class="container mt-4" style="max-width: 500px; display:none;">
+    <h2 class="text-center mt-4">Create Account</h2>
+
     <form id="signupForm" method="post" action="/api/AuthApi/register">
         <div class="mb-3">
             <label class="form-label">Name</label>
@@ -59,6 +67,7 @@
     </form>
 </div>
 
+
 @section Scripts {
     <script>
         const isVolunteerCheckbox = document.getElementById('isVolunteer');
@@ -66,6 +75,22 @@
         const assignedCenterSelect = document.querySelector('select[name="assignedCenterId"]');
         const skillsContainer = document.getElementById('skillsContainer');
         const selectedSkills = new Set(); // Track selected skill IDs
+
+                  // Safe login-check (does not block registration if it fails)
+        (async function() {
+            try {
+                const res = await fetch('/api/auth/login-check', { credentials: 'include' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.loggedIn) {
+                        window.location.replace(data.redirectUrl);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn("Login-check failed, ignoring it for now.", err);
+            }
+        })();
 
         // Toggle volunteer fields
         isVolunteerCheckbox.addEventListener('change', function () {
@@ -146,7 +171,7 @@
 
             console.log("Payload to send:", payload);
 
-            fetch('/auth/register', {
+            fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
