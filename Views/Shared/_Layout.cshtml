@@ -18,25 +18,13 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Guest Links -->
-                        <div id="guest-links" class="d-flex">
+                    <!-- Guest Links -->
+                    <ul id="guest-links" class="navbar-nav ms-auto" style="display: none !important;">
+                        <li class="nav-item"><a class="btn btn-outline-light me-2" href="/">Home</a></li>
                         <li class="nav-item"><a class="btn btn-outline-light me-2" href="/AuthApi/Login">Sign In</a></li>
-                        <li class="nav-item"><a class="btn btn-outline-success me-2" href="/AuthApi/Register">Sign Up</a></li>
                         <li class="nav-item"><a class="btn btn-outline-info" href="/home/about">About Us</a></li>
+                    </ul>
                 </div>
-
-                <!-- User Links -->
-                <div id="user-links" class="d-flex" style="display:none;">
-                    <li class="nav-item"><a class="btn btn-outline-light me-2" href="/">Home</a></li>
-                    <li class="nav-item">
-                        <form method="post" action="/auth/logout" class="d-inline">
-                            <button type="submit" class="btn btn-outline-danger">Logout</button>
-                        </form>
-                    </li>
-                </div>
-                </ul>
-            </div>
             </div>
         </nav>
     </header>
@@ -57,45 +45,56 @@
     <!-- Navbar dynamic script -->
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
+            const currentPath = window.location.pathname.toLowerCase();
+            const guestLinks = document.getElementById('guest-links');
+
+            // Initially hide guest links with !important
+            guestLinks.style.setProperty('display', 'none', 'important');
+
             try {
                 const res = await fetch('/api/auth/me', {
                     method: 'GET',
                     credentials: 'include'
                 });
 
-                if (!res.ok) {
-                    // Not logged in → show guest links
-                    document.getElementById('guest-links').style.display = 'flex';
-                    document.getElementById('user-links').style.display = 'none';
-                    localStorage.removeItem("userRole");
-                    return;
-                }
+                console.log('Response status:', res.status);
 
-                const data = await res.json();
-                if (data.userId) {
-                    // Logged in → show user links, hide guest links
-                    document.getElementById('guest-links').style.display = 'none';
-                    document.getElementById('user-links').style.display = 'flex';
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log('Auth response data:', data);
 
-                    // Save fresh role
-                    localStorage.setItem("userRole", data.role);
+                    // Check if user is authenticated
+                    if (data && (data.userId || data.id || data.user)) {
+                        // User is logged in
+                        guestLinks.style.setProperty('display', 'none', 'important');
+                        guestLinks.classList.remove('d-flex');
+                        localStorage.setItem("userRole", data.role || data.userRole || 'user');
+                        console.log('User is logged in, hiding guest links');
 
-                    // Optional: redirect immediately based on role
-                    const currentPath = window.location.pathname.toLowerCase();
-                    if (currentPath === '/authapi/login' || currentPath === '/authapi/register') {
-                        // Redirect to dashboard for current role
-                        window.location.href = `/Dashboard/${data.role}`;
+                        // Redirect if on login/register pages
+                        if (currentPath === '/authapi/login' || currentPath === '/authapi/register') {
+                            const userRole = data.role || data.userRole || 'user';
+                            window.location.href = `/Dashboard/${userRole}`;
+                        }
+                    } else {
+                        // User is not logged in - show guest links
+                        guestLinks.style.setProperty('display', 'flex', 'important');
+                        guestLinks.classList.add('d-flex');
+                        localStorage.removeItem("userRole");
+                        console.log('User is not logged in, showing guest links');
                     }
                 } else {
-                    // Fallback: treat as not logged in
-                    document.getElementById('guest-links').style.display = 'flex';
-                    document.getElementById('user-links').style.display = 'none';
+                    // Response not OK (401, 403, etc.) - user not authenticated
+                    guestLinks.style.setProperty('display', 'flex', 'important');
+                    guestLinks.classList.add('d-flex');
                     localStorage.removeItem("userRole");
+                    console.log('Auth check failed with status:', res.status);
                 }
             } catch (err) {
-                console.error(err);
-                document.getElementById('guest-links').style.display = 'flex';
-                document.getElementById('user-links').style.display = 'none';
+                console.error('Auth check failed:', err);
+                // Fallback: show guest links if auth check fails
+                guestLinks.style.setProperty('display', 'flex', 'important');
+                guestLinks.classList.add('d-flex');
                 localStorage.removeItem("userRole");
             }
         });

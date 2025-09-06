@@ -42,12 +42,12 @@ namespace DRCS.Middleware
             {
                 token = context.Request.Cookies["access_token"];
             }
-            if (token == null)
-            {
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Access token not provided" });
-                return;
-            }
+            //if (token == null)
+            //{
+            //    context.Response.StatusCode = 401;
+            //    await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Access token not provided" });
+            //    return;
+            //}
 
             try
             {
