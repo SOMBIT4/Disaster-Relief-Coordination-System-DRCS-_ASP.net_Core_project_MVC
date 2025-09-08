@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_VolunteerLayout.cshtml";
+    ViewData["Title"] = "Assigned Tasks";
+}
+
+<h2>My Assigned Tasks</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-primary">
+        <tr>
+            <th>Task</th>
+            <th>Location</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Distribute Food</td>
+            <td>Center A</td>
+            <td><span class="badge bg-warning">Pending</span></td>
+        </tr>
+        <tr>
+            <td>Medical Assistance</td>
+            <td>Area B</td>
+            <td><span class="badge bg-success">Completed</span></td>
+        </tr>
+    </tbody>
+</table>

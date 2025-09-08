@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_UserLayout.cshtml";
+    ViewData["Title"] = "Request For Aid";
+}
+
+<h2>
+    Need Immediate Aid?
+</h2>
+
+<h4>
+    Submit your request below and get help as soon as possible.
+</h4>
+<form method="post" action="/User/AidRequest">
+    <div class="mb-3">
+        <label class="form-label">Type of Aid</label>
+        <input type="text" name="AidType" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="Description" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Request</button>
+</form>

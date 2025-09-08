@@ -211,10 +211,10 @@ namespace DRCS.Services
         // -----------------------------
         // Logout
         // -----------------------------
-        public bool Logout(int userId)
-        {
-            return userId > 0;
-        }
+        //public bool Logout(int userId)
+        //{
+        //    return userId > 0;
+        //}
 
         // -----------------------------
         // Password hashing

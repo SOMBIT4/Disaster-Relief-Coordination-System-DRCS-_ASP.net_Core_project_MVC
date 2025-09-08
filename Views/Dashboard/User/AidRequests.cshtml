@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_UserLayout.cshtml";
+    ViewData["Title"] = "All Aid Requests";
+}
+
+<h2>My Aid Requests</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Request Type</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Medical</td>
+            <td>Need basic medicines</td>
+            <td>2025-09-01</td>
+            <td><span class="badge bg-success">Completed</span></td>
+        </tr>
+        <tr>
+            <td>Food</td>
+            <td>Family of 4 needs supplies</td>
+            <td>2025-09-04</td>
+            <td><span class="badge bg-warning">Pending</span></td>
+        </tr>
+    </tbody>
+</table>

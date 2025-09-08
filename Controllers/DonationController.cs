@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace DRCS.Controllers
 {
     [ApiController]
-    [Route("donations")]
+    [Route("api/donations")]
     public class DonationController : ControllerBase
     {
         private readonly DonationService _donationService;
@@ -38,7 +38,6 @@ namespace DRCS.Controllers
                     userId,
                     donationDto.DonationType,
                     donationDto.Quantity,
-                    donationDto.DateReceived,
                     donationDto.AssociatedCenter
                 );
 
@@ -114,7 +113,7 @@ namespace DRCS.Controllers
         [Required]
         public int Quantity { get; set; }
 
-        public DateTime? DateReceived { get; set; }
+        
 
         [Required]
         public int AssociatedCenter { get; set; }

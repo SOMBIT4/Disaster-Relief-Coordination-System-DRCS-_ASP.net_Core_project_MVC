@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_UserLayout.cshtml";
+    ViewData["Title"] = "All Donations";
+}
+
+<h2>My Donations</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Donation Type</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Food</td>
+            <td>50 kg Rice</td>
+            <td>2025-09-06</td>
+            <td><span class="badge bg-success">Completed</span></td>
+        </tr>
+        <tr>
+            <td>Money</td>
+            <td>$100</td>
+            <td>2025-09-02</td>
+            <td><span class="badge bg-warning">Pending</span></td>
+        </tr>
+    </tbody>
+</table>

@@ -8,5 +8,9 @@ namespace DRCS.Controllers.web
         {
             return View();
         }
+        public IActionResult About()
+        {
+            return View();
+        }
     }
 }

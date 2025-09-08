@@ -132,16 +132,20 @@ namespace DRCS.Controllers
         }
 
         // LOGOUT
-        [HttpPost("logout")]
+        [HttpGet("logout")]
         public IActionResult Logout()
         {
             Response.Cookies.Delete("access_token");
             Response.Cookies.Delete("refresh_token");
+            return RedirectToAction("Index", "Home");
+            //if (HttpContext.Items["userId"] is int userId && _authService.Logout(userId))
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //   // return Ok(new { success = true, error = false, message = "Logged out successfully" });
 
-            if (HttpContext.Items["userId"] is int userId && _authService.Logout(userId))
-                return Ok(new { success = true, error = false, message = "Logged out successfully" });
-
-            return StatusCode(500, new { success = false, error = true, message = "Failed to log out" });
+            //}
+            //return RedirectToAction("Index", "Home");
+            ////return StatusCode(500, new { success = false, error = true, message = "Failed to log out" });
         }
 
         // CURRENT USER INFO

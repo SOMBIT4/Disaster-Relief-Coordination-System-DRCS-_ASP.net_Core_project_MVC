@@ -14,7 +14,7 @@ namespace DRCS.Services
         }
 
         // Create donation with logged-in user
-        public async Task<Donation> CreateWithUserAsync(int userId, string donationType, int quantity, DateTime? dateReceived, int associatedCenter)
+        public async Task<Donation> CreateWithUserAsync(int userId, string donationType, int quantity, int associatedCenter)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -26,7 +26,7 @@ namespace DRCS.Services
                 DonorName = user.Name, // auto-filled
                 DonationType = donationType,
                 Quantity = quantity,
-                DateReceived = dateReceived,
+                DateReceived = DateTime.UtcNow,
                 AssociatedCenter = associatedCenter,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow

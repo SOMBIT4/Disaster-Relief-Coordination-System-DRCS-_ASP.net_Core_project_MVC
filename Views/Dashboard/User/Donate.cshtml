@@ -1,0 +1,97 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_UserLayout.cshtml";
+    ViewData["Title"] = "Donate";
+}
+
+<h2>Make a Donation</h2>
+
+<form id="donationForm">
+    <div class="mb-3">
+        <label class="form-label">Donation Type</label>
+        <select name="DonationType" class="form-control" required>
+            <option value="">-- Select Donation Type --</option>
+            <option value="Cloth">Cloth</option>
+            <option value="Food">Food</option>
+            <option value="Water">Water</option>
+            <option value="Medicine">Medicine</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Quantity</label>
+        <input type="number" name="Quantity" class="form-control" required min="1" />
+    </div>
+
+  
+    <div class="mb-3">
+        <label class="form-label">Associated Relief Center</label>
+        <select name="AssociatedCenter" id="reliefCenterDropdown" class="form-control" required>
+            <option value="">-- Loading centers... --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Donate</button>
+</form>
+
+<script>
+    // Load relief centers from backend
+    async function loadReliefCenters() {
+        try {
+            const response = await fetch("/api/relief-centers");
+            const result = await response.json();
+            const dropdown = document.getElementById("reliefCenterDropdown");
+            dropdown.innerHTML = '<option value="">-- Select Center --</option>';
+
+            if (result.success) {
+                result.data.forEach(center => {
+                    const option = document.createElement("option");
+                    option.value = center.centerID; // make sure property matches your entity
+                    option.textContent = center.centerName + " - " + center.location;
+                    dropdown.appendChild(option);
+                });
+            } else {
+                dropdown.innerHTML = '<option value="">Error loading centers</option>';
+            }
+        } catch (err) {
+            console.error("Error fetching relief centers:", err);
+        }
+    }
+
+    // Submit donation form
+    document.getElementById("donationForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const donationData = {
+            donationType: form.DonationType.value,
+            quantity: parseInt(form.Quantity.value),
+            associatedCenter: parseInt(form.AssociatedCenter.value)
+        };
+
+        try {
+            const response = await fetch("/api/donations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(donationData)
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert("Donation created successfully!");
+                form.reset();
+            } else {
+                alert("Failed: " + result.message);
+            }
+        } catch (err) {
+            console.error("Error submitting donation:", err);
+            alert("Something went wrong while donating.");
+        }
+    });
+
+    // Load relief centers on page load
+    loadReliefCenters();
+</script>

@@ -1,0 +1,88 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - DRCS</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            min-width: 200px;
+            max-width: 200px;
+            background-color: #007bff;
+            color: white;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: -200px;
+            z-index: 1050;
+        }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .sidebar a {
+                color: white;
+                text-decoration: none;
+                display: block;
+                padding: 10px 15px;
+            }
+
+                .sidebar a:hover {
+                    background-color: #0056b3;
+                }
+
+        .content {
+            margin-left: 0;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+
+            .content.shift {
+                margin-left: 200px;
+            }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div id="volSidebar" class="sidebar">
+        <h4 class="text-center py-3">Volunteer Panel</h4>
+        <a href="/Dashboard/Volunteer">Dashboard</a>
+        <a href="/Volunteer/Tasks">Assigned Tasks</a>
+        <a href="/Volunteer/Tracking">Rescue Tracking Tasks</a>
+        <a href="/api/auth/logout">Logout</a>
+    </div>
+
+    <!-- Main content -->
+    <div id="volContent" class="content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container-fluid">
+                <button class="btn btn-outline-dark" id="volToggleBtn">☰</button>
+                <span class="navbar-brand mb-0 h1 ms-3">Welcome, Volunteer</span>
+            </div>
+        </nav>
+
+        @RenderBody()
+    </div>
+
+    <script>
+        const volSidebar = document.getElementById("volSidebar");
+        const volContent = document.getElementById("volContent");
+        const volToggleBtn = document.getElementById("volToggleBtn");
+
+        volToggleBtn.addEventListener("click", () => {
+            volSidebar.classList.toggle("open");
+            volContent.classList.toggle("shift");
+        });
+    </script>
+</body>
+</html>
