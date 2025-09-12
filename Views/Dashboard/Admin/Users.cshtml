@@ -3,18 +3,799 @@
     ViewData["Title"] = "All Users";
 }
 
-<h2>All Users</h2>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>User ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr><td>1</td><td>John Doe</td><td>john@example.com</td><td>Volunteer</td></tr>
-        <tr><td>2</td><td>Jane Smith</td><td>jane@example.com</td><td>Admin</td></tr>
-    </tbody>
-</table>
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-color: #2c5f2d;
+        --secondary-color: #97bc62;
+        --accent-color: #ffd700;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+        --modal-bg: rgba(151, 188, 98, 0.1);
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .filter-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filter-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--secondary-color);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+        }
+
+        .form-select option:hover,
+        .form-select option:focus,
+        .form-select option:active,
+        .form-select option:checked {
+            background-color: var(--secondary-color) !important;
+            color: white !important;
+        }
+
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 1rem;
+            border: none;
+            text-align: left;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(151, 188, 98, 0.1);
+        }
+
+    .role-badge {
+        padding: 0.35rem 0.65rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .badge-admin {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+
+    .badge-user {
+        background-color: rgba(151, 188, 98, 0.2);
+        color: #2c5f2d;
+    }
+
+    .badge-volunteer {
+        background-color: rgba(255, 193, 7, 0.2);
+        color: #b8860b;
+    }
+
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .page-link {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--secondary-color);
+        color: var(--primary-color);
+        border-radius: 8px;
+        margin: 0 0.25rem;
+        transition: all 0.3s;
+    }
+
+        .page-link:hover {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        border-color: #dee2e6;
+        background-color: white;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+    }
+
+    .btn-filter {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .btn-filter:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+            color: white;
+        }
+
+    .btn-reset {
+        background: transparent;
+        border: 1px solid var(--secondary-color);
+        color: var(--primary-color);
+        padding: 10px 20px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .btn-reset:hover {
+            background: rgba(151, 188, 98, 0.1);
+            border-color: var(--primary-color);
+        }
+
+    .highlight {
+        background-color: rgba(151, 188, 98, 0.2) !important;
+        transition: background-color 0.3s ease;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .btn-action {
+        padding: 0.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        transition: all 0.3s;
+    }
+
+    .btn-edit {
+        background-color: rgba(25, 135, 84, 0.2);
+        color: #198754;
+        border: none;
+    }
+
+        .btn-edit:hover {
+            background-color: #198754;
+            color: white;
+        }
+
+    .btn-delete {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+        border: none;
+    }
+
+        .btn-delete:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    .btn-view {
+        background-color: rgba(13, 110, 253, 0.2);
+        color: darkgreen;
+        border: none;
+    }
+
+        .btn-view:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+    /* Modal styling with light green background */
+    .modal-content {
+        background-color: var(--secondary-color);
+        
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="page-header">
+        <h1 class="page-title">All Users</h1>
+        <p class="page-subtitle">View and manage all users in the system</p>
+    </div>
+
+    <!-- Filters, Sorting, and Search Controls -->
+    <div class="filter-section">
+        <h3 class="filter-title">Filter & Search Users</h3>
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label class="form-label">Role</label>
+                <select id="roleFilter" class="form-select">
+                    <option value="all">All Roles</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                    <option value="Volunteer">Volunteer</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="form-label">Sort By</label>
+                <select id="sortOrder" class="form-select">
+                    <option value="latest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Search by Name or Email</label>
+                <div class="position-relative">
+                    <input type="text" id="search" class="form-control" placeholder="Search users...">
+                    <i class="bi bi-search search-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-2 mb-3 d-flex align-items-end">
+                <button id="applyFilters" class="btn btn-filter w-100 me-2">Apply</button>
+                <button id="resetFilters" class="btn btn-reset">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone No</th>
+                        <th scope="col" class="text-center">Role</th>
+                        <th scope="col" class="text-center">Join Date</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr data-role="Admin" data-date="2025-09-01">
+                        <td class="text-center">1</td>
+                        <td>John Doe</td>
+                        <td>john@example.com</td>
+                        <td>123-456-7890</td>
+                        <td class="text-center"><span class="role-badge badge-admin">Admin</span></td>
+                        <td class="text-center">Sep 1, 2025</td>
+                        <td class="text-center">
+                            <div class="action-buttons">
+                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="1">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="1">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="1">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-role="User" data-date="2025-09-04">
+                        <td class="text-center">2</td>
+                        <td>Jane Smith</td>
+                        <td>jane@example.com</td>
+                        <td>098-765-4321</td>
+                        <td class="text-center"><span class="role-badge badge-user">User</span></td>
+                        <td class="text-center">Sep 4, 2025</td>
+                        <td class="text-center">
+                            <div class="action-buttons">
+                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="2">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="2">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="2">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-role="Volunteer" data-date="2025-09-03">
+                        <td class="text-center">3</td>
+                        <td>Robert Johnson</td>
+                        <td>robert@example.com</td>
+                        <td>555-123-4567</td>
+                        <td class="text-center"><span class="role-badge badge-volunteer">Volunteer</span></td>
+                        <td class="text-center">Sep 3, 2025</td>
+                        <td class="text-center">
+                            <div class="action-buttons">
+                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="3">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="3">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="3">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-role="User" data-date="2025-08-28">
+                        <td class="text-center">4</td>
+                        <td>Sarah Williams</td>
+                        <td>sarah@example.com</td>
+                        <td>444-987-6543</td>
+                        <td class="text-center"><span class="role-badge badge-user">User</span></td>
+                        <td class="text-center">Aug 28, 2025</td>
+                        <td class="text-center">
+                            <div class="action-buttons">
+                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="4">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="4">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="4">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-role="Volunteer" data-date="2025-08-25">
+                        <td class="text-center">5</td>
+                        <td>Michael Brown</td>
+                        <td>michael@example.com</td>
+                        <td>777-555-1234</td>
+                        <td class="text-center"><span class="role-badge badge-volunteer">Volunteer</span></td>
+                        <td class="text-center">Aug 25, 2025</td>
+                        <td class="text-center">
+                            <div class="action-buttons">
+                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="5">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="5">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="5">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+        <nav aria-label="Users pagination">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId" name="Id" />
+                    <div class="mb-3">
+                        <label for="editUserName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editUserName" name="Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editUserEmail" name="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserPhone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="editUserPhone" name="PhoneNo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserRole" class="form-label">Role</label>
+                        <select class="form-select" id="editUserRole" name="Role" required>
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
+                            <option value="Volunteer">Volunteer</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveUserChanges">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View User Modal -->
+<div class="modal fade" id="viewUserModal" tabindex="-1" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewUserModalLabel">User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="user-details">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Name:</label>
+                        <p id="viewUserName" class="mb-0"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email:</label>
+                        <p id="viewUserEmail" class="mb-0"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Phone Number:</label>
+                        <p id="viewUserPhone" class="mb-0"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Role:</label>
+                        <p id="viewUserRole" class="mb-0"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Join Date:</label>
+                        <p id="viewUserJoinDate" class="mb-0"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">Delete User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this user?</p>
+                <div class="user-details">
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Name:</label>
+                        <p id="deleteUserName" class="mb-0"></p>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Email:</label>
+                        <p id="deleteUserEmail" class="mb-0"></p>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Role:</label>
+                        <p id="deleteUserRole" class="mb-0"></p>
+                    </div>
+                </div>
+                <div class="alert alert-warning mt-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i> This action cannot be undone.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteUser">Delete User</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get elements
+        const roleFilter = document.getElementById('roleFilter');
+        const sortOrder = document.getElementById('sortOrder');
+        const searchInput = document.getElementById('search');
+        const applyButton = document.getElementById('applyFilters');
+        const resetButton = document.getElementById('resetFilters');
+        const tableBody = document.getElementById('usersTableBody');
+        const rows = tableBody.querySelectorAll('tr');
+
+        // Store original rows for resetting
+        const originalRows = Array.from(rows);
+
+        // Apply filters function
+        function applyFilters() {
+            const roleValue = roleFilter.value;
+            const searchTerm = searchInput.value.toLowerCase();
+            const sortValue = sortOrder.value;
+
+            // First, show all rows
+            rows.forEach(row => {
+                row.style.display = '';
+                row.classList.remove('highlight');
+            });
+
+            // Apply role filter
+            if (roleValue !== 'all') {
+                rows.forEach(row => {
+                    const rowRole = row.getAttribute('data-role');
+                    if (rowRole !== roleValue) {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            // Apply search filter
+            if (searchTerm) {
+                rows.forEach(row => {
+                    if (row.style.display !== 'none') {
+                        const name = row.cells[1].textContent.toLowerCase();
+                        const email = row.cells[2].textContent.toLowerCase();
+
+                        if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                            row.classList.add('highlight');
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // Apply sorting
+            if (sortValue === 'latest') {
+                sortTable(true);
+            } else if (sortValue === 'oldest') {
+                sortTable(false);
+            }
+        }
+
+        // Sort table by date
+        function sortTable(newestFirst = true) {
+            const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+
+            visibleRows.sort((a, b) => {
+                const dateA = new Date(a.getAttribute('data-date'));
+                const dateB = new Date(b.getAttribute('data-date'));
+
+                return newestFirst ? dateB - dateA : dateA - dateB;
+            });
+
+            // Reorder the table
+            visibleRows.forEach(row => {
+                tableBody.appendChild(row);
+            });
+
+            // Update row numbers
+            updateRowNumbers();
+        }
+
+        // Update row numbers after sorting
+        function updateRowNumbers() {
+            const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+            visibleRows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+        }
+
+        // Reset filters function
+        function resetFilters() {
+            roleFilter.value = 'all';
+            sortOrder.value = 'latest';
+            searchInput.value = '';
+
+            // Show all rows and remove highlights
+            rows.forEach(row => {
+                row.style.display = '';
+                row.classList.remove('highlight');
+            });
+
+            // Restore original order
+            originalRows.forEach(row => {
+                tableBody.appendChild(row);
+            });
+
+            // Reset row numbers
+            updateRowNumbers();
+        }
+
+        // Event listeners
+        applyButton.addEventListener('click', applyFilters);
+
+        resetButton.addEventListener('click', resetFilters);
+
+        // Also apply filters when search input changes
+        searchInput.addEventListener('keyup', function() {
+            applyFilters();
+        });
+
+        // Apply filters when dropdowns change
+        roleFilter.addEventListener('change', applyFilters);
+        sortOrder.addEventListener('change', applyFilters);
+
+        // Edit User Modal functionality
+        const editUserModal = document.getElementById('editUserModal');
+
+        editUserModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const userId = button.getAttribute('data-user-id');
+
+            // In a real application, you would fetch user data from the server
+            // For this example, we'll use the data from the table row
+            const row = button.closest('tr');
+            const name = row.cells[1].textContent;
+            const email = row.cells[2].textContent;
+            const phone = row.cells[3].textContent;
+            const role = row.getAttribute('data-role');
+
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editUserName').value = name;
+            document.getElementById('editUserEmail').value = email;
+            document.getElementById('editUserPhone').value = phone;
+            document.getElementById('editUserRole').value = role;
+        });
+
+        document.getElementById('saveUserChanges').addEventListener('click', function() {
+            // In a real application, you would submit the form to the server
+            alert('User details would be saved here in a real application');
+            bootstrap.Modal.getInstance(editUserModal).hide();
+        });
+
+        // View User Modal functionality
+        const viewUserModal = document.getElementById('viewUserModal');
+
+        viewUserModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+
+            // In a real application, you would fetch user data from the server
+            // For this example, we'll use the data from the table row
+            const row = button.closest('tr');
+            const name = row.cells[1].textContent;
+            const email = row.cells[2].textContent;
+            const phone = row.cells[3].textContent;
+            const role = row.getAttribute('data-role');
+            const joinDate = row.cells[5].textContent;
+
+            document.getElementById('viewUserName').textContent = name;
+            document.getElementById('viewUserEmail').textContent = email;
+            document.getElementById('viewUserPhone').textContent = phone;
+            document.getElementById('viewUserRole').textContent = role;
+            document.getElementById('viewUserJoinDate').textContent = joinDate;
+        });
+
+        // Delete User Modal functionality
+        const deleteUserModal = document.getElementById('deleteUserModal');
+        let userIdToDelete = null;
+
+        deleteUserModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            userIdToDelete = button.getAttribute('data-user-id');
+
+            // In a real application, you would fetch user data from the server
+            // For this example, we'll use the data from the table row
+            const row = button.closest('tr');
+            const name = row.cells[1].textContent;
+            const email = row.cells[2].textContent;
+            const role = row.getAttribute('data-role');
+
+            document.getElementById('deleteUserName').textContent = name;
+            document.getElementById('deleteUserEmail').textContent = email;
+            document.getElementById('deleteUserRole').textContent = role;
+        });
+
+        document.getElementById('confirmDeleteUser').addEventListener('click', function() {
+            // In a real application, you would send a delete request to the server
+            alert(`User with ID ${userIdToDelete} would be deleted here in a real application`);
+            bootstrap.Modal.getInstance(deleteUserModal).hide();
+
+            // Remove the row from the table
+            const row = document.querySelector(`button[data-user-id="${userIdToDelete}"]`).closest('tr');
+            row.remove();
+
+            // Update row numbers
+            const tableBody = document.getElementById('usersTableBody');
+            const rows = tableBody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+        });
+    });
+</script>

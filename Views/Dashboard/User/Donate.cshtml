@@ -3,37 +3,69 @@
     ViewData["Title"] = "Donate";
 }
 
-<h2>Make a Donation</h2>
+<!-- Tailwind CDN (if not already included in layout) -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 
-<form id="donationForm">
-    <div class="mb-3">
-        <label class="form-label">Donation Type</label>
-        <select name="DonationType" class="form-control" required>
-            <option value="">-- Select Donation Type --</option>
-            <option value="Cloth">Cloth</option>
-            <option value="Food">Food</option>
-            <option value="Water">Water</option>
-            <option value="Medicine">Medicine</option>
-            <option value="Other">Other</option>
-        </select>
+<style>
+    .green-gradient-bg {
+        background: linear-gradient(135deg, rgba(44, 95, 45, 0.8) 0%, rgba(151, 188, 98, 0.8) 100%);
+    }
+
+    .green-focus:focus {
+        border-color: #97bc62;
+        box-shadow: 0 0 0 0.2rem rgba(151, 188, 98, 0.25);
+    }
+</style>
+
+<div class="min-h-screen bg-cover bg-center relative" style="background-image: url('@Url.Content("~/images/donate.png")')">
+    <div class="absolute inset-0 bg-black opacity-70"></div>
+
+    <div class="flex justify-center items-center min-h-screen relative z-10">
+        <div class="max-w-md bg-white p-10 rounded-md shadow-lg green-gradient-bg">
+            <h1 class="mb-6 text-4xl font-bold text-white text-center">Make a Donation</h1>
+
+            <form id="donationForm" class="space-y-5">
+                <!-- Donation Type -->
+                <div>
+                    <label class="block mb-1 text-lg font-medium text-white" for="DonationType">Donation Type</label>
+                    <select name="DonationType" class="w-full p-3 rounded bg-white border border-gray-300 focus:outline-none green-focus" required>
+                        <option value="">-- Select Donation Type --</option>
+                        <option value="Cloth">Cloth</option>
+                        <option value="Food">Food</option>
+                        <option value="Water">Water</option>
+                        <option value="Medicine">Medicine</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Quantity -->
+                <div>
+                    <label class="block mb-1 text-lg font-medium text-white" for="Quantity">Quantity</label>
+                    <input type="number" name="Quantity" class="w-full p-3 rounded bg-white border border-gray-300 focus:outline-none green-focus" required min="1" />
+                </div>
+
+                <!-- Associated Center -->
+                <div>
+                    <label class="block mb-1 text-lg font-medium text-white" for="AssociatedCenter">Associated Relief Center</label>
+                    <select name="AssociatedCenter" id="reliefCenterDropdown" class="w-full p-3 rounded bg-white border border-gray-300 focus:outline-none green-focus" required>
+                        <option value="">-- Loading centers... --</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full py-3 mt-4 bg-white text-green-800 font-bold rounded hover:bg-green-50 transition">
+                    Submit Donation
+                </button>
+
+                <!-- Loader (Hidden by default, shown via JS if needed) -->
+                <div id="donationLoader" class="hidden flex-col items-center justify-center mt-6">
+                    <div class="border-t-4 border-green-500 w-12 h-12 rounded-full animate-spin"></div>
+                    <p class="mt-2 text-green-100">Donating...</p>
+                </div>
+            </form>
+        </div>
     </div>
-
-
-    <div class="mb-3">
-        <label class="form-label">Quantity</label>
-        <input type="number" name="Quantity" class="form-control" required min="1" />
-    </div>
-
-  
-    <div class="mb-3">
-        <label class="form-label">Associated Relief Center</label>
-        <select name="AssociatedCenter" id="reliefCenterDropdown" class="form-control" required>
-            <option value="">-- Loading centers... --</option>
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-success">Donate</button>
-</form>
+</div>
 
 <script>
     // Load relief centers from backend

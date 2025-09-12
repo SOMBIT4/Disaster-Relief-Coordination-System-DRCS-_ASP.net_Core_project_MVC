@@ -124,6 +124,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
 // Apply Authentication & Authorization
 app.UseAuthentication();

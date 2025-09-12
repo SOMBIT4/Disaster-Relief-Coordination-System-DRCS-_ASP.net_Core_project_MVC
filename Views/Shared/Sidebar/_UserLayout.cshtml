@@ -15,7 +15,7 @@
         .sidebar {
             min-width: 200px;
             max-width: 200px;
-            background-color: #6c757d;
+            background: linear-gradient(135deg, #2c5f2d 0%, #97bc62 100%);
             color: white;
             min-height: 100vh;
             transition: all 0.3s ease;
@@ -35,10 +35,16 @@
                 text-decoration: none;
                 display: block;
                 padding: 10px 15px;
+                transition: background-color 0.3s ease;
             }
 
                 .sidebar a:hover {
-                    background-color: #5a6268;
+                    background-color: rgba(151, 188, 98, 0.7);
+                }
+
+                .sidebar a.active {
+                    background-color: #234f24;
+                    font-weight: 600;
                 }
 
         .content {
@@ -50,6 +56,29 @@
             .content.shift {
                 margin-left: 200px;
             }
+
+        .navbar-green {
+            background: linear-gradient(135deg, #2c5f2d 0%, #97bc62 100%);
+            color: white;
+        }
+
+            .navbar-green .navbar-brand {
+                color: white !important;
+            }
+
+        .toggle-btn {
+            background-color: #2c5f2d;
+            color: white;
+            border-radius: 8px;
+            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
     </style>
 </head>
 <body>
@@ -57,7 +86,7 @@
         <!-- Sidebar -->
         <div id="userSidebar" class="sidebar">
             <h4 class="text-center py-3">User Panel</h4>
-            <a href="/Dashboard/User">Dashboard Overview</a>
+            <a href="/Dashboard/User">Dashboard</a>
             <a href="/User/AidRequest">Request For Aid</a>
             <a href="/User/Donate">Donate</a>
             <a href="/User/Donations">All Donations</a>
@@ -67,9 +96,9 @@
 
         <!-- Main content -->
         <div id="userContent" class="content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <nav class="navbar navbar-expand-lg navbar-green mb-4">
                 <div class="container-fluid">
-                    <button class="btn btn-outline-dark" id="userToggleBtn">☰</button>
+                    <button class="toggle-btn" id="userToggleBtn">☰</button>
                     <span class="navbar-brand mb-0 h1 ms-3">Welcome, User</span>
                 </div>
             </nav>
@@ -86,6 +115,18 @@
         userToggleBtn.addEventListener("click", () => {
             userSidebar.classList.toggle("open");
             userContent.classList.toggle("shift");
+        });
+
+        // Add active class to current page link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const links = document.querySelectorAll('.sidebar a');
+
+            links.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

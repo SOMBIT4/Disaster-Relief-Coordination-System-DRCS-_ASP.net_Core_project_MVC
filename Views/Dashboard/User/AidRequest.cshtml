@@ -3,21 +3,529 @@
     ViewData["Title"] = "Request For Aid";
 }
 
-<h2>
-    Need Immediate Aid?
-</h2>
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Toast notifications -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-<h4>
-    Submit your request below and get help as soon as possible.
-</h4>
-<form method="post" action="/User/AidRequest">
-    <div class="mb-3">
-        <label class="form-label">Type of Aid</label>
-        <input type="text" name="AidType" class="form-control" required />
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-color: #2c5f2d;
+        --secondary-color: #97bc62;
+        --accent-color: #ffd700;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+    }
+
+    .banner-section {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        padding: 4rem 2rem;
+        border-radius: 12px;
+        margin-bottom: 2.5rem;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .banner-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .banner-subtitle {
+        font-size: 1.2rem;
+        font-weight: 400;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .request-form {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--secondary-color);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+        }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
+        margin-top: 1rem;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+            color: white;
+        }
+
+    .support-info {
+        background: var(--bg-light);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .support-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .support-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+        .support-list li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .support-list i {
+            color: var(--secondary-color);
+            margin-right: 10px;
+            font-size: 1.1rem;
+            margin-top: 3px;
+        }
+
+    /* Modal customization */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+        border: none;
+    }
+
+    .modal-success .modal-header {
+        background: linear-gradient(135deg, #97bc62 0%, #2c5f2d 100%);
+    }
+
+    .btn-confirm {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border: none;
+        color: white;
+    }
+
+        .btn-confirm:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+            color: white;
+        }
+
+    /* Cooldown styles */
+    .cooldown-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        z-index: 100;
+    }
+
+    .cooldown-timer {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #dc3545;
+        text-align: center;
+    }
+
+    .cooldown-message {
+        text-align: center;
+        margin-top: 1rem;
+        color: #6c757d;
+    }
+
+    .form-container {
+        position: relative;
+    }
+
+    .blurred {
+        filter: blur(5px);
+        pointer-events: none;
+    }
+
+    .cooldown-alert {
+        display: none;
+    }
+</style>
+
+<div class="banner-section">
+    <h1 class="banner-title">Need Immediate Aid?</h1>
+    <p class="banner-subtitle">Submit your request below and our team of dedicated volunteers will assist you as soon as possible.</p>
+</div>
+
+<!-- Cooldown Alert -->
+<div id="cooldownAlert" class="alert alert-warning text-center cooldown-alert">
+    <h4 class="alert-heading">Request Limit Reached</h4>
+    <p>You can submit another aid request in: <span id="cooldownTimer" class="fw-bold">10:00</span></p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="form-container">
+            <div class="request-form" id="requestForm">
+                <h3 class="form-title">Submit Aid Request</h3>
+                <form id="aidRequestForm" method="post" action="/User/AidRequest">
+                    <!-- Area Dropdown -->
+                    <div class="mb-4">
+                        <label class="form-label">Affected Area</label>
+                        <select id="AreaID" name="AreaID" class="form-select" required>
+                            <option value="">Select Affected Area</option>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="mb-4">
+                        <label class="form-label">Contact Information</label>
+                        <input type="text" id="ContactInfo" name="ContactInfo" class="form-control" required
+                               placeholder="Phone number or email where we can reach you" />
+                    </div>
+
+                    <!-- Request Type Dropdown -->
+                    <div class="mb-4">
+                        <label class="form-label">Request Type</label>
+                        <select id="RequestType" name="RequestType" class="form-select" required>
+                            <option value="">Select Request Type</option>
+                            <option value="Aid">Aid</option>
+                            <option value="Rescue">Rescue</option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label class="form-label">Description</label>
+                        <textarea id="Description" name="Description" class="form-control" required
+                                  placeholder="Please provide detailed information about your needs and situation"></textarea>
+                    </div>
+
+                    <!-- Urgency Level Dropdown -->
+                    <div class="mb-4">
+                        <label class="form-label">Urgency Level</label>
+                        <select id="UrgencyLevel" name="UrgencyLevel" class="form-select" required>
+                            <option value="">Select Urgency Level</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+
+                    <!-- Number of People -->
+                    <div class="mb-4">
+                        <label class="form-label">Number of People</label>
+                        <input type="number" id="NumberOfPeople" name="NumberOfPeople" class="form-control" required
+                               min="1" placeholder="How many people need assistance?" />
+                    </div>
+
+                    <button type="button" id="submitBtn" class="btn btn-primary w-100">
+                        <i class="bi bi-send-fill"></i> Submit Request
+                    </button>
+                </form>
+            </div>
+
+            <!-- Cooldown Overlay -->
+            <div id="cooldownOverlay" class="cooldown-overlay d-none">
+                <div>
+                    <div class="cooldown-timer" id="cooldownDisplay">10:00</div>
+                    <div class="cooldown-message">Please wait before submitting another request</div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Description</label>
-        <textarea name="Description" class="form-control" required></textarea>
+
+    <div class="col-lg-4">
+        <div class="support-info">
+            <h4 class="support-title">How it works</h4>
+            <ul class="support-list">
+                <li>
+                    <i class="bi bi-1-circle-fill"></i>
+                    <div>Submit your request with details about your needs</div>
+                </li>
+                <li>
+                    <i class="bi bi-2-circle-fill"></i>
+                    <div>Our team will review and prioritize your request</div>
+                </li>
+                <li>
+                    <i class="bi bi-3-circle-fill"></i>
+                    <div>A volunteer will be assigned to assist you</div>
+                </li>
+                <li>
+                    <i class="bi bi-4-circle-fill"></i>
+                    <div>You'll receive updates on the status of your request</div>
+                </li>
+            </ul>
+
+            <div class="mt-4">
+                <h4 class="support-title">Need urgent help?</h4>
+                <p>Call our emergency support line: <strong>1-800-HELP-NOW</strong></p>
+                <p class="small text-muted">Available 24/7 for critical situations</p>
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit Request</button>
-</form>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirm Submission</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to submit this aid request?</p>
+                <p class="small text-muted">Once submitted, our team will review your request and contact you shortly.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Cancel</button>
+                <button type="button" id="confirmSubmit" class="btn btn-confirm">Yes, Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade modal-success" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Request Submitted Successfully!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                <p class="mt-3">Your aid request has been submitted successfully.</p>
+                <p>Our team will review it and contact you shortly.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- Toastr for notifications -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize toastr
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: "toast-top-right",
+            timeOut: "5000"
+        };
+
+        // Get elements
+        const submitBtn = document.getElementById('submitBtn');
+        const confirmSubmitBtn = document.getElementById('confirmSubmit');
+        const aidRequestForm = document.getElementById('aidRequestForm');
+        const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        const cooldownAlert = document.getElementById('cooldownAlert');
+        const cooldownTimer = document.getElementById('cooldownTimer');
+        const cooldownOverlay = document.getElementById('cooldownOverlay');
+        const cooldownDisplay = document.getElementById('cooldownDisplay');
+        const requestForm = document.getElementById('requestForm');
+
+        // Cooldown state (10 minutes in seconds)
+        let cooldownSeconds = 0;
+        let cooldownInterval = null;
+        const COOLDOWN_DURATION = 600; // 10 minutes in seconds
+
+        // Mock affected areas data (in a real app, this would come from an API)
+        const mockAffectedAreas = [
+            { AreaID: 1, AreaName: "Downtown District", AreaType: "Urban", SeverityLevel: "High" },
+            { AreaID: 2, AreaName: "Riverside Community", AreaType: "Residential", SeverityLevel: "Medium" },
+            { AreaID: 3, AreaName: "Northern Suburbs", AreaType: "Suburban", SeverityLevel: "Low" },
+            { AreaID: 4, AreaName: "Eastwood Plains", AreaType: "Rural", SeverityLevel: "High" },
+            { AreaID: 5, AreaName: "Southwest Industrial Zone", AreaType: "Industrial", SeverityLevel: "Medium" }
+        ];
+
+        // Populate affected areas dropdown
+        const areaDropdown = document.getElementById('AreaID');
+        mockAffectedAreas.forEach(area => {
+            const option = document.createElement('option');
+            option.value = area.AreaID;
+            option.textContent = `${area.AreaName} (Type: ${area.AreaType}, Severity: ${area.SeverityLevel})`;
+            areaDropdown.appendChild(option);
+        });
+
+        // Check for existing cooldown on page load
+        checkCooldown();
+
+        // Handle submit button click
+        submitBtn.addEventListener('click', function() {
+            // Check if cooldown is active
+            if (cooldownSeconds > 0) {
+                toastr.info(`Please wait ${formatTime(cooldownSeconds)} before submitting another aid request.`);
+                return;
+            }
+
+            // Validate form
+            const areaId = document.getElementById('AreaID').value;
+            const contactInfo = document.getElementById('ContactInfo').value;
+            const requestType = document.getElementById('RequestType').value;
+            const description = document.getElementById('Description').value;
+            const urgencyLevel = document.getElementById('UrgencyLevel').value;
+            const numberOfPeople = document.getElementById('NumberOfPeople').value;
+
+            if (!areaId || !contactInfo || !requestType || !description || !urgencyLevel || !numberOfPeople) {
+                toastr.error('Please fill in all required fields.');
+                return;
+            }
+
+            // Show confirmation modal
+            confirmationModal.show();
+        });
+
+        // Handle confirmation
+        confirmSubmitBtn.addEventListener('click', function() {
+            // Close confirmation modal
+            confirmationModal.hide();
+
+            // Submit the form
+            submitForm();
+        });
+
+        // Function to submit the form
+        function submitForm() {
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+
+            // Submit the form
+            aidRequestForm.submit();
+
+            // Start cooldown period (10 minutes)
+            startCooldown(COOLDOWN_DURATION);
+
+            // Save cooldown to localStorage
+            localStorage.setItem("lastAidRequestTime", Date.now());
+        }
+
+        // Function to check for existing cooldown
+        function checkCooldown() {
+            const lastRequest = localStorage.getItem("lastAidRequestTime");
+            if (lastRequest) {
+                const lastTime = parseInt(lastRequest, 10);
+                const now = Date.now();
+                const diff = Math.floor((now - lastTime) / 1000); // seconds passed
+                const remaining = COOLDOWN_DURATION - diff; // 10 minutes cooldown in seconds
+
+                if (remaining > 0) {
+                    startCooldown(remaining);
+                }
+            }
+        }
+
+        // Function to start cooldown timer
+        function startCooldown(seconds) {
+            cooldownSeconds = seconds;
+
+            // Show cooldown alert
+            cooldownAlert.style.display = 'block';
+
+            // Show cooldown overlay and blur form
+            cooldownOverlay.classList.remove('d-none');
+            requestForm.classList.add('blurred');
+
+            // Update timer displays
+            updateCooldownDisplays();
+
+            // Start countdown interval
+            if (cooldownInterval) clearInterval(cooldownInterval);
+
+            cooldownInterval = setInterval(() => {
+                cooldownSeconds--;
+
+                if (cooldownSeconds <= 0) {
+                    clearInterval(cooldownInterval);
+                    cooldownAlert.style.display = 'none';
+                    cooldownOverlay.classList.add('d-none');
+                    requestForm.classList.remove('blurred');
+                } else {
+                    updateCooldownDisplays();
+                }
+            }, 1000);
+        }
+
+        // Function to update cooldown displays
+        function updateCooldownDisplays() {
+            const formattedTime = formatTime(cooldownSeconds);
+            cooldownTimer.textContent = formattedTime;
+            cooldownDisplay.textContent = formattedTime;
+        }
+
+        // Helper function to format seconds into MM:SS
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+        }
+    });
+</script>
