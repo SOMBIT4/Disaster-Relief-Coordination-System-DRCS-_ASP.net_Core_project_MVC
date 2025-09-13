@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DRCS.Controllers
 {
     [ApiController]
-    [Route("aid-requests")]
+    [Route("api/aid-requests")]
     public class AidRequestController : ControllerBase
     {
         private readonly AidRequestService _aidRequestService;
@@ -40,8 +40,8 @@ namespace DRCS.Controllers
             try
             {
                 var role = HttpContext.Items["role"]?.ToString();
-                if (role != "Admin")
-                    return StatusCode(403, new { success = false, error = true, message = "Only admin can do it" });
+                if (role != "User")
+                    return StatusCode(403, new { success = false, error = true, message = "Only user can do it" });
                 var aidRequests = await _aidRequestService.GetByUserAsync(userId);
                 return Ok(aidRequests);
             }
