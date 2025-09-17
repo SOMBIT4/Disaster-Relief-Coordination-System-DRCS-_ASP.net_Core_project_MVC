@@ -1,12 +1,9 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JonojibonAid - Home</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -416,5 +413,44 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Auto-redirect script for logged-in users -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const token = localStorage.getItem("access_token");
+            const role = localStorage.getItem("role");
+
+            if (token && role) {
+                // Redirect based on role
+                if (role.startsWith("Admin")) {
+                    window.location.href = '/Dashboard/Admin';
+                } else if (role === "Volunteer") {
+                    window.location.href = '/Dashboard/Volunteer';
+                } else {
+                    window.location.href = '/Dashboard/User';
+                }
+            }
+
+            // Optional: Also check with server to validate token
+            // This can be useful if tokens might be expired
+            try {
+                fetch('/api/auth/login-check', {
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(checkData => {
+                    if (checkData.loggedIn) {
+                        window.location.href = checkData.redirectUrl;
+                    }
+                })
+                .catch(e => {
+                    console.warn("Login-check failed", e);
+                });
+            } catch (e) {
+                console.warn("Login-check error", e);
+            }
+        });
+    </script>
 </body>
 </html>

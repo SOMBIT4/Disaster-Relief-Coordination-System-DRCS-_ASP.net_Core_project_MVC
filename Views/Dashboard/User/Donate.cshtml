@@ -106,7 +106,8 @@
             const response = await fetch("/api/donations", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                     "Authorization": `Bearer ${localStorage.getItem('access_token')}`
                 },
                 body: JSON.stringify(donationData)
             });

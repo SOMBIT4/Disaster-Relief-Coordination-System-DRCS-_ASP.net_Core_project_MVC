@@ -323,6 +323,7 @@
         // Save tokens in localStorage
         localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("refresh_token", data.refresh_token);
+        localStorage.setItem("role", data.user_info.roleName);
 
         // Get role
         const role = data.user_info.roleName;

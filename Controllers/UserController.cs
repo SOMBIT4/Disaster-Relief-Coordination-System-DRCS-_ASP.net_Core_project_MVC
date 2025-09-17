@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("users")]
+    [Route("api/users")]
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;

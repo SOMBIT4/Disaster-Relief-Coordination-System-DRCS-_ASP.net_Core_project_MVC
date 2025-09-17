@@ -1,478 +1,664 @@
 ﻿@{
     Layout = "~/Views/Shared/Sidebar/_UserLayout.cshtml";
-    ViewData["Title"] = "All Donations";
+    ViewData["Title"] = "Donation History";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation History</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- Bootstrap 5 CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-    * {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    :root {
-        --primary-color: #2c5f2d;
-        --secondary-color: #97bc62;
-        --accent-color: #ffd700;
-        --text-dark: #333;
-        --text-light: #666;
-        --bg-light: #f8f9fa;
-    }
-
-    .page-header {
-        margin-bottom: 2rem;
-    }
-
-    .page-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-    }
-
-    .page-subtitle {
-        color: var(--text-light);
-        font-size: 1.1rem;
-    }
-
-    .filter-section {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .filter-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--secondary-color);
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: var(--text-dark);
-        margin-bottom: 8px;
-    }
-
-    .form-control, .form-select {
-        padding: 10px 14px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        transition: all 0.3s;
-    }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* Custom dropdown styling with green hover */
-        .form-select option:hover,
-        .form-select option:focus,
-        .form-select option:active,
-        .form-select option:checked {
-            background-color: var(--secondary-color) !important;
-            color: white !important;
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --accent-color: #ffd700;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
         }
 
-    .table-container {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-        margin-bottom: 2rem;
-    }
+        .page-header {
+            margin-bottom: 2rem;
+        }
 
-    .table {
-        margin-bottom: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
 
-        .table thead th {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-            color: white;
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
             font-weight: 600;
-            padding: 1rem;
-            border: none;
-            text-align: left;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
         }
 
-        .table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #eee;
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
         }
 
-        .table tbody tr:last-child td {
-            border-bottom: none;
+        .form-control, .form-select {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
         }
 
-        .table tbody tr:hover {
-            background-color: rgba(151, 188, 98, 0.1);
+            .form-control:focus, .form-select:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+            }
+
+            /* Custom dropdown styling with green hover */
+            .form-select option:hover,
+            .form-select option:focus,
+            .form-select option:active,
+            .form-select option:checked {
+                background-color: var(--secondary-color) !important;
+                color: white !important;
+            }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
         }
 
-    .donation-badge {
-        padding: 0.35rem 0.65rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
 
-    .badge-food {
-        background-color: rgba(151, 188, 98, 0.2);
-        color: #2c5f2d;
-    }
+            .table thead th {
+                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                border: none;
+                text-align: left;
+            }
 
-    .badge-money {
-        background-color: rgba(255, 215, 0, 0.2);
-        color: #b8860b;
-    }
+            .table tbody td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
 
-    .badge-clothes {
-        background-color: rgba(70, 130, 180, 0.2);
-        color: #4169e1;
-    }
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
 
-    .badge-water {
-        background-color: rgba(30, 144, 255, 0.2);
-        color: #1e90ff;
-    }
+            .table tbody tr:hover {
+                background-color: rgba(151, 188, 98, 0.1);
+            }
 
-    .pagination-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 2rem;
-    }
+        .donation-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
 
-    .page-link {
-        padding: 0.5rem 1rem;
-        border: 1px solid var(--secondary-color);
-        color: var(--primary-color);
-        border-radius: 8px;
-        margin: 0 0.25rem;
-        transition: all 0.3s;
-    }
+        .badge-food {
+            background-color: rgba(151, 188, 98, 0.2);
+            color: #2c5f2d;
+        }
 
-        .page-link:hover {
+        .badge-money {
+            background-color: rgba(255, 215, 0, 0.2);
+            color: #b8860b;
+        }
+
+        .badge-clothes {
+            background-color: rgba(70, 130, 180, 0.2);
+            color: #4169e1;
+        }
+
+        .badge-water {
+            background-color: rgba(30, 144, 255, 0.2);
+            color: #1e90ff;
+        }
+
+        .badge-other {
+            background-color: rgba(128, 128, 128, 0.2);
+            color: #666;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .page-link {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--secondary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            margin: 0 0.25rem;
+            transition: all 0.3s;
+        }
+
+            .page-link:hover {
+                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+                color: white;
+                border-color: var(--primary-color);
+            }
+
+        .page-item.active .page-link {
             background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             color: white;
             border-color: var(--primary-color);
         }
 
-    .page-item.active .page-link {
-        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-        color: white;
-        border-color: var(--primary-color);
-    }
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            border-color: #dee2e6;
+            background-color: white;
+        }
 
-    .page-item.disabled .page-link {
-        color: #6c757d;
-        border-color: #dee2e6;
-        background-color: white;
-    }
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
 
-    .search-icon {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-light);
-    }
-
-    .btn-filter {
-        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s;
-    }
-
-        .btn-filter:hover {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+        .btn-filter {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            border: none;
             color: white;
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
 
-    .btn-reset {
-        background: transparent;
-        border: 1px solid var(--secondary-color);
-        color: var(--primary-color);
-        padding: 10px 20px;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s;
-    }
+            .btn-filter:hover {
+                background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+                color: white;
+            }
 
-        .btn-reset:hover {
-            background: rgba(151, 188, 98, 0.1);
-            border-color: var(--primary-color);
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--secondary-color);
+            color: var(--primary-color);
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
 
-    /* Highlight for filtered rows */
-    .highlight {
-        background-color: rgba(151, 188, 98, 0.2) !important;
-        transition: background-color 0.3s ease;
-    }
-</style>
+            .btn-reset:hover {
+                background: rgba(151, 188, 98, 0.1);
+                border-color: var(--primary-color);
+            }
 
-<div class="container-fluid py-4">
-    <div class="page-header">
-        <h1 class="page-title">All Donations</h1>
-        <p class="page-subtitle">View and manage all donation records in one place</p>
-    </div>
+        /* Highlight for filtered rows */
+        .highlight {
+            background-color: rgba(151, 188, 98, 0.2) !important;
+            transition: background-color 0.3s ease;
+        }
 
-    <!-- Filters, Sorting, and Search Controls -->
-    <div class="filter-section">
-        <h3 class="filter-title">Filter & Search Donations</h3>
-        <div class="row">
-            <div class="col-md-3 mb-3">
-                <label class="form-label">Donation Type</label>
-                <select id="donationTypeFilter" class="form-select">
-                    <option value="all">All Types</option>
-                    <option value="Food">Food</option>
-                    <option value="Clothes">Clothes</option>
-                    <option value="Money">Money</option>
-                    <option value="Water">Water</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label class="form-label">Sort By</label>
-                <select id="sortOrder" class="form-select">
-                    <option value="latest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                </select>
-            </div>
-            <div class="col-md-4 mb-3">
-                <label class="form-label">Search by Date (YYYY-MM-DD)</label>
-                <div class="position-relative">
-                    <input type="text" id="search" class="form-control" placeholder="e.g., 2025-09-09">
-                    <i class="bi bi-search search-icon"></i>
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--primary-color);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid py-4">
+        <div class="page-header">
+            <h1 class="page-title">My Donation History</h1>
+            <p class="page-subtitle">View and manage all your donation records in one place</p>
+        </div>
+
+        <!-- Error message container -->
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <!-- Filters, Sorting, and Search Controls -->
+        <div class="filter-section">
+            <h3 class="filter-title">Filter & Search Donations</h3>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Donation Type</label>
+                    <select id="donationTypeFilter" class="form-select">
+                        <option value="all">All Types</option>
+                        <option value="Food">Food</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Money">Money</option>
+                        <option value="Water">Water</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Sort By</label>
+                    <select id="sortOrder" class="form-select">
+                        <option value="latest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Search by Date (YYYY-MM-DD)</label>
+                    <div class="position-relative">
+                        <input type="text" id="search" class="form-control" placeholder="e.g., 2025-09-09">
+                        <i class="bi bi-search search-icon"></i>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+                    <button id="applyFilters" class="btn btn-filter w-100 me-2">Apply</button>
+                    <button id="resetFilters" class="btn btn-reset">Reset</button>
                 </div>
             </div>
-            <div class="col-md-2 mb-3 d-flex align-items-end">
-                <button id="applyFilters" class="btn btn-filter w-100 me-2">Apply</button>
-                <button id="resetFilters" class="btn btn-reset">Reset</button>
+        </div>
+
+        <!-- Donations Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">#</th>
+                            <th scope="col">Donation Type</th>
+                            <th scope="col" class="text-center">Quantity/Amount</th>
+                            <th scope="col" class="text-center">Date Donated</th>
+                            <th scope="col" class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donationsTableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Loading spinner -->
+            <div id="loadingSpinner" class="loading-spinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+            <!-- No data message -->
+            <div id="noDataMessage" class="no-data" style="display: none;">
+                <i class="bi bi-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <h4>No donations found</h4>
+                <p>You haven't made any donations yet.</p>
             </div>
         </div>
-    </div>
 
-    <!-- Donations Table -->
-    <div class="table-container">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col" class="text-center">#</th>
-                        <th scope="col">Donor Name</th>
-                        <th scope="col">Donation Type</th>
-                        <th scope="col" class="text-center">Quantity</th>
-                        <th scope="col" class="text-center">Date Received</th>
-                        <th scope="col" class="text-center">Associated Center</th>
-                    </tr>
-                </thead>
-                <tbody id="donationsTableBody">
-                    <!-- Example data - Will be filtered by JavaScript -->
-                    <tr data-type="Food" data-date="2025-09-06">
-                        <td class="text-center">1</td>
-                        <td>John Doe</td>
-                        <td><span class="donation-badge badge-food">Food</span></td>
-                        <td class="text-center">50 units</td>
-                        <td class="text-center">Sep 6, 2025</td>
-                        <td class="text-center">Central Relief Center</td>
-                    </tr>
-                    <tr data-type="Money" data-date="2025-09-02">
-                        <td class="text-center">2</td>
-                        <td>Jane Smith</td>
-                        <td><span class="donation-badge badge-money">Money</span></td>
-                        <td class="text-center">$100</td>
-                        <td class="text-center">Sep 2, 2025</td>
-                        <td class="text-center">East Side Center</td>
-                    </tr>
-                    <tr data-type="Clothes" data-date="2025-08-28">
-                        <td class="text-center">3</td>
-                        <td>Robert Johnson</td>
-                        <td><span class="donation-badge badge-clothes">Clothes</span></td>
-                        <td class="text-center">25 items</td>
-                        <td class="text-center">Aug 28, 2025</td>
-                        <td class="text-center">Northside Shelter</td>
-                    </tr>
-                    <tr data-type="Water" data-date="2025-08-25">
-                        <td class="text-center">4</td>
-                        <td>Maria Garcia</td>
-                        <td><span class="donation-badge badge-water">Water</span></td>
-                        <td class="text-center">100 bottles</td>
-                        <td class="text-center">Aug 25, 2025</td>
-                        <td class="text-center">West End Center</td>
-                    </tr>
-                    <tr data-type="Food" data-date="2025-08-20">
-                        <td class="text-center">5</td>
-                        <td>David Wilson</td>
-                        <td><span class="donation-badge badge-food">Food</span></td>
-                        <td class="text-center">75 units</td>
-                        <td class="text-center">Aug 20, 2025</td>
-                        <td class="text-center">Central Relief Center</td>
-                    </tr>
-                    <tr data-type="Clothes" data-date="2025-08-15">
-                        <td class="text-center">6</td>
-                        <td>Sarah Brown</td>
-                        <td><span class="donation-badge badge-clothes">Clothes</span></td>
-                        <td class="text-center">40 items</td>
-                        <td class="text-center">Aug 15, 2025</td>
-                        <td class="text-center">Southside Center</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <nav aria-label="Donations pagination">
+                <ul class="pagination" id="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="pagination-container">
-        <nav aria-label="Donations pagination">
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-</div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const donationTypeFilter = document.getElementById('donationTypeFilter');
+            const sortOrder = document.getElementById('sortOrder');
+            const searchInput = document.getElementById('search');
+            const applyButton = document.getElementById('applyFilters');
+            const resetButton = document.getElementById('resetFilters');
+            const tableBody = document.getElementById('donationsTableBody');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const noDataMessage = document.getElementById('noDataMessage');
+            const errorMessage = document.getElementById('errorMessage');
 
-<!-- Bootstrap JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+            let allDonations = [];
+            let filteredDonations = [];
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get elements
-        const donationTypeFilter = document.getElementById('donationTypeFilter');
-        const sortOrder = document.getElementById('sortOrder');
-        const searchInput = document.getElementById('search');
-        const applyButton = document.getElementById('applyFilters');
-        const resetButton = document.getElementById('resetFilters');
-        const tableBody = document.getElementById('donationsTableBody');
-        const rows = tableBody.querySelectorAll('tr');
+            // Check if user is authenticated
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                showError('Please log in to view your donation history');
+                loadingSpinner.style.display = 'none';
+                return;
+            }
 
-        // Store original rows for resetting
-        const originalRows = Array.from(rows);
+            // Function to safely parse dates from API in format: "2025-09-16 14:49:00.978853+06"
+            function parseApiDate(dateString) {
+                if (!dateString) return new Date(NaN);
 
-        // Apply filters function
-        function applyFilters() {
-            const typeFilter = donationTypeFilter.value;
-            const searchTerm = searchInput.value.toLowerCase();
-            const sortValue = sortOrder.value;
+                try {
+                    // Handle the specific format: "2025-09-16 14:49:00.978853+06"
+                    const regex = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{3})\d*([+-]\d{2})$/;
+                    const match = dateString.match(regex);
 
-            // First, show all rows
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-            });
+                    if (match) {
+                        // Extract components from the regex match
+                        const year = parseInt(match[1], 10);
+                        const month = parseInt(match[2], 10) - 1; // Months are 0-indexed in JS
+                        const day = parseInt(match[3], 10);
+                        const hours = parseInt(match[4], 10);
+                        const minutes = parseInt(match[5], 10);
+                        const seconds = parseInt(match[6], 10);
+                        const milliseconds = parseInt(match[7], 10);
+                        const timezoneOffset = parseInt(match[8], 10);
 
-            // Apply type filter
-            if (typeFilter !== 'all') {
-                rows.forEach(row => {
-                    const rowType = row.getAttribute('data-type');
-                    if (rowType !== typeFilter) {
-                        row.style.display = 'none';
+                        // Create date object (UTC time)
+                        const utcDate = new Date(Date.UTC(year, month, day, hours, minutes, seconds, milliseconds));
+
+                        // Adjust for timezone offset (convert to local time)
+                        const localDate = new Date(utcDate.getTime() - (timezoneOffset * 60 * 60 * 1000));
+
+                        return localDate;
                     }
+
+                    // Fallback to default parsing if regex doesn't match
+                    return new Date(dateString);
+                } catch (e) {
+                    console.error('Error parsing date:', e);
+                    return new Date(NaN);
+                }
+            }
+
+            // Function to format date for display
+            function formatDisplayDate(date) {
+                if (isNaN(date.getTime())) {
+                    return 'Invalid Date';
+                }
+
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
                 });
             }
 
-            // Apply date search filter
-            if (searchTerm) {
-                rows.forEach(row => {
-                    if (row.style.display !== 'none') {
+            // Function to get date for filtering (YYYY-MM-DD format)
+            function getFilterDate(date) {
+                if (isNaN(date.getTime())) {
+                    return '0000-00-00';
+                }
+
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+
+                return `${year}-${month}-${day}`;
+            }
+
+            // Fetch donation history from API
+            fetchDonationHistory();
+
+            // Apply filters function
+            function applyFilters() {
+                const typeFilter = donationTypeFilter.value;
+                const searchTerm = searchInput.value.toLowerCase();
+                const sortValue = sortOrder.value;
+
+                filteredDonations = allDonations.filter(donation => {
+                    let matches = true;
+
+                    // Apply type filter
+                    if (typeFilter !== 'all' && donation.donationType !== typeFilter) {
+                        matches = false;
+                    }
+
+                    // Apply date search filter
+                    if (searchTerm) {
+                        // Check all possible date fields
+                        const dateReceived = donation.dateReceived ? getFilterDate(parseApiDate(donation.dateReceived)) : '';
+                        const createdAt = donation.createdAt ? getFilterDate(parseApiDate(donation.createdAt)) : '';
+                        const updatedAt = donation.updatedAt ? getFilterDate(parseApiDate(donation.updatedAt)) : '';
+
+                        if (!dateReceived.includes(searchTerm) &&
+                            !createdAt.includes(searchTerm) &&
+                            !updatedAt.includes(searchTerm)) {
+                            matches = false;
+                        }
+                    }
+
+                    return matches;
+                });
+
+                // Apply sorting
+                if (sortValue === 'latest') {
+                    filteredDonations.sort((a, b) => {
+                        // Use the most appropriate date field for sorting
+                        const dateA = getDonationDate(a);
+                        const dateB = getDonationDate(b);
+                        return dateB - dateA;
+                    });
+                } else if (sortValue === 'oldest') {
+                    filteredDonations.sort((a, b) => {
+                        const dateA = getDonationDate(a);
+                        const dateB = getDonationDate(b);
+                        return dateA - dateB;
+                    });
+                }
+
+                populateTable(filteredDonations);
+            }
+
+            // Get the most appropriate date for a donation
+            function getDonationDate(donation) {
+                if (donation.dateReceived) {
+                    return parseApiDate(donation.dateReceived);
+                } else if (donation.createdAt) {
+                    return parseApiDate(donation.createdAt);
+                } else if (donation.updatedAt) {
+                    return parseApiDate(donation.updatedAt);
+                }
+                return new Date(NaN);
+            }
+
+            // Reset filters function
+            function resetFilters() {
+                donationTypeFilter.value = 'all';
+                sortOrder.value = 'latest';
+                searchInput.value = '';
+                filteredDonations = [...allDonations];
+                populateTable(filteredDonations);
+            }
+
+            // Populate table with donations
+            function populateTable(donations) {
+                tableBody.innerHTML = '';
+
+                if (donations.length === 0) {
+                    noDataMessage.style.display = 'block';
+                    document.querySelector('.pagination-container').style.display = 'none';
+                    return;
+                }
+
+                noDataMessage.style.display = 'none';
+                document.querySelector('.pagination-container').style.display = 'flex';
+
+                donations.forEach((donation, index) => {
+                    const row = document.createElement('tr');
+
+                    // Get the most appropriate date for this donation
+                    const donationDate = getDonationDate(donation);
+                    const formattedDate = formatDisplayDate(donationDate);
+                    const filterDate = getFilterDate(donationDate);
+
+                    // Set data attributes for filtering
+                    row.setAttribute('data-type', donation.donationType);
+                    row.setAttribute('data-date', filterDate);
+
+                    // Determine badge class based on donation type
+                    let badgeClass = '';
+                    switch(donation.donationType) {
+                        case 'Food':
+                            badgeClass = 'badge-food';
+                            break;
+                        case 'Money':
+                            badgeClass = 'badge-money';
+                            break;
+                        case 'Clothes':
+                            badgeClass = 'badge-clothes';
+                            break;
+                        case 'Water':
+                            badgeClass = 'badge-water';
+                            break;
+                        default:
+                            badgeClass = 'badge-other';
+                    }
+
+                    row.innerHTML = `
+                        <td class="text-center">${index + 1}</td>
+                        <td><span class="donation-badge ${badgeClass}">${donation.donationType}</span></td>
+                        <td class="text-center">${donation.quantity}</td>
+                        <td class="text-center">${formattedDate}</td>
+                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+
+                // Apply highlighting if search term exists
+                const searchTerm = searchInput.value.toLowerCase();
+                if (searchTerm) {
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
                         const rowDate = row.getAttribute('data-date');
                         if (rowDate && rowDate.includes(searchTerm)) {
                             row.classList.add('highlight');
-                        } else {
-                            row.style.display = 'none';
                         }
+                    });
+                }
+            }
+
+            // Fetch donation history from API
+            function fetchDonationHistory() {
+                loadingSpinner.style.display = 'flex';
+                errorMessage.style.display = 'none';
+
+                fetch('/api/donations/history', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            throw new Error('Authentication failed. Please log in again.');
+                        }
+                        throw new Error('Failed to fetch donation history');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loadingSpinner.style.display = 'none';
+
+                    if (data.success) {
+                        allDonations = data.data;
+                        filteredDonations = [...allDonations];
+                        populateTable(filteredDonations);
+                    } else {
+                        showError(data.message || 'Failed to load donation history');
+                    }
+                })
+                .catch(error => {
+                    loadingSpinner.style.display = 'none';
+                    showError(error.message);
+                    console.error('Error:', error);
                 });
             }
 
-            // Apply sorting
-            if (sortValue === 'latest') {
-                sortTable(true);
-            } else if (sortValue === 'oldest') {
-                sortTable(false);
+            // Show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
             }
-        }
 
-        // Sort table by date
-        function sortTable(newestFirst = true) {
-            const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
-
-            visibleRows.sort((a, b) => {
-                const dateA = new Date(a.getAttribute('data-date'));
-                const dateB = new Date(b.getAttribute('data-date'));
-
-                return newestFirst ? dateB - dateA : dateA - dateB;
+            // Event listeners
+            applyButton.addEventListener('click', applyFilters);
+            resetButton.addEventListener('click', resetFilters);
+            searchInput.addEventListener('keyup', function() {
+                if (this.value.length === 0 || this.value.length >= 4) {
+                    applyFilters();
+                }
             });
-
-            // Reorder the table
-            visibleRows.forEach(row => {
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Reset filters function
-        function resetFilters() {
-            donationTypeFilter.value = 'all';
-            sortOrder.value = 'latest';
-            searchInput.value = '';
-
-            // Show all rows and remove highlights
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-            });
-
-            // Restore original order
-            originalRows.forEach(row => {
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Event listeners
-        applyButton.addEventListener('click', applyFilters);
-
-        resetButton.addEventListener('click', resetFilters);
-
-        // Also apply filters when search input changes (optional)
-        searchInput.addEventListener('keyup', function() {
-            if (this.value.length === 0 || this.value.length >= 4) {
-                applyFilters();
-            }
+            donationTypeFilter.addEventListener('change', applyFilters);
+            sortOrder.addEventListener('change', applyFilters);
         });
-
-        // Apply filters when dropdowns change (optional)
-        donationTypeFilter.addEventListener('change', applyFilters);
-        sortOrder.addEventListener('change', applyFilters);
-    });
-</script>
+    </script>
+</body>
+</html>

@@ -389,27 +389,276 @@
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+<!-- Add this script after your existing JavaScript code -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get elements
-        const requestTypeFilter = document.getElementById('requestTypeFilter');
-        const statusFilter = document.getElementById('statusFilter');
-        const sortOrder = document.getElementById('sortOrder');
-        const searchInput = document.getElementById('search');
-        const applyButton = document.getElementById('applyFilters');
-        const resetButton = document.getElementById('resetFilters');
-        const tableBody = document.getElementById('aidRequestsTableBody');
-        const rows = tableBody.querySelectorAll('tr');
+        // Global variables to store all aid requests
+        let allAidRequests = [];
+        let rows = [];
+        let originalRows = [];
 
-        // Store original rows for resetting
-        const originalRows = Array.from(rows);
+        // Function to safely parse dates from API in format: "2025-09-16 14:49:00.978853+06"
+        function parseApiDate(dateString) {
+            if (!dateString) return new Date(NaN);
 
-        // Apply filters function
+            try {
+                // Handle the specific format: "2025-09-16 14:49:00.978853+06"
+                const regex = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{3})\d*([+-]\d{2})$/;
+                const match = dateString.match(regex);
+
+                if (match) {
+                    // Extract components from the regex match
+                    const year = parseInt(match[1], 10);
+                    const month = parseInt(match[2], 10) - 1; // Months are 0-indexed in JS
+                    const day = parseInt(match[3], 10);
+                    const hours = parseInt(match[4], 10);
+                    const minutes = parseInt(match[5], 10);
+                    const seconds = parseInt(match[6], 10);
+                    const milliseconds = parseInt(match[7], 10);
+                    const timezoneOffset = parseInt(match[8], 10);
+
+                    // Create date object (UTC time)
+                    const utcDate = new Date(Date.UTC(year, month, day, hours, minutes, seconds, milliseconds));
+
+                    // Adjust for timezone offset (convert to local time)
+                    const localDate = new Date(utcDate.getTime() - (timezoneOffset * 60 * 60 * 1000));
+
+                    return localDate;
+                }
+
+                // Fallback to default parsing if regex doesn't match
+                return new Date(dateString);
+            } catch (e) {
+                console.error('Error parsing date:', e);
+                return new Date(NaN);
+            }
+        }
+
+        // Function to format date for display
+        function formatDisplayDate(date) {
+            if (isNaN(date.getTime())) {
+                return 'Invalid Date';
+            }
+
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Function to get date for filtering (YYYY-MM-DD format)
+        function getFilterDate(date) {
+            if (isNaN(date.getTime())) {
+                return '0000-00-00';
+            }
+
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        }
+
+        // Function to parse JWT token and extract user ID
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Function to fetch aid requests from API
+        async function fetchAidRequests() {
+            try {
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    console.error('No access token found');
+                    showError('Please log in to view your aid requests');
+                    return;
+                }
+
+                // Extract user ID from token
+                const decodedToken = parseJwt(token);
+                if (!decodedToken || !decodedToken.userId) {
+                    console.error('Invalid token: user ID not found');
+                    showError('Invalid authentication token');
+                    return;
+                }
+
+                const userId = decodedToken.userId;
+
+                // Show loading indicator
+                showLoading();
+
+                // Make API call
+                const response = await fetch(`/api/aid-requests/user/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Hide loading indicator
+                hideLoading();
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        console.error('Unauthorized: Please log in again');
+                        showError('Your session has expired. Please log in again.');
+                        return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                allAidRequests = data;
+                renderAidRequests(allAidRequests);
+
+            } catch (error) {
+                console.error('Error fetching aid requests:', error);
+                hideLoading();
+                showError('Failed to load aid requests. Please try again later.');
+            }
+        }
+
+        // Function to show loading indicator
+        function showLoading() {
+            const tableBody = document.getElementById('aidRequestsTableBody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading your aid requests...</p>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Function to hide loading indicator
+        function hideLoading() {
+            // Loading indicator will be replaced when data renders
+        }
+
+        // Function to show error message
+        function showError(message) {
+            const tableBody = document.getElementById('aidRequestsTableBody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-danger">
+                        <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                        <p class="mt-2">${message}</p>
+                        <button class="btn btn-primary mt-2" onclick="fetchAidRequests()">Try Again</button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Function to render aid requests in the table
+        function renderAidRequests(requests) {
+            const tableBody = document.getElementById('aidRequestsTableBody');
+
+            if (!requests || requests.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center py-4">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mt-2">You haven't made any aid requests yet.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tableBody.innerHTML = '';
+
+            requests.forEach(request => {
+                const row = document.createElement('tr');
+
+                // Parse and format the date safely - try different date fields
+                let requestDate;
+                if (request.requestDate) {
+                    requestDate = parseApiDate(request.requestDate);
+                } else if (request.createdAt) {
+                    requestDate = parseApiDate(request.createdAt);
+                } else if (request.updatedAt) {
+                    requestDate = parseApiDate(request.updatedAt);
+                } else if (request.date) {
+                    requestDate = parseApiDate(request.date);
+                } else {
+                    requestDate = new Date(NaN);
+                }
+
+                const formattedDate = formatDisplayDate(requestDate);
+                const filterDate = getFilterDate(requestDate);
+
+                // Set data attributes for filtering
+                row.setAttribute('data-type', request.requestType || 'Other');
+                row.setAttribute('data-status', request.status || 'Pending');
+                row.setAttribute('data-date', filterDate);
+
+                // Determine badge class based on type
+                let typeBadgeClass = 'badge-other';
+                switch (request.requestType) {
+                    case 'Medical':
+                        typeBadgeClass = 'badge-medical';
+                        break;
+                    case 'Food':
+                        typeBadgeClass = 'badge-food';
+                        break;
+                    case 'Shelter':
+                        typeBadgeClass = 'badge-shelter';
+                        break;
+                }
+
+                // Determine status badge class
+                let statusBadgeClass = 'badge-pending';
+                switch (request.status) {
+                    case 'Completed':
+                        statusBadgeClass = 'badge-completed';
+                        break;
+                    case 'Processing':
+                        statusBadgeClass = 'badge-processing';
+                        break;
+                    case 'Rejected':
+                        statusBadgeClass = 'badge-rejected';
+                        break;
+                }
+
+                row.innerHTML = `
+                    <td><span class="request-badge ${typeBadgeClass}">${request.requestType || 'Other'}</span></td>
+                    <td>${request.description || 'No description provided'}</td>
+                    <td class="text-center">${formattedDate}</td>
+                    <td class="text-center"><span class="status-badge ${statusBadgeClass}">${request.status || 'Pending'}</span></td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+
+            // Update rows and originalRows variables
+            rows = tableBody.querySelectorAll('tr');
+            originalRows = Array.from(rows);
+        }
+
+        // The rest of your functions (applyFilters, sortTable, resetFilters, etc.)
+        // remain the same as in your original code
+
+        // Modify the existing applyFilters function to work with API data
         function applyFilters() {
-            const typeFilter = requestTypeFilter.value;
-            const statusValue = statusFilter.value;
-            const searchTerm = searchInput.value.toLowerCase();
-            const sortValue = sortOrder.value;
+            const typeFilter = document.getElementById('requestTypeFilter').value;
+            const statusValue = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const sortValue = document.getElementById('sortOrder').value;
 
             // First, show all rows
             rows.forEach(row => {
@@ -461,8 +710,9 @@
             }
         }
 
-        // Sort table by date
+        // Modify the existing sortTable function
         function sortTable(newestFirst = true) {
+            const tableBody = document.getElementById('aidRequestsTableBody');
             const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
 
             visibleRows.sort((a, b) => {
@@ -478,12 +728,12 @@
             });
         }
 
-        // Reset filters function
+        // Modify the existing resetFilters function
         function resetFilters() {
-            requestTypeFilter.value = 'all';
-            statusFilter.value = 'all';
-            sortOrder.value = 'latest';
-            searchInput.value = '';
+            document.getElementById('requestTypeFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('sortOrder').value = 'latest';
+            document.getElementById('search').value = '';
 
             // Show all rows and remove highlights
             rows.forEach(row => {
@@ -492,26 +742,35 @@
             });
 
             // Restore original order
+            const tableBody = document.getElementById('aidRequestsTableBody');
             originalRows.forEach(row => {
                 tableBody.appendChild(row);
             });
         }
 
-        // Event listeners
-        applyButton.addEventListener('click', applyFilters);
+        // Initialize the page
+        function initPage() {
+            // Fetch aid requests from API
+            fetchAidRequests();
 
-        resetButton.addEventListener('click', resetFilters);
+            // Set up event listeners
+            document.getElementById('applyFilters').addEventListener('click', applyFilters);
+            document.getElementById('resetFilters').addEventListener('click', resetFilters);
 
-        // Also apply filters when search input changes (optional)
-        searchInput.addEventListener('keyup', function() {
-            if (this.value.length === 0 || this.value.length >= 4) {
-                applyFilters();
-            }
-        });
+            // Also apply filters when search input changes (optional)
+            document.getElementById('search').addEventListener('keyup', function() {
+                if (this.value.length === 0 || this.value.length >= 4) {
+                    applyFilters();
+                }
+            });
 
-        // Apply filters when dropdowns change (optional)
-        requestTypeFilter.addEventListener('change', applyFilters);
-        statusFilter.addEventListener('change', applyFilters);
-        sortOrder.addEventListener('change', applyFilters);
+            // Apply filters when dropdowns change (optional)
+            document.getElementById('requestTypeFilter').addEventListener('change', applyFilters);
+            document.getElementById('statusFilter').addEventListener('change', applyFilters);
+            document.getElementById('sortOrder').addEventListener('change', applyFilters);
+        }
+
+        // Start the page initialization
+        initPage();
     });
 </script>

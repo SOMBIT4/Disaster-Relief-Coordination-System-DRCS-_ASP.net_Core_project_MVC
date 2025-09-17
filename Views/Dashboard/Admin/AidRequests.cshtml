@@ -3,698 +3,810 @@
     ViewData["Title"] = "Aid Requests";
 }
 
-<!-- Bootstrap 5 CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
-    * {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    :root {
-        --primary-color: #2c5f2d;
-        --secondary-color: #97bc62;
-        --accent-color: #ffd700;
-        --text-dark: #333;
-        --text-light: #666;
-        --bg-light: #f8f9fa;
-        --modal-bg: rgba(151, 188, 98, 0.1);
-    }
-
-    .page-header {
-        margin-bottom: 2rem;
-    }
-
-    .page-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-    }
-
-    .page-subtitle {
-        color: var(--text-light);
-        font-size: 1.1rem;
-    }
-
-    .filter-section {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .filter-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--secondary-color);
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: var(--text-dark);
-        margin-bottom: 8px;
-    }
-
-    .form-control, .form-select {
-        padding: 10px 14px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        transition: all 0.3s;
-    }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aid Requests Management</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
         }
 
-        .form-select option:hover,
-        .form-select option:focus,
-        .form-select option:active,
-        .form-select option:checked {
-            background-color: var(--secondary-color) !important;
-            color: white !important;
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --accent-color: #ffd700;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
+            --modal-bg: rgba(151, 188, 98, 0.1);
         }
 
-    .table-container {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-        margin-bottom: 2rem;
-    }
+        .page-header {
+            margin-bottom: 2rem;
+        }
 
-    .table {
-        margin-bottom: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
 
-        .table thead th {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-            color: white;
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
             font-weight: 600;
-            padding: 1rem;
-            border: none;
-            text-align: left;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
         }
 
-        .table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #eee;
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
         }
 
-        .table tbody tr:last-child td {
-            border-bottom: none;
+        .form-control, .form-select {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
         }
 
-        .table tbody tr:hover {
-            background-color: rgba(151, 188, 98, 0.1);
+            .form-control:focus, .form-select:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+            }
+
+            .form-select option:hover,
+            .form-select option:focus,
+            .form-select option:active,
+            .form-select option:checked {
+                background-color: var(--secondary-color) !important;
+                color: white !important;
+            }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
         }
 
-    .urgency-badge {
-        padding: 0.35rem 0.65rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
 
-    .badge-low {
-        background-color: rgba(151, 188, 98, 0.2);
-        color: #2c5f2d;
-    }
+            .table thead th {
+                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                border: none;
+                text-align: left;
+            }
 
-    .badge-medium {
-        background-color: rgba(255, 193, 7, 0.2);
-        color: #b8860b;
-    }
+            .table tbody td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
 
-    .badge-high {
-        background-color: rgba(220, 53, 69, 0.2);
-        color: #dc3545;
-    }
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
 
-    .status-badge {
-        padding: 0.35rem 0.65rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
+            .table tbody tr:hover {
+                background-color: rgba(151, 188, 98, 0.1);
+            }
 
-    .badge-pending {
-        background-color: rgba(255, 193, 7, 0.2);
-        color: #b8860b;
-    }
+        .urgency-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
 
-    .badge-progress {
-        background-color: rgba(13, 110, 253, 0.2);
-        color: #0d6efd;
-    }
+        .badge-low {
+            background-color: rgba(151, 188, 98, 0.2);
+            color: #2c5f2d;
+        }
 
-    .badge-completed {
-        background-color: rgba(25, 135, 84, 0.2);
-        color: #198754;
-    }
+        .badge-medium {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #b8860b;
+        }
 
-    .pagination-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 2rem;
-    }
+        .badge-high {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
 
-    .page-link {
-        padding: 0.5rem 1rem;
-        border: 1px solid var(--secondary-color);
-        color: var(--primary-color);
-        border-radius: 8px;
-        margin: 0 0.25rem;
-        transition: all 0.3s;
-    }
+        .status-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
 
-        .page-link:hover {
+        .badge-pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #b8860b;
+        }
+
+        .badge-progress {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+        }
+
+        .badge-completed {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: #198754;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .page-link {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--secondary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            margin: 0 0.25rem;
+            transition: all 0.3s;
+        }
+
+            .page-link:hover {
+                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+                color: white;
+                border-color: var(--primary-color);
+            }
+
+        .page-item.active .page-link {
             background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             color: white;
             border-color: var(--primary-color);
         }
 
-    .page-item.active .page-link {
-        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-        color: white;
-        border-color: var(--primary-color);
-    }
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            border-color: #dee2e6;
+            background-color: white;
+        }
 
-    .page-item.disabled .page-link {
-        color: #6c757d;
-        border-color: #dee2e6;
-        background-color: white;
-    }
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
 
-    .search-icon {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-light);
-    }
-
-    .btn-primary-custom {
-        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s;
-    }
-
-        .btn-primary-custom:hover {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            border: none;
             color: white;
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
 
-    .btn-reset {
-        background: transparent;
-        border: 1px solid var(--secondary-color);
-        color: var(--primary-color);
-        padding: 10px 20px;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s;
-    }
+            .btn-primary-custom:hover {
+                background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+                color: white;
+            }
 
-        .btn-reset:hover {
-            background: rgba(151, 188, 98, 0.1);
-            border-color: var(--primary-color);
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--secondary-color);
+            color: var(--primary-color);
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
 
-    .highlight {
-        background-color: rgba(151, 188, 98, 0.2) !important;
-        transition: background-color 0.3s ease;
-    }
+            .btn-reset:hover {
+                background: rgba(151, 188, 98, 0.1);
+                border-color: var(--primary-color);
+            }
 
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: center;
-    }
+        .highlight {
+            background-color: rgba(151, 188, 98, 0.2) !important;
+            transition: background-color 0.3s ease;
+        }
 
-    .btn-action {
-        padding: 0.35rem 0.65rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.85rem;
-        transition: all 0.3s;
-        border: 1px solid var(--secondary-color);
-        background-color: transparent;
-        color: var(--primary-color);
-    }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
 
-        .btn-action:hover {
-            background-color: var(--secondary-color);
+        .btn-action {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            border: 1px solid var(--secondary-color);
+            background-color: transparent;
+            color: var(--primary-color);
+        }
+
+            .btn-action:hover {
+                background-color: var(--secondary-color);
+                color: white;
+            }
+
+        /* Modal styling */
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
         }
 
-    /* Modal styling with light green background */
-    .modal-content {
-        background-color: var(--secondary-color);
-        
-    }
-
-    .loader-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 200px;
-    }
-
-    .volunteer-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem;
-        border-bottom: 1px solid rgba(151, 188, 98, 0.2);
-    }
-
-    .volunteer-info {
-        flex: 1;
-    }
-
-    .volunteer-name {
-        font-weight: 600;
-        color: var(--primary-color);
-    }
-
-    .volunteer-center {
-        font-size: 0.85rem;
-        color: var(--text-light);
-    }
-
-    .btn-ask {
-        background-color: darkgreen;
-        color: white;
-        border: none;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        transition: all 0.3s;
-    }
-
-        .btn-ask:hover {
-            background-color: var(--primary-color);
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
         }
 
-    .btn-asked {
-        background-color: #6c757d;
-        color: white;
-        border: none;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        cursor: not-allowed;
-    }
-</style>
+        .volunteer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(151, 188, 98, 0.2);
+        }
 
-<div class="container-fluid py-4">
-    <div class="page-header">
-        <h1 class="page-title">All Aid Requests</h1>
-        <p class="page-subtitle">View and manage all aid requests in the system</p>
-    </div>
+        .volunteer-info {
+            flex: 1;
+        }
 
-    <!-- Filters, Sorting, and Search Controls -->
-    <div class="filter-section">
-        <h3 class="filter-title">Filter & Search Requests</h3>
-        <div class="row">
-            <div class="col-md-3 mb-3">
-                <label class="form-label">Request Type</label>
-                <select id="typeFilter" class="form-select">
-                    <option value="all">All Types</option>
-                    <option value="Rescue">Rescue</option>
-                    <option value="Aid">Aid</option>
-                </select>
-            </div>
-            <div class="col-md-2 mb-3">
-                <label class="form-label">Urgency Level</label>
-                <select id="urgencyFilter" class="form-select">
-                    <option value="all">All Levels</option>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                </select>
-            </div>
-            <div class="col-md-2 mb-3">
-                <label class="form-label">Status</label>
-                <select id="statusFilter" class="form-select">
-                    <option value="all">All Statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label class="form-label">Search by Description or Name</label>
-                <div class="position-relative">
-                    <input type="text" id="search" class="form-control" placeholder="Search requests...">
-                    <i class="bi bi-search search-icon"></i>
+        .volunteer-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .volunteer-center {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .btn-ask {
+            background-color: darkgreen;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+            .btn-ask:hover {
+                background-color: var(--primary-color);
+            }
+
+        .btn-asked {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: not-allowed;
+        }
+
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="page-header">
+            <h1 class="page-title">All Aid Requests</h1>
+            <p class="page-subtitle">View and manage all aid requests in the system</p>
+        </div>
+
+        <!-- Filters, Sorting, and Search Controls -->
+        <div class="filter-section">
+            <h3 class="filter-title">Filter & Search Requests</h3>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Request Type</label>
+                    <select id="typeFilter" class="form-select">
+                        <option value="all">All Types</option>
+                        <option value="Rescue">Rescue</option>
+                        <option value="Aid">Aid</option>
+                    </select>
                 </div>
-            </div>
-            <div class="col-md-2 mb-3 d-flex align-items-end">
-                <button id="applyFilters" class="btn btn-primary-custom w-100 me-2">Apply</button>
-                <button id="resetFilters" class="btn btn-reset">Reset</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Requests Table -->
-    <div class="table-container">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col" class="text-center">#</th>
-                        <th scope="col">Requester Name</th>
-                        <th scope="col">Contact Info</th>
-                        <th scope="col">Request Type</th>
-                        <th scope="col">Description</th>
-                        <th scope="col" class="text-center">Urgency Level</th>
-                        <th scope="col" class="text-center">Status</th>
-                        <th scope="col" class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="requestsTableBody">
-                    <tr data-type="Rescue" data-urgency="High" data-status="Pending" data-date="2025-09-01">
-                        <td class="text-center">1</td>
-                        <td>John Doe</td>
-                        <td>john@example.com</td>
-                        <td>Rescue</td>
-                        <td>Family trapped in flooded building needs immediate evacuation</td>
-                        <td class="text-center"><span class="urgency-badge badge-high">High</span></td>
-                        <td class="text-center"><span class="status-badge badge-pending">Pending</span></td>
-                        <td class="text-center">
-                            <button class="btn-action" data-request-id="1">
-                                Ask Volunteers
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-type="Aid" data-urgency="Medium" data-status="In Progress" data-date="2025-09-04">
-                        <td class="text-center">2</td>
-                        <td>Jane Smith</td>
-                        <td>555-1234</td>
-                        <td>Aid</td>
-                        <td>Need food and water supplies for 10 people</td>
-                        <td class="text-center"><span class="urgency-badge badge-medium">Medium</span></td>
-                        <td class="text-center"><span class="status-badge badge-progress">In Progress</span></td>
-                        <td class="text-center">
-                            <button class="btn-action" data-request-id="2">
-                                Ask Volunteers
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-type="Rescue" data-urgency="Low" data-status="Completed" data-date="2025-09-03">
-                        <td class="text-center">3</td>
-                        <td>Robert Johnson</td>
-                        <td>robert@example.com</td>
-                        <td>Rescue</td>
-                        <td>Elderly person needs assistance relocating to safer area</td>
-                        <td class="text-center"><span class="urgency-badge badge-low">Low</span></td>
-                        <td class="text-center"><span class="status-badge badge-completed">Completed</span></td>
-                        <td class="text-center">
-                            <button class="btn-asked" disabled>
-                                Preparation completed
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-type="Aid" data-urgency="High" data-status="Pending" data-date="2025-08-28">
-                        <td class="text-center">4</td>
-                        <td>Sarah Williams</td>
-                        <td>444-9876</td>
-                        <td>Aid</td>
-                        <td>Urgent need for medical supplies and first aid kits</td>
-                        <td class="text-center"><span class="urgency-badge badge-high">High</span></td>
-                        <td class="text-center"><span class="status-badge badge-pending">Pending</span></td>
-                        <td class="text-center">
-                            <button class="btn-action" data-request-id="4">
-                                Ask Volunteers
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-type="Aid" data-urgency="Medium" data-status="In Progress" data-date="2025-08-25">
-                        <td class="text-center">5</td>
-                        <td>Michael Brown</td>
-                        <td>michael@example.com</td>
-                        <td>Aid</td>
-                        <td>Request for blankets and warm clothing for displaced families</td>
-                        <td class="text-center"><span class="urgency-badge badge-medium">Medium</span></td>
-                        <td class="text-center"><span class="status-badge badge-progress">In Progress</span></td>
-                        <td class="text-center">
-                            <button class="btn-action" data-request-id="5">
-                                Ask Volunteers
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="pagination-container">
-        <nav aria-label="Requests pagination">
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-</div>
-
-<!-- Volunteers Modal -->
-<div class="modal fade" id="volunteersModal" tabindex="-1" aria-labelledby="volunteersModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="volunteersModalLabel">Available Volunteers</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="volunteersList" class="max-h-96 overflow-y-auto">
-                    <!-- Volunteers will be populated here -->
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Urgency Level</label>
+                    <select id="urgencyFilter" class="form-select">
+                        <option value="all">All Levels</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Bootstrap JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get elements
-        const typeFilter = document.getElementById('typeFilter');
-        const urgencyFilter = document.getElementById('urgencyFilter');
-        const statusFilter = document.getElementById('statusFilter');
-        const searchInput = document.getElementById('search');
-        const applyButton = document.getElementById('applyFilters');
-        const resetButton = document.getElementById('resetFilters');
-        const tableBody = document.getElementById('requestsTableBody');
-        const rows = tableBody.querySelectorAll('tr');
-        const volunteersModal = new bootstrap.Modal(document.getElementById('volunteersModal'));
-        const volunteersList = document.getElementById('volunteersList');
-
-        // Store original rows for resetting
-        const originalRows = Array.from(rows);
-        let currentRequestId = null;
-        let askedVolunteers = [];
-
-        // Sample volunteers data
-        const volunteers = [
-            { id: 1, name: "John Volunteer", center: "Downtown Relief Center" },
-            { id: 2, name: "Jane Helper", center: "Northside Aid Station" },
-            { id: 3, name: "Robert Assistant", center: "Westwood Shelter" },
-            { id: 4, name: "Sarah Aidworker", center: "Riverside Assistance Center" },
-            { id: 5, name: "Michael Rescuer", center: "Mountain View Relief" }
-        ];
-
-        // Apply filters function
-        function applyFilters() {
-            const typeValue = typeFilter.value;
-            const urgencyValue = urgencyFilter.value;
-            const statusValue = statusFilter.value;
-            const searchTerm = searchInput.value.toLowerCase();
-
-            // First, show all rows
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-            });
-
-            // Apply type filter
-            if (typeValue !== 'all') {
-                rows.forEach(row => {
-                    const rowType = row.getAttribute('data-type');
-                    if (rowType !== typeValue) {
-                        row.style.display = 'none';
-                    }
-                });
-            }
-
-            // Apply urgency filter
-            if (urgencyValue !== 'all') {
-                rows.forEach(row => {
-                    if (row.style.display !== 'none') {
-                        const rowUrgency = row.getAttribute('data-urgency');
-                        if (rowUrgency !== urgencyValue) {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-            }
-
-            // Apply status filter
-            if (statusValue !== 'all') {
-                rows.forEach(row => {
-                    if (row.style.display !== 'none') {
-                        const rowStatus = row.getAttribute('data-status');
-                        if (rowStatus !== statusValue) {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-            }
-
-            // Apply search filter
-            if (searchTerm) {
-                rows.forEach(row => {
-                    if (row.style.display !== 'none') {
-                        const requesterName = row.cells[1].textContent.toLowerCase();
-                        const description = row.cells[4].textContent.toLowerCase();
-
-                        if (requesterName.includes(searchTerm) || description.includes(searchTerm)) {
-                            row.classList.add('highlight');
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-            }
-        }
-
-        // Reset filters function
-        function resetFilters() {
-            typeFilter.value = 'all';
-            urgencyFilter.value = 'all';
-            statusFilter.value = 'all';
-            searchInput.value = '';
-
-            // Show all rows and remove highlights
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-            });
-
-            // Restore original order
-            originalRows.forEach(row => {
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Populate volunteers modal
-        function populateVolunteers(requestId) {
-            volunteersList.innerHTML = '';
-
-            volunteers.forEach(volunteer => {
-                const isAsked = askedVolunteers.includes(volunteer.id);
-
-                const volunteerItem = document.createElement('div');
-                volunteerItem.className = 'volunteer-item';
-
-                volunteerItem.innerHTML = `
-                    <div class="volunteer-info">
-                        <div class="volunteer-name">${volunteer.name}</div>
-                        <div class="volunteer-center">${volunteer.center}</div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Status</label>
+                    <select id="statusFilter" class="form-select">
+                        <option value="all">All Statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Search by Description or Name</label>
+                    <div class="position-relative">
+                        <input type="text" id="search" class="form-control" placeholder="Search requests...">
+                        <i class="bi bi-search search-icon"></i>
                     </div>
-                    ${isAsked ?
-                        `<button class="btn-asked" disabled>Asked</button>` :
-                        `<button class="btn-ask" data-volunteer-id="${volunteer.id}">Ask to Make Prep</button>`
+                </div>
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+                    <button id="applyFilters" class="btn btn-primary-custom w-100 me-2">Apply</button>
+                    <button id="resetFilters" class="btn btn-reset">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">#</th>
+                            <th scope="col">Requester Name</th>
+                            <th scope="col">Contact Info</th>
+                            <th scope="col">Request Type</th>
+                            <th scope="col">Description</th>
+                            <th scope="col" class="text-center">Urgency Level</th>
+                            <th scope="col" class="text-center">Status</th>
+                            <th scope="col" class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody">
+                        <!-- Data will be populated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="loader" class="loader-container">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <nav aria-label="Requests pagination">
+                <ul class="pagination" id="pagination">
+                    <!-- Pagination will be populated via JavaScript -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Volunteers Modal -->
+    <div class="modal fade" id="volunteersModal" tabindex="-1" aria-labelledby="volunteersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="volunteersModalLabel">Available Volunteers</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="volunteersList" class="max-h-96 overflow-y-auto">
+                        <!-- Volunteers will be populated here -->
+                    </div>
+                    <div id="volunteersLoader" class="loader-container">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const typeFilter = document.getElementById('typeFilter');
+            const urgencyFilter = document.getElementById('urgencyFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const searchInput = document.getElementById('search');
+            const applyButton = document.getElementById('applyFilters');
+            const resetButton = document.getElementById('resetFilters');
+            const tableBody = document.getElementById('requestsTableBody');
+            const loader = document.getElementById('loader');
+            const pagination = document.getElementById('pagination');
+            const volunteersModal = new bootstrap.Modal(document.getElementById('volunteersModal'));
+            const volunteersList = document.getElementById('volunteersList');
+            const volunteersLoader = document.getElementById('volunteersLoader');
+
+            // State variables
+            let currentRequestId = null;
+            let allAidRequests = [];
+            let filteredAidRequests = [];
+            let allVolunteers = [];
+            let askedVolunteers = {};
+            let currentPage = 1;
+            const itemsPerPage = 10;
+
+            // Initialize the page
+            init();
+
+            async function init() {
+                await fetchAidRequests();
+                setupEventListeners();
+            }
+
+            // Fetch aid requests from API
+            async function fetchAidRequests() {
+                try {
+                    showLoader();
+                    const response = await fetch('/api/aid-requests');
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
+
+                    const aidRequests = await response.json();
+                    allAidRequests = aidRequests;
+                    filteredAidRequests = [...allAidRequests];
+
+                    renderAidRequests();
+                    setupPagination();
+                    hideLoader();
+                } catch (error) {
+                    console.error('Error fetching aid requests:', error);
+                    tableBody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Error loading aid requests: ${error.message}</td></tr>`;
+                    hideLoader();
+                }
+            }
+
+            // Fetch volunteers from API
+            async function fetchVolunteers() {
+                try {
+                    volunteersLoader.style.display = 'flex';
+                    const response = await fetch('/api/users/volunteers');
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        allVolunteers = result.data;
+                        populateVolunteersModal();
+                    } else {
+                        throw new Error(result.message || 'Failed to fetch volunteers');
+                    }
+
+                    volunteersLoader.style.display = 'none';
+                } catch (error) {
+                    console.error('Error fetching volunteers:', error);
+                    volunteersList.innerHTML = `<div class="text-center text-danger p-3">Error loading volunteers: ${error.message}</div>`;
+                    volunteersLoader.style.display = 'none';
+                }
+            }
+
+            // Ask a volunteer to prepare aid
+            async function askVolunteer(volunteerId, requestId) {
+                try {
+                    const response = await fetch('/api/AidPreparation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            RequestID: parseInt(requestId)
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Update the UI to show the volunteer has been asked
+                        if (!askedVolunteers[requestId]) {
+                            askedVolunteers[requestId] = [];
+                        }
+                        askedVolunteers[requestId].push(volunteerId);
+
+                        // Update the button in the modal
+                        const askButton = document.querySelector(`.btn-ask[data-volunteer-id="${volunteerId}"]`);
+                        if (askButton) {
+                            askButton.outerHTML = '<button class="btn-asked" disabled>Asked</button>';
+                        }
+
+                        // Update the table to reflect the change
+                        renderAidRequests();
+
+                        alert(`Volunteer has been asked to prepare aid for request #${requestId}`);
+                    } else {
+                        throw new Error(result.message || 'Failed to assign volunteer');
+                    }
+                } catch (error) {
+                    console.error('Error asking volunteer:', error);
+                    alert(`Error: ${error.message}`);
+                }
+            }
+
+            // Render aid requests in the table
+            function renderAidRequests() {
+                if (filteredAidRequests.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="8" class="text-center">No aid requests found</td></tr>`;
+                    return;
+                }
+
+                // Calculate pagination
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = Math.min(startIndex + itemsPerPage, filteredAidRequests.length);
+                const pageRequests = filteredAidRequests.slice(startIndex, endIndex);
+
+                tableBody.innerHTML = pageRequests.map((request, index) => {
+                    const rowIndex = startIndex + index + 1;
+                    const urgencyClass = `badge-${request.urgencyLevel.toLowerCase()}`;
+                    const statusClass = `badge-${request.status.toLowerCase().replace(' ', '-')}`;
+
+                    // Check if this request has any asked volunteers
+                    const hasAskedVolunteers = askedVolunteers[request.requestID] && askedVolunteers[request.requestID].length > 0;
+
+                    return `
+                        <tr data-type="${request.requestType}" data-urgency="${request.urgencyLevel}" data-status="${request.status}">
+                            <td class="text-center">${rowIndex}</td>
+                            <td>${request.requesterName}</td>
+                            <td>${request.contactInfo}</td>
+                            <td>${request.requestType}</td>
+                            <td>${request.description}</td>
+                            <td class="text-center"><span class="urgency-badge ${urgencyClass}">${request.urgencyLevel}</span></td>
+                            <td class="text-center"><span class="status-badge ${statusClass}">${request.status}</span></td>
+                            <td class="text-center">
+                                ${request.status === 'Completed' || hasAskedVolunteers ?
+                                    `<button class="btn-asked" disabled>
+                                        ${hasAskedVolunteers ? 'Volunteer Assigned' : 'Preparation completed'}
+                                    </button>` :
+                                    `<button class="btn-action" data-request-id="${request.requestID}">
+                                        Ask Volunteers make Preparations
+                                    </button>`
+                                }
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Add event listeners to action buttons
+                document.querySelectorAll('.btn-action').forEach(button => {
+                    button.addEventListener('click', function() {
+                        currentRequestId = this.getAttribute('data-request-id');
+                        fetchVolunteers();
+                        volunteersModal.show();
+                    });
+                });
+            }
+
+            // Setup pagination
+            function setupPagination() {
+                const totalPages = Math.ceil(filteredAidRequests.length / itemsPerPage);
+
+                if (totalPages <= 1) {
+                    pagination.innerHTML = '';
+                    return;
+                }
+
+                let paginationHTML = `
+                    <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+                    </li>
                 `;
 
-                volunteersList.appendChild(volunteerItem);
-            });
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationHTML += `
+                        <li class="page-item ${i === currentPage ? 'active' : ''}">
+                            <a class="page-link" href="#" data-page="${i}">${i}</a>
+                        </li>
+                    `;
+                }
 
-            // Add event listeners to Ask buttons
-            document.querySelectorAll('.btn-ask').forEach(button => {
-                button.addEventListener('click', function() {
-                    const volunteerId = this.getAttribute('data-volunteer-id');
-                    askVolunteer(volunteerId);
+                paginationHTML += `
+                    <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                        <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+                    </li>
+                `;
+
+                pagination.innerHTML = paginationHTML;
+
+                // Add event listeners to pagination links
+                pagination.querySelectorAll('.page-link').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const page = parseInt(this.getAttribute('data-page'));
+                        if (page !== currentPage) {
+                            currentPage = page;
+                            renderAidRequests();
+                            setupPagination();
+                        }
+                    });
                 });
-            });
-        }
-
-        // Ask volunteer function
-        function askVolunteer(volunteerId) {
-            // In a real application, you would make an API call here
-            askedVolunteers.push(parseInt(volunteerId));
-
-            // Update the button to show "Asked"
-            const askButton = document.querySelector(`.btn-ask[data-volunteer-id="${volunteerId}"]`);
-            if (askButton) {
-                askButton.outerHTML = '<button class="btn-asked" disabled>Asked</button>';
             }
 
-            // Show success message
-            alert(`Volunteer has been asked to prepare aid for request #${currentRequestId}`);
-        }
+            // Populate volunteers modal
+            function populateVolunteersModal() {
+                volunteersList.innerHTML = '';
 
-        // Event listeners for action buttons
-        document.querySelectorAll('.btn-action').forEach(button => {
-            button.addEventListener('click', function() {
-                currentRequestId = this.getAttribute('data-request-id');
-                populateVolunteers(currentRequestId);
-                volunteersModal.show();
-            });
+                if (allVolunteers.length === 0) {
+                    volunteersList.innerHTML = '<div class="text-center p-3">No volunteers available</div>';
+                    return;
+                }
+
+                allVolunteers.forEach(volunteer => {
+                    const isAsked = askedVolunteers[currentRequestId] &&
+                                   askedVolunteers[currentRequestId].includes(volunteer.id);
+
+                    const volunteerItem = document.createElement('div');
+                    volunteerItem.className = 'volunteer-item';
+
+                    volunteerItem.innerHTML = `
+                        <div class="volunteer-info">
+                            <div class="volunteer-name">${volunteer.name}</div>
+                            <div class="volunteer-center">${volunteer.center || 'No center specified'}</div>
+                        </div>
+                        ${isAsked ?
+                            `<button class="btn-asked" disabled>Asked</button>` :
+                            `<button class="btn-ask" data-volunteer-id="${volunteer.id}">Ask to Make Prep</button>`
+                        }
+                    `;
+
+                    volunteersList.appendChild(volunteerItem);
+                });
+
+                // Add event listeners to Ask buttons
+                document.querySelectorAll('.btn-ask').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const volunteerId = this.getAttribute('data-volunteer-id');
+                        askVolunteer(volunteerId, currentRequestId);
+                    });
+                });
+            }
+
+            // Apply filters function
+            function applyFilters() {
+                const typeValue = typeFilter.value;
+                const urgencyValue = urgencyFilter.value;
+                const statusValue = statusFilter.value;
+                const searchTerm = searchInput.value.toLowerCase();
+
+                filteredAidRequests = allAidRequests.filter(request => {
+                    // Type filter
+                    if (typeValue !== 'all' && request.requestType !== typeValue) {
+                        return false;
+                    }
+
+                    // Urgency filter
+                    if (urgencyValue !== 'all' && request.urgencyLevel !== urgencyValue) {
+                        return false;
+                    }
+
+                    // Status filter
+                    if (statusValue !== 'all' && request.status !== statusValue) {
+                        return false;
+                    }
+
+                    // Search filter
+                    if (searchTerm) {
+                        const requesterName = request.requesterName.toLowerCase();
+                        const description = request.description.toLowerCase();
+
+                        if (!requesterName.includes(searchTerm) && !description.includes(searchTerm)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+                currentPage = 1;
+                renderAidRequests();
+                setupPagination();
+            }
+
+            // Reset filters function
+            function resetFilters() {
+                typeFilter.value = 'all';
+                urgencyFilter.value = 'all';
+                statusFilter.value = 'all';
+                searchInput.value = '';
+
+                filteredAidRequests = [...allAidRequests];
+                currentPage = 1;
+                renderAidRequests();
+                setupPagination();
+            }
+
+            // Show/hide loader functions
+            function showLoader() {
+                loader.style.display = 'flex';
+                tableBody.innerHTML = '';
+            }
+
+            function hideLoader() {
+                loader.style.display = 'none';
+            }
+
+            // Setup event listeners
+            function setupEventListeners() {
+                applyButton.addEventListener('click', applyFilters);
+                resetButton.addEventListener('click', resetFilters);
+
+                searchInput.addEventListener('keyup', function(e) {
+                    if (e.key === 'Enter') {
+                        applyFilters();
+                    }
+                });
+
+                typeFilter.addEventListener('change', applyFilters);
+                urgencyFilter.addEventListener('change', applyFilters);
+                statusFilter.addEventListener('change', applyFilters);
+            }
         });
-
-        // Event listeners
-        applyButton.addEventListener('click', applyFilters);
-        resetButton.addEventListener('click', resetFilters);
-
-        // Also apply filters when search input changes
-        searchInput.addEventListener('keyup', function() {
-            applyFilters();
-        });
-
-        // Apply filters when dropdowns change
-        typeFilter.addEventListener('change', applyFilters);
-        urgencyFilter.addEventListener('change', applyFilters);
-        statusFilter.addEventListener('change', applyFilters);
-    });
-</script>
+    </script>
+</body>
+</html>

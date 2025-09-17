@@ -73,8 +73,15 @@ namespace backend.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { success = false, message = ex.Message });
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message,
+                    inner = ex.InnerException?.Message,
+                    stack = ex.InnerException?.StackTrace
+                });
             }
+
         }
 
         [HttpGet("full-details")]
