@@ -3,7 +3,6 @@
     ViewData["Title"] = "Aid Preparation";
 }
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,28 +82,6 @@
             .table tbody tr:hover {
                 background-color: rgba(151, 188, 98, 0.1);
             }
-
-        .urgency-badge {
-            padding: 0.35rem 0.65rem;
-            border-radius: 20px;
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-
-        .badge-low {
-            background-color: rgba(151, 188, 98, 0.2);
-            color: #2c5f2d;
-        }
-
-        .badge-medium {
-            background-color: rgba(255, 193, 7, 0.2);
-            color: #b8860b;
-        }
-
-        .badge-high {
-            background-color: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
-        }
 
         .status-badge {
             padding: 0.35rem 0.65rem;
@@ -225,8 +202,7 @@
             margin-right: 0.5rem;
         }
 
-        
-
+     
 
         .auth-alert {
             background-color: #f8d7da;
@@ -474,11 +450,11 @@
                             <td>${formatDate(prep.estimatedArrival)}</td>
                             <td class="text-center"><span class="status-badge ${statusClass}">${prep.status}</span></td>
                             <td class="text-center">
-                                ${prep.status === 'Preparing' || prep.status === 'Pending' ?
+                                ${prep.status === 'Preparation Completed' ?
                                     `<button class="btn-action" data-prep-id="${prep.preparationID}" data-req-id="${prep.requestID}">
                                         Send Volunteers to Help
                                     </button>` :
-                                    `<span class="text-muted">Not Available</span>`
+                                    `<span class="text-muted">Still Preparing for this Request</span>`
                                 }
                             </td>
                         </tr>
@@ -504,6 +480,7 @@
                 switch (status.toLowerCase()) {
                     case 'pending': return 'badge-pending';
                     case 'preparing': return 'badge-progress';
+                    case 'preparation completed': return 'badge-completed';
                     case 'completed': return 'badge-completed';
                     case 'delivered': return 'badge-completed';
                     default: return 'badge-pending';

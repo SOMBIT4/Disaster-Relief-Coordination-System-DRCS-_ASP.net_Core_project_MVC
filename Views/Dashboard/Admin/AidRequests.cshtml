@@ -3,13 +3,12 @@
     ViewData["Title"] = "Aid Requests";
 }
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aid Requests Management</title>
+    <title>Aid Requests to prepare</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -46,49 +45,6 @@
             color: var(--text-light);
             font-size: 1.1rem;
         }
-
-        .filter-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .filter-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-        }
-
-        .form-control, .form-select {
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            transition: all 0.3s;
-        }
-
-            .form-control:focus, .form-select:focus {
-                border-color: var(--secondary-color);
-                box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
-            }
-
-            .form-select option:hover,
-            .form-select option:focus,
-            .form-select option:active,
-            .form-select option:checked {
-                background-color: var(--secondary-color) !important;
-                color: white !important;
-            }
 
         .table-container {
             background: white;
@@ -171,96 +127,11 @@
             color: #198754;
         }
 
-        .pagination-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 2rem;
-        }
-
-        .page-link {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--secondary-color);
-            color: var(--primary-color);
-            border-radius: 8px;
-            margin: 0 0.25rem;
-            transition: all 0.3s;
-        }
-
-            .page-link:hover {
-                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-                color: white;
-                border-color: var(--primary-color);
-            }
-
-        .page-item.active .page-link {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        .page-item.disabled .page-link {
-            color: #6c757d;
-            border-color: #dee2e6;
-            background-color: white;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light);
-        }
-
-        .btn-primary-custom {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-            .btn-primary-custom:hover {
-                background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
-                color: white;
-            }
-
-        .btn-reset {
-            background: transparent;
-            border: 1px solid var(--secondary-color);
-            color: var(--primary-color);
-            padding: 10px 20px;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-            .btn-reset:hover {
-                background: rgba(151, 188, 98, 0.1);
-                border-color: var(--primary-color);
-            }
-
-        .highlight {
-            background-color: rgba(151, 188, 98, 0.2) !important;
-            transition: background-color 0.3s ease;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-
         .btn-action {
-            padding: 0.35rem 0.65rem;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
             font-weight: 500;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
             border: 1px solid var(--secondary-color);
             background-color: transparent;
@@ -272,24 +143,15 @@
                 color: white;
             }
 
-        /* Modal styling */
-        .modal-content {
-            background-color: white;
-            border-radius: 12px;
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        .btn-disabled {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            background-color: #6c757d;
             color: white;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-        }
-
-        .loader-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
+            border: none;
+            cursor: not-allowed;
         }
 
         .volunteer-item {
@@ -314,8 +176,8 @@
             color: var(--text-light);
         }
 
-        .btn-ask {
-            background-color: darkgreen;
+        .btn-join {
+            background-color: var(--secondary-color);
             color: white;
             border: none;
             padding: 0.4rem 0.8rem;
@@ -324,11 +186,11 @@
             transition: all 0.3s;
         }
 
-            .btn-ask:hover {
+            .btn-join:hover {
                 background-color: var(--primary-color);
             }
 
-        .btn-asked {
+        .btn-joined {
             background-color: #6c757d;
             color: white;
             border: none;
@@ -338,98 +200,82 @@
             cursor: not-allowed;
         }
 
-        .spinner-border-sm {
+        .form-control {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+            background-color: white;
+        }
+
+            .form-control:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+            }
+
+        .loading-spinner {
+            display: inline-block;
             width: 1rem;
             height: 1rem;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+
+        .auth-alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .max-h-96 {
+            max-height: 24rem;
+            overflow-y: auto;
         }
     </style>
 </head>
 <body>
     <div class="container-fluid py-4">
         <div class="page-header">
-            <h1 class="page-title">All Aid Requests</h1>
-            <p class="page-subtitle">View and manage all aid requests in the system</p>
+            <h1 class="page-title">Aid Requests</h1>
+            <p class="page-subtitle">Manage aid requests and assign volunteers to make preparations for the asked request</p>
         </div>
 
-        <!-- Filters, Sorting, and Search Controls -->
-        <div class="filter-section">
-            <h3 class="filter-title">Filter & Search Requests</h3>
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">Request Type</label>
-                    <select id="typeFilter" class="form-select">
-                        <option value="all">All Types</option>
-                        <option value="Rescue">Rescue</option>
-                        <option value="Aid">Aid</option>
-                    </select>
-                </div>
-                <div class="col-md-2 mb-3">
-                    <label class="form-label">Urgency Level</label>
-                    <select id="urgencyFilter" class="form-select">
-                        <option value="all">All Levels</option>
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                    </select>
-                </div>
-                <div class="col-md-2 mb-3">
-                    <label class="form-label">Status</label>
-                    <select id="statusFilter" class="form-select">
-                        <option value="all">All Statuses</option>
-                        <option value="Pending">Pending</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                    </select>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">Search by Description or Name</label>
-                    <div class="position-relative">
-                        <input type="text" id="search" class="form-control" placeholder="Search requests...">
-                        <i class="bi bi-search search-icon"></i>
-                    </div>
-                </div>
-                <div class="col-md-2 mb-3 d-flex align-items-end">
-                    <button id="applyFilters" class="btn btn-primary-custom w-100 me-2">Apply</button>
-                    <button id="resetFilters" class="btn btn-reset">Reset</button>
-                </div>
-            </div>
+        <!-- Authentication Alert (initially hidden) -->
+        <div id="authAlert" class="auth-alert d-none">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span id="authMessage">Please log in to manage aid preparations</span>
         </div>
 
-        <!-- Requests Table -->
+        <!-- Preparation Table -->
         <div class="table-container">
             <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" class="text-center">#</th>
-                            <th scope="col">Requester Name</th>
-                            <th scope="col">Contact Info</th>
-                            <th scope="col">Request Type</th>
-                            <th scope="col">Description</th>
-                            <th scope="col" class="text-center">Urgency Level</th>
+                            <th scope="col">Preparation ID</th>
+                            <th scope="col">Request ID</th>
+                            <th scope="col">Departure Time</th>
+                            <th scope="col">Estimated Arrival</th>
                             <th scope="col" class="text-center">Status</th>
-                            <th scope="col" class="text-center">Actions</th>
+                            <th scope="col" class="text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="requestsTableBody">
-                        <!-- Data will be populated via JavaScript -->
+                    <tbody id="preparationTableBody">
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="loading-spinner"></div> Loading aid preparations...
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            <div id="loader" class="loader-container">
-                <div class="spinner-border text-success" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination-container">
-            <nav aria-label="Requests pagination">
-                <ul class="pagination" id="pagination">
-                    <!-- Pagination will be populated via JavaScript -->
-                </ul>
-            </nav>
         </div>
     </div>
 
@@ -438,21 +284,22 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="volunteersModalLabel">Available Volunteers</h5>
+                    <h5 class="modal-title" id="volunteersModalLabel">Assign Volunteers</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="volunteersList" class="max-h-96 overflow-y-auto">
-                        <!-- Volunteers will be populated here -->
-                    </div>
-                    <div id="volunteersLoader" class="loader-container">
-                        <div class="spinner-border text-success" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                        <div class="text-center py-4">
+                            <div class="loading-spinner"></div> Loading volunteers...
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveVolunteersBtn">
+                        <span class="loading-spinner d-none" id="volunteerSpinner"></span>
+                        Save Assignments
+                    </button>
                 </div>
             </div>
         </div>
@@ -464,348 +311,349 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get elements
-            const typeFilter = document.getElementById('typeFilter');
-            const urgencyFilter = document.getElementById('urgencyFilter');
-            const statusFilter = document.getElementById('statusFilter');
-            const searchInput = document.getElementById('search');
-            const applyButton = document.getElementById('applyFilters');
-            const resetButton = document.getElementById('resetFilters');
-            const tableBody = document.getElementById('requestsTableBody');
-            const loader = document.getElementById('loader');
-            const pagination = document.getElementById('pagination');
+            const tableBody = document.getElementById('preparationTableBody');
             const volunteersModal = new bootstrap.Modal(document.getElementById('volunteersModal'));
             const volunteersList = document.getElementById('volunteersList');
-            const volunteersLoader = document.getElementById('volunteersLoader');
+            const saveVolunteersBtn = document.getElementById('saveVolunteersBtn');
+            const volunteerSpinner = document.getElementById('volunteerSpinner');
+            const authAlert = document.getElementById('authAlert');
+            const authMessage = document.getElementById('authMessage');
 
-            // State variables
-            let currentRequestId = null;
-            let allAidRequests = [];
-            let filteredAidRequests = [];
+            let currentPreparationId = null;
             let allVolunteers = [];
-            let askedVolunteers = {};
-            let currentPage = 1;
-            const itemsPerPage = 10;
+            let assignedVolunteers = {};
+            let selectedVolunteers = [];
 
-            // Initialize the page
-            init();
-
-            async function init() {
-                await fetchAidRequests();
-                setupEventListeners();
+            // Get token from localStorage
+            function getToken() {
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    authAlert.classList.remove('d-none');
+                    authMessage.textContent = 'Please log in to manage aid preparations';
+                    throw new Error('Please log in to manage aid preparations');
+                }
+                return token;
             }
 
-            // Fetch aid requests from API
-            async function fetchAidRequests() {
+            // Format date for display
+            function formatDate(dateString) {
+                if (!dateString || dateString === "0001-01-01T00:00:00") {
+                    return "Not set";
+                }
+
                 try {
-                    showLoader();
-                    const response = await fetch('/api/aid-requests');
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const aidRequests = await response.json();
-                    allAidRequests = aidRequests;
-                    filteredAidRequests = [...allAidRequests];
-
-                    renderAidRequests();
-                    setupPagination();
-                    hideLoader();
-                } catch (error) {
-                    console.error('Error fetching aid requests:', error);
-                    tableBody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Error loading aid requests: ${error.message}</td></tr>`;
-                    hideLoader();
+                    const date = new Date(dateString);
+                    return date.toLocaleString();
+                } catch (e) {
+                    return "Invalid date";
                 }
             }
 
-            // Fetch volunteers from API
-            async function fetchVolunteers() {
-                try {
-                    volunteersLoader.style.display = 'flex';
-                    const response = await fetch('/api/users/volunteers');
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        allVolunteers = result.data;
-                        populateVolunteersModal();
-                    } else {
-                        throw new Error(result.message || 'Failed to fetch volunteers');
-                    }
-
-                    volunteersLoader.style.display = 'none';
-                } catch (error) {
-                    console.error('Error fetching volunteers:', error);
-                    volunteersList.innerHTML = `<div class="text-center text-danger p-3">Error loading volunteers: ${error.message}</div>`;
-                    volunteersLoader.style.display = 'none';
-                }
+            // Load aid preparations on page load
+            try {
+                getToken(); // Check if user is authenticated
+                loadAidPreparations();
+            } catch (error) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-danger py-4">
+                            ${error.message}
+                        </td>
+                    </tr>
+                `;
             }
 
-            // Ask a volunteer to prepare aid
-            async function askVolunteer(volunteerId, requestId) {
+            // Function to load aid preparations from API
+            async function loadAidPreparations() {
                 try {
-                    const response = await fetch('/api/AidPreparation', {
-                        method: 'POST',
+                    const token = getToken();
+                    const response = await fetch('/api/AidPreparation/full-details', {
                         headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            RequestID: parseInt(requestId)
-                        })
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
                     });
 
+                    if (response.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error('Failed to fetch aid preparations');
                     }
 
                     const result = await response.json();
 
-                    if (result.success) {
-                        // Update the UI to show the volunteer has been asked
-                        if (!askedVolunteers[requestId]) {
-                            askedVolunteers[requestId] = [];
-                        }
-                        askedVolunteers[requestId].push(volunteerId);
-
-                        // Update the button in the modal
-                        const askButton = document.querySelector(`.btn-ask[data-volunteer-id="${volunteerId}"]`);
-                        if (askButton) {
-                            askButton.outerHTML = '<button class="btn-asked" disabled>Asked</button>';
-                        }
-
-                        // Update the table to reflect the change
-                        renderAidRequests();
-
-                        alert(`Volunteer has been asked to prepare aid for request #${requestId}`);
+                    // Check if the response has the expected structure
+                    if (result.success && result.data) {
+                        renderAidPreparations(result.data);
                     } else {
-                        throw new Error(result.message || 'Failed to assign volunteer');
+                        throw new Error('Invalid response format from server');
                     }
                 } catch (error) {
-                    console.error('Error asking volunteer:', error);
-                    alert(`Error: ${error.message}`);
-                }
-            }
-
-            // Render aid requests in the table
-            function renderAidRequests() {
-                if (filteredAidRequests.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="8" class="text-center">No aid requests found</td></tr>`;
-                    return;
-                }
-
-                // Calculate pagination
-                const startIndex = (currentPage - 1) * itemsPerPage;
-                const endIndex = Math.min(startIndex + itemsPerPage, filteredAidRequests.length);
-                const pageRequests = filteredAidRequests.slice(startIndex, endIndex);
-
-                tableBody.innerHTML = pageRequests.map((request, index) => {
-                    const rowIndex = startIndex + index + 1;
-                    const urgencyClass = `badge-${request.urgencyLevel.toLowerCase()}`;
-                    const statusClass = `badge-${request.status.toLowerCase().replace(' ', '-')}`;
-
-                    // Check if this request has any asked volunteers
-                    const hasAskedVolunteers = askedVolunteers[request.requestID] && askedVolunteers[request.requestID].length > 0;
-
-                    return `
-                        <tr data-type="${request.requestType}" data-urgency="${request.urgencyLevel}" data-status="${request.status}">
-                            <td class="text-center">${rowIndex}</td>
-                            <td>${request.requesterName}</td>
-                            <td>${request.contactInfo}</td>
-                            <td>${request.requestType}</td>
-                            <td>${request.description}</td>
-                            <td class="text-center"><span class="urgency-badge ${urgencyClass}">${request.urgencyLevel}</span></td>
-                            <td class="text-center"><span class="status-badge ${statusClass}">${request.status}</span></td>
-                            <td class="text-center">
-                                ${request.status === 'Completed' || hasAskedVolunteers ?
-                                    `<button class="btn-asked" disabled>
-                                        ${hasAskedVolunteers ? 'Volunteer Assigned' : 'Preparation completed'}
-                                    </button>` :
-                                    `<button class="btn-action" data-request-id="${request.requestID}">
-                                        Ask Volunteers make Preparations
-                                    </button>`
-                                }
+                    console.error('Error loading aid preparations:', error);
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center text-danger py-4">
+                                ${error.message}
                             </td>
                         </tr>
                     `;
-                }).join('');
+                }
+            }
+
+            // Function to render aid preparations in the table
+            function renderAidPreparations(preparations) {
+                if (!preparations || preparations.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                No aid preparations found.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                preparations.forEach(prep => {
+                    const statusClass = getStatusClass(prep.status);
+
+                    html += `
+                        <tr>
+                            <td>${prep.preparationID}</td>
+                            <td>${prep.requestID}</td>
+                            <td>${formatDate(prep.departureTime)}</td>
+                            <td>${formatDate(prep.estimatedArrival)}</td>
+                            <td class="text-center"><span class="status-badge ${statusClass}">${prep.status}</span></td>
+                            <td class="text-center">
+                                <button class="btn-action" data-prep-id="${prep.preparationID}">
+                                    Assign Volunteers
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableBody.innerHTML = html;
 
                 // Add event listeners to action buttons
                 document.querySelectorAll('.btn-action').forEach(button => {
                     button.addEventListener('click', function() {
-                        currentRequestId = this.getAttribute('data-request-id');
-                        fetchVolunteers();
+                        currentPreparationId = this.getAttribute('data-prep-id');
+                        loadVolunteersForPreparation(currentPreparationId);
                         volunteersModal.show();
                     });
                 });
             }
 
-            // Setup pagination
-            function setupPagination() {
-                const totalPages = Math.ceil(filteredAidRequests.length / itemsPerPage);
+            // Helper function to get status badge class
+            function getStatusClass(status) {
+                if (!status) return 'badge-pending';
 
-                if (totalPages <= 1) {
-                    pagination.innerHTML = '';
-                    return;
+                switch (status.toLowerCase()) {
+                    case 'pending': return 'badge-pending';
+                    case 'preparing': return 'badge-progress';
+                    case 'completed': return 'badge-completed';
+                    case 'delivered': return 'badge-completed';
+                    default: return 'badge-pending';
                 }
+            }
 
-                let paginationHTML = `
-                    <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                        <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
-                    </li>
-                `;
+            // Function to load volunteers for a specific preparation
+            async function loadVolunteersForPreparation(preparationId) {
+                try {
+                    const token = getToken();
 
-                for (let i = 1; i <= totalPages; i++) {
-                    paginationHTML += `
-                        <li class="page-item ${i === currentPage ? 'active' : ''}">
-                            <a class="page-link" href="#" data-page="${i}">${i}</a>
-                        </li>
-                    `;
-                }
-
-                paginationHTML += `
-                    <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                        <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
-                    </li>
-                `;
-
-                pagination.innerHTML = paginationHTML;
-
-                // Add event listeners to pagination links
-                pagination.querySelectorAll('.page-link').forEach(link => {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const page = parseInt(this.getAttribute('data-page'));
-                        if (page !== currentPage) {
-                            currentPage = page;
-                            renderAidRequests();
-                            setupPagination();
+                    // First, get all available volunteers
+                    const allVolunteersResponse = await fetch('/api/users/volunteers', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
                         }
                     });
-                });
+
+                    if (allVolunteersResponse.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!allVolunteersResponse.ok) {
+                        throw new Error('Failed to fetch volunteers');
+                    }
+
+                    const allVolunteersResult = await allVolunteersResponse.json();
+
+                    // Handle different response formats
+                    if (Array.isArray(allVolunteersResult)) {
+                        allVolunteers = allVolunteersResult;
+                    } else if (allVolunteersResult.data && Array.isArray(allVolunteersResult.data)) {
+                        allVolunteers = allVolunteersResult.data;
+                    } else if (allVolunteersResult.success && allVolunteersResult.data && Array.isArray(allVolunteersResult.data)) {
+                        allVolunteers = allVolunteersResult.data;
+                    } else {
+                        throw new Error('Invalid volunteers data format');
+                    }
+
+                    // Then, get volunteers already assigned to this preparation
+                    const assignedResponse = await fetch(`/api/AidPreparation/${preparationId}/volunteers`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (assignedResponse.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    let assignedVolunteerIds = [];
+
+                    if (assignedResponse.ok) {
+                        const assignedResult = await assignedResponse.json();
+
+                        if (assignedResult.success && assignedResult.data) {
+                            assignedVolunteerIds = assignedResult.data.map(v => v.volunteerID || v.id);
+                        }
+                    }
+
+                    // Store assigned volunteers for this preparation
+                    assignedVolunteers[preparationId] = assignedVolunteerIds;
+                    selectedVolunteers = [...assignedVolunteerIds];
+
+                    populateVolunteersModal(preparationId);
+                } catch (error) {
+                    console.error('Error loading volunteers:', error);
+                    volunteersList.innerHTML = `
+                        <div class="text-center text-danger py-4">
+                            ${error.message}
+                        </div>
+                    `;
+                }
             }
 
             // Populate volunteers modal
-            function populateVolunteersModal() {
-                volunteersList.innerHTML = '';
-
-                if (allVolunteers.length === 0) {
-                    volunteersList.innerHTML = '<div class="text-center p-3">No volunteers available</div>';
+            function populateVolunteersModal(preparationId) {
+                if (!allVolunteers || allVolunteers.length === 0) {
+                    volunteersList.innerHTML = `
+                        <div class="text-center py-4">
+                            No volunteers available at the moment.
+                        </div>
+                    `;
                     return;
                 }
 
+                const assignedVolunteerIds = assignedVolunteers[preparationId] || [];
+
+                let html = '';
                 allVolunteers.forEach(volunteer => {
-                    const isAsked = askedVolunteers[currentRequestId] &&
-                                   askedVolunteers[currentRequestId].includes(volunteer.id);
+                    const volunteerId = volunteer.volunteerID ;
+                    const isAssigned = assignedVolunteerIds.includes(volunteerId);
+                    const isChecked = selectedVolunteers.includes(volunteerId);
 
-                    const volunteerItem = document.createElement('div');
-                    volunteerItem.className = 'volunteer-item';
-
-                    volunteerItem.innerHTML = `
-                        <div class="volunteer-info">
-                            <div class="volunteer-name">${volunteer.name}</div>
-                            <div class="volunteer-center">${volunteer.center || 'No center specified'}</div>
+                    html += `
+                        <div class="volunteer-item">
+                            <div class="volunteer-info">
+                                <div class="volunteer-name">${volunteer.name || volunteer.fullName || 'Unknown Volunteer'}</div>
+                                <div class="volunteer-center">${volunteer.center || volunteer.location || 'No center assigned'}</div>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                    value="${volunteerId}"
+                                    id="volunteer-${volunteerId}"
+                                    ${isChecked ? 'checked' : ''}
+                                    ${isAssigned ? 'disabled' : ''}>
+                                <label class="form-check-label" for="volunteer-${volunteerId}">
+                                    ${isAssigned ? 'Already Assigned' : 'Assign'}
+                                </label>
+                            </div>
                         </div>
-                        ${isAsked ?
-                            `<button class="btn-asked" disabled>Asked</button>` :
-                            `<button class="btn-ask" data-volunteer-id="${volunteer.id}">Ask to Make Prep</button>`
-                        }
                     `;
-
-                    volunteersList.appendChild(volunteerItem);
                 });
 
-                // Add event listeners to Ask buttons
-                document.querySelectorAll('.btn-ask').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const volunteerId = this.getAttribute('data-volunteer-id');
-                        askVolunteer(volunteerId, currentRequestId);
+                volunteersList.innerHTML = html;
+
+                // Add event listeners to checkboxes
+                document.querySelectorAll('.form-check-input').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const volunteerId = this.value;
+
+                        if (this.checked) {
+                            if (!selectedVolunteers.includes(volunteerId)) {
+                                selectedVolunteers.push(volunteerId);
+                            }
+                        } else {
+                            selectedVolunteers = selectedVolunteers.filter(id => id !== volunteerId);
+                        }
                     });
                 });
             }
 
-            // Apply filters function
-            function applyFilters() {
-                const typeValue = typeFilter.value;
-                const urgencyValue = urgencyFilter.value;
-                const statusValue = statusFilter.value;
-                const searchTerm = searchInput.value.toLowerCase();
+            // Save volunteers button click handler
+            saveVolunteersBtn.addEventListener('click', async function() {
+                if (selectedVolunteers.length === 0) {
+                    alert('Please select at least one volunteer');
+                    return;
+                }
 
-                filteredAidRequests = allAidRequests.filter(request => {
-                    // Type filter
-                    if (typeValue !== 'all' && request.requestType !== typeValue) {
-                        return false;
-                    }
+                // Show loading spinner
+                volunteerSpinner.classList.remove('d-none');
+                saveVolunteersBtn.disabled = true;
 
-                    // Urgency filter
-                    if (urgencyValue !== 'all' && request.urgencyLevel !== urgencyValue) {
-                        return false;
-                    }
+                try {
+                    const token = getToken();
+                    const errors = [];
 
-                    // Status filter
-                    if (statusValue !== 'all' && request.status !== statusValue) {
-                        return false;
-                    }
+                    // Assign selected volunteers to the preparation
+                    for (const volunteerId of selectedVolunteers) {
+                        // Skip if already assigned
+                        if (assignedVolunteers[currentPreparationId] &&
+                            assignedVolunteers[currentPreparationId].includes(volunteerId)) {
+                            continue;
+                        }
 
-                    // Search filter
-                    if (searchTerm) {
-                        const requesterName = request.requesterName.toLowerCase();
-                        const description = request.description.toLowerCase();
+                        const response = await fetch(`/api/AidPreparation/${currentPreparationId}/volunteers`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                VolunteerID: parseInt(volunteerId)
+                            })
+                        });
 
-                        if (!requesterName.includes(searchTerm) && !description.includes(searchTerm)) {
-                            return false;
+                        if (response.status === 401) {
+                            throw new Error('Session expired. Please log in again.');
+                        }
+
+                        if (!response.ok) {
+                            const errorResult = await response.json();
+                            errors.push(`Failed to assign volunteer ${volunteerId}: ${errorResult.message || 'Unknown error'}`);
                         }
                     }
 
-                    return true;
-                });
-
-                currentPage = 1;
-                renderAidRequests();
-                setupPagination();
-            }
-
-            // Reset filters function
-            function resetFilters() {
-                typeFilter.value = 'all';
-                urgencyFilter.value = 'all';
-                statusFilter.value = 'all';
-                searchInput.value = '';
-
-                filteredAidRequests = [...allAidRequests];
-                currentPage = 1;
-                renderAidRequests();
-                setupPagination();
-            }
-
-            // Show/hide loader functions
-            function showLoader() {
-                loader.style.display = 'flex';
-                tableBody.innerHTML = '';
-            }
-
-            function hideLoader() {
-                loader.style.display = 'none';
-            }
-
-            // Setup event listeners
-            function setupEventListeners() {
-                applyButton.addEventListener('click', applyFilters);
-                resetButton.addEventListener('click', resetFilters);
-
-                searchInput.addEventListener('keyup', function(e) {
-                    if (e.key === 'Enter') {
-                        applyFilters();
+                    if (errors.length > 0) {
+                        alert(`Some assignments failed:\n${errors.join('\n')}`);
+                    } else {
+                        alert('Volunteers assigned successfully');
+                        volunteersModal.hide();
                     }
-                });
+                } catch (error) {
+                    console.error('Error assigning volunteers:', error);
+                    alert(error.message);
+                } finally {
+                    volunteerSpinner.classList.add('d-none');
+                    saveVolunteersBtn.disabled = false;
 
-                typeFilter.addEventListener('change', applyFilters);
-                urgencyFilter.addEventListener('change', applyFilters);
-                statusFilter.addEventListener('change', applyFilters);
-            }
+                    // Reset for next time
+                    selectedVolunteers = [];
+                }
+            });
+
+            // Reset selected volunteers when modal is closed
+            document.getElementById('volunteersModal').addEventListener('hidden.bs.modal', function () {
+                selectedVolunteers = [];
+            });
         });
     </script>
 </body>
