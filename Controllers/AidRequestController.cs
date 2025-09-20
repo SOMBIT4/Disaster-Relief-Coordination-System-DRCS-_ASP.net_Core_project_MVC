@@ -21,9 +21,7 @@ namespace DRCS.Controllers
         {
             try
             {
-                var role = HttpContext.Items["role"]?.ToString();
-                if (role != "Admin")
-                    return StatusCode(403, new { success = false, error = true, message = "Only admin can do it" });
+                
                 var aidRequests = await _aidRequestService.GetAllAsync();
                 return Ok(aidRequests);
             }
@@ -153,14 +151,11 @@ namespace DRCS.Controllers
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusUpdateDto dto)
         {
-            if (!new[] { "Pending", "In Progress", "Completed" }.Contains(dto.Status))
-                return BadRequest(new { error = "Invalid status" });
+            
 
             try
             {
-                var role = HttpContext.Items["role"]?.ToString();
-                if (role != "Admin")
-                    return StatusCode(403, new { success = false, error = true, message = "Only admin can do it" });
+                
                 var affected = await _aidRequestService.UpdateStatusAsync(id, dto.Status);
                 return Ok(new { message = "Status updated successfully", affected });
             }

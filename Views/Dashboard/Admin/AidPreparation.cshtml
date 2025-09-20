@@ -202,7 +202,7 @@
             margin-right: 0.5rem;
         }
 
-     
+        
 
         .auth-alert {
             background-color: #f8d7da;
@@ -450,7 +450,7 @@
                             <td>${formatDate(prep.estimatedArrival)}</td>
                             <td class="text-center"><span class="status-badge ${statusClass}">${prep.status}</span></td>
                             <td class="text-center">
-                                ${prep.status === 'Preparation Completed' ?
+                                ${prep.status === 'PreparationCompleted' ?
                                     `<button class="btn-action" data-prep-id="${prep.preparationID}" data-req-id="${prep.requestID}">
                                         Send Volunteers to Help
                                     </button>` :
@@ -543,17 +543,19 @@
 
                 let html = '';
                 allVolunteers.forEach(volunteer => {
-                    const isJoined = joinedVolunteers.includes(volunteer.id || volunteer.userID);
+                    // Use volunteerID (not userID) for identification
+                    const volunteerId = volunteer.volunteerID || volunteer.id;
+                    const isJoined = joinedVolunteers.includes(volunteerId);
 
                     html += `
                         <div class="volunteer-item">
                             <div class="volunteer-info">
                                 <div class="volunteer-name">${volunteer.name || volunteer.fullName || 'Unknown Volunteer'}</div>
-                                <div class="volunteer-center">${volunteer.center || volunteer.location || 'No center assigned'}</div>
+                                <div class="volunteer-center">${volunteer.center || volunteer.location || volunteer.assignedCenter || 'No center assigned'}</div>
                             </div>
                             ${isJoined ?
                                 `<button class="btn-joined" disabled>Joined</button>` :
-                                `<button class="btn-join" data-volunteer-id="${volunteer.id || volunteer.userID}">Join Rescue Team</button>`
+                                `<button class="btn-join" data-volunteer-id="${volunteerId}">Join Rescue Team</button>`
                             }
                         </div>
                     `;
@@ -621,7 +623,50 @@
                     }
 
                     if (!updateResponse.ok) {
-                        throw new Error('Failed to update aid preparation timing');
+                        const errorData = await updateResponse.json();
+                        throw new Error(errorData.message || 'Failed to update aid preparation timing');
+                    }
+
+                    // Step 1: Create rescue tracking record with correct status value
+                    const currentTime = new Date().toISOString();
+                    const rescueTrackingData = {
+                        RequestID: parseInt(currentRequestId),
+                        TrackingStatus: "In Progress", // Using the correct status value
+                        OperationStartTime: currentTime,
+                        NumberOfPeopleHelped: 0, // Default value
+                        CompletionTime: null // Will be updated later
+                    };
+
+                    const trackingResponse = await fetch('/api/RescueTracking', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(rescueTrackingData)
+                    });
+
+                    if (!trackingResponse.ok) {
+                        const errorData = await trackingResponse.json();
+                        throw new Error(errorData.message || 'Failed to create rescue tracking record');
+                    }
+
+                    const trackingResult = await trackingResponse.json();
+                    currentTrackingId = trackingResult.data?.trackingID; // Store for future reference
+
+                    // Step 2: Update aid request status
+                    const statusUpdateResponse = await fetch(`/api/aid-requests/${currentRequestId}/status`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: "Rescue On Going" })
+                    });
+
+                    if (!statusUpdateResponse.ok) {
+                        const errorData = await statusUpdateResponse.json();
+                        throw new Error(errorData.message || 'Failed to update aid request status');
                     }
 
                     timingModal.hide();
@@ -653,10 +698,44 @@
                 try {
                     const token = getToken();
 
-                    // In a real application, you would assign volunteers to the preparation here
-                    // This is a placeholder for the actual implementation
+                    // Assign each volunteer to the rescue tracking
+                    const assignmentPromises = joinedVolunteers.map(async (volunteerId) => {
+                        const assignmentData = {
+                            trackingID: currentTrackingId,
+                            volunteerID: parseInt(volunteerId) // Use the correct volunteerID
+                        };
 
-                    alert(`Volunteers assigned to preparation #${currentPreparationId}`);
+                        const response = await fetch('/api/RescueTrackingVolunteer', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(assignmentData)
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.message || `Failed to assign volunteer ${volunteerId}`);
+                        }
+
+                        return response.json();
+                    });
+
+                    // Wait for all assignments to complete
+                    const results = await Promise.allSettled(assignmentPromises);
+
+                    // Check if any assignments failed
+                    const failedAssignments = results.filter(result => result.status === 'rejected');
+
+                    if (failedAssignments.length > 0) {
+                        console.error('Some volunteer assignments failed:', failedAssignments);
+                        alert(`Warning: ${failedAssignments.length} volunteer assignment(s) failed. ` +
+                              `But ${joinedVolunteers.length - failedAssignments.length} were successful.`);
+                    } else {
+                        alert(`Successfully assigned ${joinedVolunteers.length} volunteer(s) to rescue tracking!`);
+                    }
+
                     volunteersModal.hide();
 
                     // Reload the aid preparations to update the UI
@@ -664,7 +743,7 @@
 
                 } catch (error) {
                     console.error('Error assigning volunteers:', error);
-                    alert(error.message);
+                    alert(`Error: ${error.message}`);
                 } finally {
                     volunteerSpinner.classList.add('d-none');
                     doneBtn.disabled = false;

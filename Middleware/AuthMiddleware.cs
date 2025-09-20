@@ -41,6 +41,9 @@ namespace DRCS.Middleware
                 token = context.Request.Cookies["access_token"];
             }
 
+            // 🔹 Print token to console
+            Console.WriteLine($"Incoming JWT Token: {token}");
+
             if (string.IsNullOrEmpty(token))
             {
                 context.Response.StatusCode = 401;

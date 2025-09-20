@@ -1,431 +1,528 @@
 ﻿@{
-    Layout = "~/Views/Shared/Sidebar/_VolunteerLayout.cshtml";
+    Layout = "~/Views/Shared/Sidebar/_VolunteerLayout.cshtml"; // Changed to volunteer layout
     ViewData["Title"] = "Assigned Tasks";
 }
 
-<!-- Bootstrap 5 CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assigned Tasks - Volunteer Portal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
 
-<style>
-    * {
-        font-family: 'Poppins', sans-serif;
-    }
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --accent-color: #ffd700;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
+            --modal-bg: rgba(151, 188, 98, 0.1);
+        }
 
-    :root {
-        --primary-color: #2c5f2d;
-        --secondary-color: #97bc62;
-        --accent-color: #ffd700;
-        --text-dark: #333;
-        --text-light: #666;
-        --bg-light: #f8f9fa;
-        --modal-bg: rgba(151, 188, 98, 0.1);
-    }
+        .page-header {
+            margin-bottom: 2rem;
+        }
 
-    .page-header {
-        margin-bottom: 2rem;
-    }
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
 
-    .page-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-    }
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
 
-    .page-subtitle {
-        color: var(--text-light);
-        font-size: 1.1rem;
-    }
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
 
-    .table-container {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-        margin-bottom: 2rem;
-    }
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
 
-    .table {
-        margin-bottom: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
+            .table thead th {
+                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                border: none;
+                text-align: left;
+            }
 
-        .table thead th {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            .table tbody td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .table tbody tr:hover {
+                background-color: rgba(151, 188, 98, 0.1);
+            }
+
+        .urgency-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .badge-low {
+            background-color: rgba(151, 188, 98, 0.2);
+            color: #2c5f2d;
+        }
+
+        .badge-medium {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #b8860b;
+        }
+
+        .badge-high {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .badge-preparing {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #b8860b;
+        }
+
+        .badge-inprogress {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+        }
+
+        .badge-completed {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: #198754;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: 1px solid var(--secondary-color);
+            background-color: transparent;
+            color: var(--primary-color);
+        }
+
+            .btn-action:hover {
+                background-color: var(--secondary-color);
+                color: white;
+            }
+
+        .btn-disabled {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            background-color: #6c757d;
             color: white;
-            font-weight: 600;
-            padding: 1rem;
             border: none;
-            text-align: left;
+            cursor: not-allowed;
         }
 
-        .table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #eee;
+        /* Modal styling with light green background */
+        .modal-content {
+            background-color: var(--modal-bg);
+            border: 1px solid var(--secondary-color);
         }
 
-        .table tbody tr:last-child td {
-            border-bottom: none;
+        .modal-header {
+            border-bottom: 1px solid var(--secondary-color);
+            background-color: rgba(151, 188, 98, 0.2);
         }
 
-        .table tbody tr:hover {
-            background-color: rgba(151, 188, 98, 0.1);
+        .modal-footer {
+            border-top: 1px solid var(--secondary-color);
+            background-color: rgba(151, 188, 98, 0.2);
         }
 
-    .urgency-badge {
-        padding: 0.35rem 0.65rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
 
-    .badge-low {
-        background-color: rgba(151, 188, 98, 0.2);
-        color: #2c5f2d;
-    }
+        .resource-table {
+            width: 100%;
+            font-size: 0.9rem;
+            border-collapse: collapse;
+        }
 
-    .badge-medium {
-        background-color: rgba(255, 193, 7, 0.2);
-        color: #b8860b;
-    }
+            .resource-table th {
+                background-color: rgba(151, 188, 98, 0.2);
+                padding: 0.5rem;
+                text-align: left;
+            }
 
-    .badge-high {
-        background-color: rgba(220, 53, 69, 0.2);
-        color: #dc3545;
-    }
+            .resource-table td {
+                padding: 0.5rem;
+                border-bottom: 1px solid rgba(151, 188, 98, 0.2);
+            }
 
-    .status-badge {
-        padding: 0.35rem 0.65rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
-
-    .badge-pending {
-        background-color: rgba(255, 193, 7, 0.2);
-        color: #b8860b;
-    }
-
-    .badge-progress {
-        background-color: rgba(13, 110, 253, 0.2);
-        color: #0d6efd;
-    }
-
-    .badge-completed {
-        background-color: rgba(25, 135, 84, 0.2);
-        color: #198754;
-    }
-
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: center;
-    }
-
-    .btn-action {
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.3s;
-        border: 1px solid var(--secondary-color);
-        background-color: transparent;
-        color: var(--primary-color);
-    }
-
-        .btn-action:hover {
+        .btn-add {
             background-color: var(--secondary-color);
             color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
         }
 
-    .btn-disabled {
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.9rem;
-        background-color: #6c757d;
-        color: white;
-        border: none;
-        cursor: not-allowed;
-    }
+            .btn-add:hover {
+                background-color: var(--primary-color);
+            }
 
-    /* Modal styling with light green background */
-    .modal-content {
-        background-color: var(--modal-bg);
-        border: 1px solid var(--secondary-color);
-    }
-
-    .modal-header {
-        border-bottom: 1px solid var(--secondary-color);
-        background-color: rgba(151, 188, 98, 0.2);
-    }
-
-    .modal-footer {
-        border-top: 1px solid var(--secondary-color);
-        background-color: rgba(151, 188, 98, 0.2);
-    }
-
-    .loader-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 200px;
-    }
-
-    .resource-table {
-        width: 100%;
-        font-size: 0.9rem;
-        border-collapse: collapse;
-    }
-
-        .resource-table th {
-            background-color: rgba(151, 188, 98, 0.2);
-            padding: 0.5rem;
-            text-align: left;
+        .btn-remove {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
         }
 
-        .resource-table td {
-            padding: 0.5rem;
-            border-bottom: 1px solid rgba(151, 188, 98, 0.2);
+            .btn-remove:hover {
+                background-color: #bd2130;
+            }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1055;
         }
 
-    .btn-add {
-        background-color: var(--secondary-color);
-        color: white;
-        border: none;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        transition: all 0.3s;
-    }
-
-        .btn-add:hover {
-            background-color: var(--primary-color);
+        .toast {
+            background-color: white;
+            border-left: 5px solid;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-    .btn-remove {
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        transition: all 0.3s;
-    }
-
-        .btn-remove:hover {
-            background-color: #bd2130;
+        .toast-success {
+            border-left-color: #198754;
         }
-</style>
 
-<div class="container-fluid py-4">
-    <div class="page-header">
-        <h1 class="page-title">Assigned Tasks</h1>
-        <p class="page-subtitle">View and manage your assigned tasks</p>
-    </div>
+        .toast-error {
+            border-left-color: #dc3545;
+        }
 
-    <!-- Tasks Table -->
-    <div class="table-container">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col" class="text-center">#</th>
-                        <th scope="col">Request Type</th>
-                        <th scope="col">Description</th>
-                        <th scope="col" class="text-center">Urgency Level</th>
-                        <th scope="col" class="text-center">Status</th>
-                        <th scope="col" class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="tasksTableBody">
-                    <tr data-type="Aid" data-urgency="High" data-status="Pending" data-task-id="1">
-                        <td class="text-center">1</td>
-                        <td>Aid</td>
-                        <td>Distribute food supplies to affected families in Downtown area</td>
-                        <td class="text-center"><span class="urgency-badge badge-high">High</span></td>
-                        <td class="text-center"><span class="status-badge badge-pending">Pending</span></td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action" data-task-id="1">
-                                    Prepare Aid
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-type="Rescue" data-urgency="Medium" data-status="In Progress" data-task-id="2">
-                        <td class="text-center">2</td>
-                        <td>Rescue</td>
-                        <td>Assist in evacuation of residents from flooded areas</td>
-                        <td class="text-center"><span class="urgency-badge badge-medium">Medium</span></td>
-                        <td class="text-center"><span class="status-badge badge-progress">In Progress</span></td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action" data-task-id="2">
-                                    Prepare Rescue
-                                </button>
-                                <button class="btn-action" data-task-id="2">
-                                    Mark Complete
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-type="Aid" data-urgency="Low" data-status="Completed" data-task-id="3">
-                        <td class="text-center">3</td>
-                        <td>Aid</td>
-                        <td>Provide medical assistance to injured individuals</td>
-                        <td class="text-center"><span class="urgency-badge badge-low">Low</span></td>
-                        <td class="text-center"><span class="status-badge badge-completed">Completed</span></td>
-                        <td class="text-center">
-                            <button class="btn-disabled" disabled>
-                                Completed
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-type="Rescue" data-urgency="High" data-status="Pending" data-task-id="4">
-                        <td class="text-center">4</td>
-                        <td>Rescue</td>
-                        <td>Search and rescue operations in collapsed buildings</td>
-                        <td class="text-center"><span class="urgency-badge badge-high">High</span></td>
-                        <td class="text-center"><span class="status-badge badge-pending">Pending</span></td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action" data-task-id="4">
-                                    Prepare Rescue
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-type="Aid" data-urgency="Medium" data-status="In Progress" data-task-id="5">
-                        <td class="text-center">5</td>
-                        <td>Aid</td>
-                        <td>Distribute blankets and warm clothing to displaced families</td>
-                        <td class="text-center"><span class="urgency-badge badge-medium">Medium</span></td>
-                        <td class="text-center"><span class="status-badge badge-progress">In Progress</span></td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action" data-task-id="5">
-                                    Prepare Aid
-                                </button>
-                                <button class="btn-action" data-task-id="5">
-                                    Mark Complete
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        .toast-info {
+            border-left-color: #0dcaf0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="page-header">
+            <h1 class="page-title">Assigned Tasks</h1>
+            <p class="page-subtitle">View and manage your assigned tasks</p>
+        </div>
+
+        <!-- Tasks Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">#</th>
+                            <th scope="col">Request Type</th>
+                            <th scope="col">Description</th>
+                            <th scope="col" class="text-center">Urgency Level</th>
+                            <th scope="col" class="text-center">Status</th>
+                            <th scope="col" class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasksTableBody">
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="spinner-border text-success" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Loading tasks...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Resource Modal for Aid/Rescue Tasks -->
-<div class="modal fade" id="resourceModal" tabindex="-1" aria-labelledby="resourceModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="resourceModalLabel">Prepare Task</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="modalContent">
-                    <!-- Content will be populated dynamically -->
+    <!-- Resource Modal for Aid/Rescue Tasks -->
+    <div class="modal fade" id="resourceModal" tabindex="-1" aria-labelledby="resourceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resourceModalLabel">Prepare Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalContent">
+                        <!-- Content will be populated dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="prepareTaskBtn">Prepare Task</button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="prepareTaskBtn">Prepare Task</button>
-            </div>
         </div>
     </div>
-</div>
 
-<!-- Simple Resource Modal for Other Tasks -->
-<div class="modal fade" id="simpleResourceModal" tabindex="-1" aria-labelledby="simpleResourceModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="simpleResourceModalLabel">Add Resources</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="resourceForm">
-                    <div class="mb-3">
-                        <label for="resourceName" class="form-label">Resource Name</label>
-                        <input type="text" class="form-control" id="resourceName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="resourceQuantity" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="resourceQuantity" required min="1">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveResourceBtn">Save Resource</button>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+    <script>
+        // Global variables
+        const API_BASE_URL = ''; // Set your API base URL here
+        const VOLUNTEER_ID = localStorage.getItem('volunteer_id'); // Set the volunteer ID (should come from authentication)
+        let currentTaskId = null;
+        let currentPreparationId = null;
+        let selectedResources = [];
+        let availableResources = [];
+
+        // DOM elements
+        const tasksTableBody = document.getElementById('tasksTableBody');
         const resourceModal = new bootstrap.Modal(document.getElementById('resourceModal'));
-        const simpleResourceModal = new bootstrap.Modal(document.getElementById('simpleResourceModal'));
         const modalContent = document.getElementById('modalContent');
         const prepareTaskBtn = document.getElementById('prepareTaskBtn');
-        const saveResourceBtn = document.getElementById('saveResourceBtn');
-        const resourceForm = document.getElementById('resourceForm');
-
-        let currentTaskId = null;
-        let currentTaskType = null;
-        let selectedResources = [];
-
-        // Sample available resources
-        const availableResources = [
-            { id: 1, type: "Food", quantity: 200, center: "Downtown Relief Center" },
-            { id: 2, type: "Water", quantity: 300, center: "Northside Aid Station" },
-            { id: 3, type: "Medical Kits", quantity: 75, center: "Westwood Shelter" },
-            { id: 4, type: "Blankets", quantity: 150, center: "Riverside Assistance Center" },
-            { id: 5, type: "Clothing", quantity: 120, center: "Mountain View Relief" }
-        ];
-
-        // Event listeners for action buttons
-        document.querySelectorAll('.btn-action').forEach(button => {
-            button.addEventListener('click', function() {
-                const taskId = this.getAttribute('data-task-id');
-                const row = this.closest('tr');
-                const taskType = row.getAttribute('data-type');
-                const taskStatus = row.getAttribute('data-status');
-
-                currentTaskId = taskId;
-                currentTaskType = taskType;
-
-                if (["Aid", "Rescue"].includes(taskType)) {
-                    if (this.textContent.includes("Prepare")) {
-                        openResourceModal(taskId, taskType);
-                    } else if (this.textContent.includes("Mark Complete")) {
-                        markTaskComplete(taskId);
-                    }
-                } else {
-                    openSimpleResourceModal();
+        const toastContainer = document.getElementById('toastContainer');
+        // Get token from localStorage
+            function getToken() {
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    authAlert.classList.remove('d-none');
+                    authMessage.textContent = 'Please log in to manage aid preparations';
+                    throw new Error('Please log in to manage aid preparations');
                 }
-            });
+                return token;
+            }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAssignedTasks();
+
+            // Event listener for Prepare Task button
+            prepareTaskBtn.addEventListener('click', prepareTask);
         });
 
-        // Open resource modal for Aid/Rescue tasks
-        function openResourceModal(taskId, taskType) {
+        // Function to load assigned tasks
+        async function loadAssignedTasks() {
+            try {
+                const token = getToken();
+                const response = await fetch(`/api/volunteers/${VOLUNTEER_ID}/aid-prep-tasks`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch tasks: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    renderTasksTable(result.data);
+                } else {
+                    showToast('Error loading tasks: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                showToast('Error loading tasks. Please try again.', 'error');
+            }
+        }
+
+        // Function to render tasks table
+        function renderTasksTable(tasks) {
+            if (tasks.length === 0) {
+                tasksTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-4">
+                            No tasks assigned at the moment.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let tableContent = '';
+
+            tasks.forEach((task, index) => {
+                const urgencyClass = getUrgencyClass(task.urgencyLevel);
+                const statusClass = getStatusClass(task.task_status);
+                const statusText = getStatusText(task.task_status);
+
+                tableContent += `
+                    <tr data-task-id="${task.task_id}" data-status="${task.task_status}" data-type="${task.requestType}">
+                        <td class="text-center">${index + 1}</td>
+                        <td>${task.requestType}</td>
+                        <td>${task.description}</td>
+                        <td class="text-center"><span class="urgency-badge ${urgencyClass}">${task.urgencyLevel}</span></td>
+                        <td class="text-center"><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td class="text-center">
+                            ${renderActionButtons(task)}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tasksTableBody.innerHTML = tableContent;
+
+            // Add event listeners to action buttons
+            document.querySelectorAll('.btn-prepare').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = this.getAttribute('data-task-id');
+                    const taskType = this.getAttribute('data-task-type');
+                    openResourceModal(taskId, taskType);
+                });
+            });
+
+            document.querySelectorAll('.btn-complete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = this.getAttribute('data-task-id');
+                    markTaskComplete(taskId);
+                });
+            });
+        }
+
+        // Function to render action buttons based on task status
+        function renderActionButtons(task) {
+            if (task.task_status === 'Completed' || task.task_status === 'PreparationCompleted') {
+                return `<button class="btn-disabled" disabled>Completed</button>`;
+            }
+
+            let buttons = '';
+
+            if (task.task_status === 'Preparing') {
+                buttons = `
+                    <button class="btn-action btn-prepare" data-task-id="${task.task_id}" data-task-type="${task.requestType}">
+                        Prepare ${task.requestType}
+                    </button>
+                `;
+            } else if (task.task_status === 'InProgress') {
+                buttons = `
+                    <button class="btn-action btn-prepare" data-task-id="${task.task_id}" data-task-type="${task.requestType}">
+                        Prepare ${task.requestType}
+                    </button>
+                    <button class="btn-action btn-complete" data-task-id="${task.task_id}">
+                        Mark Complete
+                    </button>
+                `;
+            }
+
+            return `<div class="action-buttons">${buttons}</div>`;
+        }
+
+        // Function to open resource modal
+        async function openResourceModal(taskId, taskType) {
+            currentTaskId = taskId;
+            currentPreparationId = taskId; // In this implementation, task_id is the preparationId
+
+            try {
+                 const token = getToken();
+                // Load available resources
+                const resourcesResponse = await fetch(`/api/resource`, {
+                    headers: {
+                         'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!resourcesResponse.ok) {
+                    throw new Error('Failed to fetch resources');
+                }
+
+                const resourcesResult = await resourcesResponse.json();
+
+                if (resourcesResult.success) {
+                    availableResources = resourcesResult.data;
+                } else {
+                    showToast('Error loading resources: ' + resourcesResult.message, 'error');
+                    return;
+                }
+
+                // Load already selected resources for this task
+                let selectedResourcesResponse;
+                try {
+                    selectedResourcesResponse = await fetch(`${API_BASE_URL}/api/AidPreparation/${currentPreparationId}/resources`, {
+                        headers: {
+                            'Authorization': `Bearer ${getAuthToken()}`
+                        }
+                    });
+
+                    if (selectedResourcesResponse.ok) {
+                        const selectedResult = await selectedResourcesResponse.json();
+                        if (selectedResult.success) {
+                            selectedResources = selectedResult.data || [];
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading selected resources:', error);
+                    selectedResources = [];
+                }
+
+                // Render modal content
+                renderResourceModal(taskType);
+
+                // Show modal
+                resourceModal.show();
+            } catch (error) {
+                console.error('Error opening resource modal:', error);
+                showToast('Error loading resources. Please try again.', 'error');
+            }
+        }
+
+        // Function to render resource modal content
+        function renderResourceModal(taskType) {
             modalContent.innerHTML = `
-                <h6 class="mb-3">Preparing ${taskType} Task #${taskId}</h6>
+                <h6 class="mb-3">Preparing ${taskType} Task #${currentTaskId}</h6>
                 <div class="row">
                     <div class="col-md-6">
                         <h6>Available Resources</h6>
@@ -434,18 +531,16 @@
                                 <tr>
                                     <th>Type</th>
                                     <th>Quantity</th>
-                                    <th>Center</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${availableResources.map(resource => `
                                     <tr>
-                                        <td>${resource.type}</td>
+                                        <td>${resource.resourceType}</td>
                                         <td>${resource.quantity}</td>
-                                        <td>${resource.center}</td>
                                         <td>
-                                            <button class="btn-add" data-resource-id="${resource.id}">
+                                            <button class="btn-add" data-resource-id="${resource.resourceID}">
                                                 Add
                                             </button>
                                         </td>
@@ -465,9 +560,20 @@
                                 </tr>
                             </thead>
                             <tbody id="selectedResourcesBody">
-                                <tr>
-                                    <td colspan="3" class="text-center">No resources selected</td>
-                                </tr>
+                                ${selectedResources.length > 0 ?
+                                    selectedResources.map(resource => `
+                                        <tr>
+                                            <td>${resource.resourceType}</td>
+                                            <td>${resource.quantityUsed}</td>
+                                            <td>
+                                                <button class="btn-remove" data-resource-id="${resource.resourceID}">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `).join('') :
+                                    `<tr><td colspan="3" class="text-center">No resources selected</td></tr>`
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -478,7 +584,7 @@
             document.querySelectorAll('.btn-add').forEach(button => {
                 button.addEventListener('click', function() {
                     const resourceId = this.getAttribute('data-resource-id');
-                    const resource = availableResources.find(r => r.id == resourceId);
+                    const resource = availableResources.find(r => r.resourceID == resourceId);
 
                     if (resource) {
                         const quantity = prompt(`Enter quantity to use (max: ${resource.quantity}):`, "1");
@@ -491,28 +597,65 @@
                 });
             });
 
-            resourceModal.show();
-        }
-
-        // Add resource to selection
-        function addResourceToSelection(resource, quantity) {
-            const existingResource = selectedResources.find(r => r.id === resource.id);
-
-            if (existingResource) {
-                existingResource.selectedQuantity += quantity;
-            } else {
-                selectedResources.push({
-                    id: resource.id,
-                    type: resource.type,
-                    selectedQuantity: quantity,
-                    maxQuantity: resource.quantity
+            // Add event listeners to Remove buttons if any
+            document.querySelectorAll('.btn-remove').forEach(button => {
+                button.addEventListener('click', function() {
+                    const resourceId = this.getAttribute('data-resource-id');
+                    removeResourceFromSelection(resourceId);
                 });
-            }
-
-            updateSelectedResourcesTable();
+            });
         }
 
-        // Update selected resources table
+        // Function to add resource to selection
+        async function addResourceToSelection(resource, quantity) {
+            try {
+                const token = getToken();
+                const response = await fetch(`/api/AidPreparation/${currentPreparationId}/resources`, {
+                    method: 'POST',
+                    headers: {
+                         'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        resourceID: resource.resourceID,
+                        quantityUsed: quantity
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to add resource');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Add to local selected resources
+                    selectedResources.push({
+                        resourceID: resource.resourceID,
+                        resourceType: resource.resourceType,
+                        quantityUsed: quantity
+                    });
+
+                    updateSelectedResourcesTable();
+                    showToast('Resource added successfully', 'success');
+                } else {
+                    showToast('Error adding resource: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error adding resource:', error);
+                showToast('Error adding resource. Please try again.', 'error');
+            }
+        }
+
+        // Function to remove resource from selection
+        async function removeResourceFromSelection(resourceId) {
+            // Note: The API doesn't have a DELETE endpoint, so we can't remove resources
+            // In a real implementation, we would need a DELETE endpoint
+            showToast('Resource removal not implemented in API', 'info');
+        }
+
+        // Function to update selected resources table
         function updateSelectedResourcesTable() {
             const selectedResourcesBody = document.getElementById('selectedResourcesBody');
 
@@ -525,10 +668,10 @@
             } else {
                 selectedResourcesBody.innerHTML = selectedResources.map(resource => `
                     <tr>
-                        <td>${resource.type}</td>
-                        <td>${resource.selectedQuantity}</td>
+                        <td>${resource.resourceType}</td>
+                        <td>${resource.quantityUsed}</td>
                         <td>
-                            <button class="btn-remove" data-resource-id="${resource.id}">
+                            <button class="btn-remove" data-resource-id="${resource.resourceID}">
                                 Remove
                             </button>
                         </td>
@@ -545,101 +688,203 @@
             }
         }
 
-        // Remove resource from selection
-        function removeResourceFromSelection(resourceId) {
-            selectedResources = selectedResources.filter(r => r.id != resourceId);
-            updateSelectedResourcesTable();
-        }
-
-        // Prepare task button handler
-        prepareTaskBtn.addEventListener('click', function() {
-            if (selectedResources.length === 0) {
-                alert("Please select at least one resource");
-                return;
-            }
-
-            alert(`Task #${currentTaskId} prepared with selected resources!`);
-            resourceModal.hide();
-            selectedResources = [];
-
-            // Update task status in the table
-            const taskRow = document.querySelector(`tr[data-task-id="${currentTaskId}"]`);
-            if (taskRow) {
-                taskRow.setAttribute('data-status', 'In Progress');
-                taskRow.querySelector('.status-badge').className = 'status-badge badge-progress';
-                taskRow.querySelector('.status-badge').textContent = 'In Progress';
-
-                // Update action buttons
-                const actionCell = taskRow.querySelector('.action-buttons');
-                actionCell.innerHTML = `
-                    <button class="btn-action" data-task-id="${currentTaskId}">
-                        Prepare ${currentTaskType}
-                    </button>
-                    <button class="btn-action" data-task-id="${currentTaskId}">
-                        Mark Complete
-                    </button>
-                `;
-
-                // Re-add event listeners to new buttons
-                actionCell.querySelectorAll('.btn-action').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const taskId = this.getAttribute('data-task-id');
-                        const row = this.closest('tr');
-                        const taskType = row.getAttribute('data-type');
-
-                        currentTaskId = taskId;
-                        currentTaskType = taskType;
-
-                        if (this.textContent.includes("Prepare")) {
-                            openResourceModal(taskId, taskType);
-                        } else if (this.textContent.includes("Mark Complete")) {
-                            markTaskComplete(taskId);
-                        }
-                    });
-                });
-            }
-        });
-
-        // Mark task as complete
-        function markTaskComplete(taskId) {
-            if (confirm("Are you sure you want to mark this task as complete?")) {
-                const taskRow = document.querySelector(`tr[data-task-id="${taskId}"]`);
-                if (taskRow) {
-                    taskRow.setAttribute('data-status', 'Completed');
-                    taskRow.querySelector('.status-badge').className = 'status-badge badge-completed';
-                    taskRow.querySelector('.status-badge').textContent = 'Completed';
-
-                    // Update action button
-                    const actionCell = taskRow.querySelector('.action-buttons');
-                    actionCell.innerHTML = `
-                        <button class="btn-disabled" disabled>
-                            Completed
-                        </button>
-                    `;
-
-                    alert(`Task #${taskId} marked as completed!`);
+        // Function to prepare task (close modal and update status)
+                async function prepareTask() {
+            try {
+                const token = getToken();
+                // Check if any resources are selected
+                if (selectedResources.length === 0) {
+                    showToast('Please add at least one resource before preparing the task', 'info');
+                    return;
                 }
+
+                // Update task status to InProgress
+                const response = await fetch(`/api/AidPreparation/${currentPreparationId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: 'InProgress'
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to update task status');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Also update the aid request status
+                    try {
+                        const aidRequestResponse = await fetch(`/api/aid-requests/${currentTaskId}/status`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                status: 'InProgress'
+                            })
+                        });
+
+                        if (!aidRequestResponse.ok) {
+                            console.error('Failed to update aid request status');
+                        }
+                    } catch (aidRequestError) {
+                        console.error('Error updating aid request status:', aidRequestError);
+                    }
+
+                    resourceModal.hide();
+                    showToast('Task prepared successfully', 'success');
+
+                    // Reload tasks to update the UI
+                    loadAssignedTasks();
+                } else {
+                    showToast('Error preparing task: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error preparing task:', error);
+                showToast('Error preparing task. Please try again.', 'error');
             }
         }
 
-        // Open simple resource modal for other tasks
-        function openSimpleResourceModal() {
-            simpleResourceModal.show();
-        }
-
-        // Save resource for other tasks
-        saveResourceBtn.addEventListener('click', function() {
-            const resourceName = document.getElementById('resourceName').value;
-            const resourceQuantity = document.getElementById('resourceQuantity').value;
-
-            if (!resourceName || !resourceQuantity) {
-                alert("Please fill in all fields");
+               // Function to mark task as complete
+        async function markTaskComplete(taskId) {
+            if (!confirm("Are you sure you want to mark this task as complete?")) {
                 return;
             }
 
-            alert(`Resource "${resourceName}" (Quantity: ${resourceQuantity}) added to task!`);
-            simpleResourceModal.hide();
-            resourceForm.reset();
-        });
-    });
-</script>
+            try {
+                const token = getToken();
+                // First check if the task has resources
+                const resourcesResponse = await fetch(`/api/AidPreparation/${taskId}/resources`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (resourcesResponse.ok) {
+                    const resourcesResult = await resourcesResponse.json();
+
+                    if (resourcesResult.success && (!resourcesResult.data || resourcesResult.data.length === 0)) {
+                        showToast('Cannot complete task: No resources have been added', 'error');
+                        return;
+                    }
+                }
+
+                // Update task status to PreparationCompleted
+                const response = await fetch(`/api/AidPreparation/${taskId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: 'PreparationCompleted'
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to complete task');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Also update the aid request status
+                    try {
+                        const aidRequestResponse = await fetch(`/api/aid-requests/${taskId}/status`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                status: 'PreparationCompleted'
+                            })
+                        });
+
+                        if (!aidRequestResponse.ok) {
+                            console.error('Failed to update aid request status');
+                        }
+                    } catch (aidRequestError) {
+                        console.error('Error updating aid request status:', aidRequestError);
+                    }
+
+                    showToast('Task marked as completed successfully', 'success');
+
+                    // Reload tasks to update the UI
+                    loadAssignedTasks();
+                } else {
+                    showToast('Error completing task: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error completing task:', error);
+                showToast('Error completing task. Please try again.', 'error');
+            }
+        }
+        // Helper function to get urgency class
+        function getUrgencyClass(urgencyLevel) {
+            switch (urgencyLevel.toLowerCase()) {
+                case 'low': return 'badge-low';
+                case 'medium': return 'badge-medium';
+                case 'high': return 'badge-high';
+                default: return 'badge-medium';
+            }
+        }
+
+        // Helper function to get status class
+        function getStatusClass(status) {
+            switch (status) {
+                case 'Preparing': return 'badge-preparing';
+                case 'InProgress': return 'badge-inprogress';
+                case 'Completed':
+                case 'PreparationCompleted': return 'badge-completed';
+                default: return 'badge-preparing';
+            }
+        }
+
+        // Helper function to get status text
+        function getStatusText(status) {
+            switch (status) {
+                case 'Preparing': return 'Preparing';
+                case 'InProgress': return 'In Progress';
+                case 'Completed':
+                case 'PreparationCompleted': return 'Completed';
+                default: return status;
+            }
+        }
+
+      
+
+        // Function to show toast notifications
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type} show`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <strong class="me-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -55,11 +55,7 @@ namespace DRCS.Controllers
         {
             try
             {
-                // Admin check
-                var role = HttpContext.Items["role"]?.ToString();
-                if (role != "Admin")
-                    return StatusCode(403, new { success = false, error = true, message = "Only admin can create rescue tracking records." });
-
+               
                 var tracking = new RescueTracking
                 {
                     RequestID = dto.RequestID,

@@ -27,7 +27,7 @@ namespace DRCS.Controllers
                 var role = HttpContext.Items["role"]?.ToString();
                 var userId = HttpContext.Items["userId"]?.ToString(); // middleware sets this
 
-                if (role != "Admin" && userId != volunteerId.ToString())
+                if (role != "Volunteer" && userId != volunteerId.ToString())
                 {
                     return StatusCode(403, new
                     {
@@ -58,7 +58,7 @@ namespace DRCS.Controllers
                 var role = HttpContext.Items["role"]?.ToString();
                 var userId = HttpContext.Items["userId"]?.ToString();
 
-                if (role != "Admin" && userId != volunteerId.ToString())
+                if (role != "Volunteer" && userId != volunteerId.ToString())
                 {
                     return StatusCode(403, new
                     {

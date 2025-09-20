@@ -327,6 +327,7 @@
 
         // Get role
         const role = data.user_info.roleName;
+        if(role=="Volunteer") localStorage.setItem("volunteer_id", data.volunteer_id);
 
         // Redirect to dashboard by role
         if (role.startsWith("Admin")) {

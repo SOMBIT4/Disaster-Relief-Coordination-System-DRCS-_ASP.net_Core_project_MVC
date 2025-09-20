@@ -148,6 +148,20 @@ namespace DRCS.Services
 
         public async Task<AidPreparationResource> AddResourceUsageAsync(int preparationID, int resourceID, int quantity)
         {
+            // Fetch the resource first
+            var resource = await _context.Resources.FirstOrDefaultAsync(r => r.ResourceID == resourceID);
+
+            if (resource == null)
+                throw new Exception("Resource not found.");
+
+            if (resource.Quantity < quantity)
+                throw new Exception("Not enough resource available.");
+
+            // Deduct the quantity
+            resource.Quantity -= quantity;
+            resource.UpdatedAt = DateTime.UtcNow;
+
+            // Create the AidPreparationResource record
             var usage = new AidPreparationResource
             {
                 PreparationID = preparationID,
@@ -157,10 +171,25 @@ namespace DRCS.Services
                 UpdatedAt = DateTime.UtcNow
             };
 
-            _context.AidPreparationResources.Add(usage);
-            await _context.SaveChangesAsync();
+            // Add both changes in a transaction
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Resources.Update(resource);
+                _context.AidPreparationResources.Add(usage);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
             return usage;
         }
+
 
         public async Task<List<AidPreparationResource>> GetResourcesAsync(int preparationID)
         {

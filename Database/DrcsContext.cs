@@ -217,6 +217,11 @@ namespace backend.Database
                 .WithMany(rc => rc.Donations)
                 .HasForeignKey(d => d.AssociatedCenter)
                 .OnDelete(DeleteBehavior.Cascade);
+           
+            modelBuilder.Entity<Volunteer>()
+                 .HasOne<User>()
+                 .WithMany()
+                 .HasForeignKey(v => v.UserID);
 
 
         }

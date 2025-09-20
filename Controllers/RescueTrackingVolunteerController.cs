@@ -37,10 +37,7 @@ namespace DRCS.Controllers
         {
             try
             {
-                // Check admin role
-                var role = HttpContext.Items["role"]?.ToString();
-                if (role != "Admin")
-                    return StatusCode(403, new { success = false, error = true, message = "Only admin can assign volunteers" });
+               
 
                 // Create the volunteer assignment
                 var volunteerAssignment = await _service.CreateAsync(request.TrackingID, request.VolunteerID);

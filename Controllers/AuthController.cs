@@ -99,7 +99,6 @@ namespace DRCS.Controllers
             });
         }
 
-        // LOGIN
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
@@ -120,16 +119,31 @@ namespace DRCS.Controllers
             var refreshToken = GenerateRefreshToken(user);
             SetTokenCookies(Response, jwtToken, refreshToken);
 
-            return Ok(new
+            // Get volunteer ID if the user is a volunteer
+            int? volunteerId = null;
+            if (user.RoleName == "Volunteer")
+            {
+                var volunteer = await _db.Volunteers.FirstOrDefaultAsync(v => v.UserID == user.UserID);
+                if (volunteer != null)
+                    volunteerId = volunteer.VolunteerID;
+            }
+
+            // Prepare response
+            var response = new
             {
                 success = true,
                 error = false,
                 message = "Login successful",
                 user_info = user,
                 access_token = jwtToken,
-                refresh_token = refreshToken
-            });
+                refresh_token = refreshToken,
+                volunteer_id = volunteerId
+            };
+
+            return Ok(response);
         }
+
+
 
         // LOGOUT
         [HttpGet("logout")]
