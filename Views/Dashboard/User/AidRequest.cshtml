@@ -370,6 +370,8 @@
 <!-- Toastr for notifications -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+<!-- ... (keep all the existing HTML and CSS code) ... -->
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize toastr
@@ -397,26 +399,40 @@
         let cooldownInterval = null;
         const COOLDOWN_DURATION = 600; // 10 minutes in seconds
 
-        // Mock affected areas data (in a real app, this would come from an API)
-        const mockAffectedAreas = [
-            { AreaID: 1, AreaName: "Downtown District", AreaType: "Urban", SeverityLevel: "High" },
-            { AreaID: 2, AreaName: "Riverside Community", AreaType: "Residential", SeverityLevel: "Medium" },
-            { AreaID: 3, AreaName: "Northern Suburbs", AreaType: "Suburban", SeverityLevel: "Low" },
-            { AreaID: 4, AreaName: "Eastwood Plains", AreaType: "Rural", SeverityLevel: "High" },
-            { AreaID: 5, AreaName: "Southwest Industrial Zone", AreaType: "Industrial", SeverityLevel: "Medium" }
-        ];
+        // Load affected areas from backend
+        async function loadAffectedAreas() {
+            try {
+                const response = await fetch("/api/affected-areas"); // Adjust endpoint as needed
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-        // Populate affected areas dropdown
-        const areaDropdown = document.getElementById('AreaID');
-        mockAffectedAreas.forEach(area => {
-            const option = document.createElement('option');
-            option.value = area.AreaID;
-            option.textContent = `${area.AreaName} (Type: ${area.AreaType}, Severity: ${area.SeverityLevel})`;
-            areaDropdown.appendChild(option);
-        });
+                const result = await response.json();
+                const areaDropdown = document.getElementById('AreaID');
+                areaDropdown.innerHTML = '<option value="">Select Affected Area</option>';
+
+                if (result.success) {
+                    result.data.forEach(area => {
+                        const option = document.createElement('option');
+                        option.value = area.areaID; // Adjust property name as needed
+                        option.textContent = `${area.areaName} (Type: ${area.areaType}, Severity: ${area.severityLevel})`;
+                        areaDropdown.appendChild(option);
+                    });
+                } else {
+                    areaDropdown.innerHTML = '<option value="">Error loading areas</option>';
+                    toastr.error('Failed to load affected areas');
+                }
+            } catch (err) {
+                console.error("Error fetching affected areas:", err);
+                toastr.error('Error loading affected areas');
+            }
+        }
 
         // Check for existing cooldown on page load
         checkCooldown();
+
+        // Load affected areas when page loads
+        loadAffectedAreas();
 
         // Handle submit button click
         submitBtn.addEventListener('click', function() {
@@ -453,19 +469,65 @@
         });
 
         // Function to submit the form
-        function submitForm() {
+        async function submitForm() {
+            
             // Show loading state
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
 
-            // Submit the form
-            aidRequestForm.submit();
+            try {
 
-            // Start cooldown period (10 minutes)
-            startCooldown(COOLDOWN_DURATION);
+                // Prepare the request data
+                const requestData = {
+                    AreaID: parseInt(document.getElementById('AreaID').value),
+                    ContactInfo: document.getElementById('ContactInfo').value,
+                    RequestType: document.getElementById('RequestType').value,
+                    Description: document.getElementById('Description').value,
+                    UrgencyLevel: document.getElementById('UrgencyLevel').value,
+                    NumberOfPeople: parseInt(document.getElementById('NumberOfPeople').value)
+                };
 
-            // Save cooldown to localStorage
-            localStorage.setItem("lastAidRequestTime", Date.now());
+                // Send POST request to the API
+                const response = await fetch("/api/aid-requests", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        
+                        
+                        // Include authorization header if needed
+                         "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+                    },
+                    body: JSON.stringify(requestData),
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                // Show success message
+                successModal.show();
+
+                // Start cooldown period (10 minutes)
+                startCooldown(COOLDOWN_DURATION);
+
+                // Save cooldown to localStorage
+                localStorage.setItem("lastAidRequestTime", Date.now());
+
+                // Reset form
+                aidRequestForm.reset();
+
+            } catch (err) {
+                console.error("Error submitting aid request:", err);
+                toastr.error(`Failed to submit request: ${err.message}`);
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-send-fill"></i> Submit Request';
+            }
         }
 
         // Function to check for existing cooldown

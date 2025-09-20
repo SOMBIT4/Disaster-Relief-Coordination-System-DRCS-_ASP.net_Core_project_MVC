@@ -154,13 +154,34 @@
 <body>
     <!-- Sidebar -->
     <div id="volSidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h4><i class="bi bi-heart-pulse"></i> Volunteer Panel</h4>
-        </div>
-        <a href="/Dashboard/Volunteer"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a href="/Volunteer/Tasks"><i class="bi bi-list-task"></i> Assigned Tasks</a>
-        <a href="/Volunteer/Tracking"><i class="bi bi-geo-alt"></i> Rescue Tracking Tasks</a>
-        <a href="/api/auth/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+
+        <h4 class="text-center py-3">Volunteer Panel</h4>
+        <a href="/Dashboard/Volunteer">Dashboard</a>
+        <a href="/Volunteer/Tasks">Assigned Tasks</a>
+        <a href="/Volunteer/Tracking">Rescue Tracking Tasks</a>
+        <a href="#" id="logoutLink">Logout</a>
+        <script>
+            document.getElementById('logoutLink').addEventListener('click', async (e) => {
+                e.preventDefault(); // prevent default link behavior
+
+                // 1️⃣ Clear localStorage
+                localStorage.clear();
+
+                // 2️⃣ Call backend logout endpoint to delete cookies
+                try {
+                    await fetch('/api/auth/logout', {
+                        method: 'GET',
+                        credentials: 'include' // send cookies
+                    });
+                } catch (err) {
+                    console.error('Logout failed', err);
+                }
+
+                // 3️⃣ Redirect to homepage
+                window.location.href = '/';
+            });
+        </script>
+
     </div>
 
     <!-- Main content -->

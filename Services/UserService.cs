@@ -32,6 +32,10 @@ namespace DRCS.Services
                     u.Name,
                     u.RoleName,
                     u.PhoneNo,
+
+                    // ✅ Ensure CreatedAt is returned as UTC
+                    CreatedAt = DateTime.SpecifyKind(u.CreatedAt, DateTimeKind.Utc),
+
                     DonationsCount = _context.Donations.Count(d => d.UserID == u.UserID),
                     AidRequestsCount = _context.AidRequests.Count(ar => ar.UserID == u.UserID),
                     ManagedCenters = u.RoleName == "Manager"
@@ -45,6 +49,7 @@ namespace DRCS.Services
 
             return users;
         }
+
 
         // ------------------ GET USER WITH VOLUNTEER INFO ------------------
         public async Task<object> GetUserWithVolunteerInfo(int userId)

@@ -196,6 +196,29 @@ namespace backend.Database
                 .WithMany()
                 .HasForeignKey(v => v.UserID)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // ReliefCenter -> Resource
+            modelBuilder.Entity<Resource>()
+                .HasOne(r => r.ReliefCenter)
+                .WithMany(rc => rc.Resources)
+                .HasForeignKey(r => r.ReliefCenterID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ReliefCenter -> Volunteer
+            modelBuilder.Entity<Volunteer>()
+                .HasOne(v => v.ReliefCenter)
+                .WithMany(rc => rc.Volunteers)
+                .HasForeignKey(v => v.AssignedCenter)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ReliefCenter -> Donation
+            modelBuilder.Entity<Donation>()
+                .HasOne(d => d.ReliefCenter)
+                .WithMany(rc => rc.Donations)
+                .HasForeignKey(d => d.AssociatedCenter)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }

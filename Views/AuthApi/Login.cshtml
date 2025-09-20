@@ -304,37 +304,45 @@
             const email = document.getElementById('Email').value.trim();
             const password = document.getElementById('Password').value;
 
-            try {
-                // Call backend login
-                const loginResponse = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password }),
-                    credentials: 'include'
-                });
+              try {
+        // Call backend login
+        const loginResponse = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+            credentials: 'include' // keeps cookies for refresh
+        });
 
-                const data = await loginResponse.json();
+        const data = await loginResponse.json();
 
-                if (!data.success) {
-                    alert(data.message || 'Login failed');
-                    return;
-                }
+        if (!data.success) {
+            alert(data.message || 'Login failed');
+            return;
+        }
 
-                const role = data.user_info.roleName;
+        // Save tokens in localStorage
+        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("refresh_token", data.refresh_token);
+        localStorage.setItem("role", data.user_info.roleName);
 
-                // Redirect to dashboard by role
-                if (role.startsWith("Admin")) {
-                    window.location.href = '/Dashboard/Admin';
-                } else if (role === "Volunteer") {
-                    window.location.href = '/Dashboard/Volunteer';
-                } else {
-                    window.location.href = '/Dashboard/User';
-                }
+        // Get role
+        const role = data.user_info.roleName;
 
-            } catch (err) {
-                console.error(err);
-                alert('An error occurred while logging in.');
-            }
+        // Redirect to dashboard by role
+        if (role.startsWith("Admin")) {
+            window.location.href = '/Dashboard/Admin';
+        } else if (role === "Volunteer") {
+            window.location.href = '/Dashboard/Volunteer';
+        } else {
+            window.location.href = '/Dashboard/User';
+        }
+
+        console.log("Login response:", data);
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred while logging in.');
+    }
+
         });
     });
 </script>

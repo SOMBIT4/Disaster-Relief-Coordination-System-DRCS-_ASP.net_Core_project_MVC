@@ -28,7 +28,7 @@ namespace DRCS.Services
                 RequestID = requestID,
                 DepartureTime = DateTime.MinValue,
                 EstimatedArrival = DateTime.MinValue,
-                Status = "Pending",
+                Status = "Preparing",
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -44,12 +44,14 @@ namespace DRCS.Services
             if (prep == null)
                 throw new Exception("Aid preparation record not found.");
 
-            prep.DepartureTime = departure;
-            prep.EstimatedArrival = arrival;
+            // ✅ Ensure UTC before saving
+            prep.DepartureTime = DateTime.SpecifyKind(departure, DateTimeKind.Utc);
+            prep.EstimatedArrival = DateTime.SpecifyKind(arrival, DateTimeKind.Utc);
             prep.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<List<AidPreparation>> GetFullAidPrepDetailsAsync()
         {

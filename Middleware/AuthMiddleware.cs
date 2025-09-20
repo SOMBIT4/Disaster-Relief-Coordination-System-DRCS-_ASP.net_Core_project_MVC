@@ -18,18 +18,15 @@ namespace DRCS.Middleware
         public async Task InvokeAsync(HttpContext context)
         {
             var path = context.Request.Path.Value?.ToLower();
+            var method = context.Request.Method;
 
-            //  Skip if NOT an API request
-            if (!path.StartsWith("/api"))
-            {
-                await _next(context);
-                return;
-            }
-
-            //  Allow public API routes (login/register)
-            if (path.StartsWith("/api/auth", StringComparison.OrdinalIgnoreCase)||
-                path.StartsWith("/api/relief-centers", StringComparison.OrdinalIgnoreCase) ||
-    path.StartsWith("/api/skill", StringComparison.OrdinalIgnoreCase))
+            // Skip authentication for:
+            // - Non-API routes
+            // - GET /api/relief-centers (all endpoints)
+            // - GET /api/skill (all endpoints)
+            if (path.StartsWith("/api/auth", StringComparison.OrdinalIgnoreCase) || !path.StartsWith("/api") ||
+                (method == "GET" && path.StartsWith("/api/relief-centers")) ||
+                (method == "GET" && path.StartsWith("/api/skill")))
             {
                 await _next(context);
                 return;
@@ -37,17 +34,19 @@ namespace DRCS.Middleware
 
             // 🔒 Everything else under /api/* requires JWT
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            // ✅ fallback: read from cookie if no header
+
+            // ✅ Fallback: read from cookie if no header
             if (string.IsNullOrEmpty(token))
             {
                 token = context.Request.Cookies["access_token"];
             }
-            //if (token == null)
-            //{
-            //    context.Response.StatusCode = 401;
-            //    await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Access token not provided" });
-            //    return;
-            //}
+
+            if (string.IsNullOrEmpty(token))
+            {
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Access token required" });
+                return;
+            }
 
             try
             {
@@ -92,6 +91,5 @@ namespace DRCS.Middleware
                 await context.Response.WriteAsJsonAsync(new { success = false, error = true, message = "Invalid access token" });
             }
         }
-
     }
 }

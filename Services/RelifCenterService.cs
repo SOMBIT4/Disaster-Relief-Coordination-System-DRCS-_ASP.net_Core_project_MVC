@@ -128,7 +128,12 @@ namespace DRCS.Services
         // -----------------------------
         public async Task<List<ReliefCenter>> GetAllReliefCentersAsync()
         {
-            return await _context.ReliefCenters.ToListAsync();
+            var centers = await _context.ReliefCenters
+    .Include(rc => rc.Resources)
+    .Include(rc => rc.Volunteers)
+    .Include(rc => rc.Donations)
+    .ToListAsync();
+            return centers;
         }
     }
 }

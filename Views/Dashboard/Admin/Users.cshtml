@@ -272,10 +272,50 @@
             color: white;
         }
 
-    /* Modal styling with light green background */
+    /* Loading and error states */
+    .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+    }
+
+    .error-message {
+        color: #dc3545;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-light);
+    }
+
+    /* Modal styling */
     .modal-content {
-        background-color: var(--secondary-color);
-        
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .modal-title {
+        font-weight: 600;
+    }
+
+    .btn-close {
+        filter: invert(1);
+    }
+
+    .modal-footer {
+        border-top: 1px solid #eee;
+        padding: 1rem;
     }
 </style>
 
@@ -319,8 +359,23 @@
         </div>
     </div>
 
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="ms-2 mb-0">Loading users...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message" style="display: none;">
+        <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+        <p class="mt-2" id="errorText">Failed to load users</p>
+        <button class="btn btn-primary mt-2" onclick="loadUsers()">Try Again</button>
+    </div>
+
     <!-- Users Table -->
-    <div class="table-container">
+    <div class="table-container" id="usersTableContainer" style="display: none;">
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -335,118 +390,21 @@
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
-                    <tr data-role="Admin" data-date="2025-09-01">
-                        <td class="text-center">1</td>
-                        <td>John Doe</td>
-                        <td>john@example.com</td>
-                        <td>123-456-7890</td>
-                        <td class="text-center"><span class="role-badge badge-admin">Admin</span></td>
-                        <td class="text-center">Sep 1, 2025</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="1">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="1">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="1">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-role="User" data-date="2025-09-04">
-                        <td class="text-center">2</td>
-                        <td>Jane Smith</td>
-                        <td>jane@example.com</td>
-                        <td>098-765-4321</td>
-                        <td class="text-center"><span class="role-badge badge-user">User</span></td>
-                        <td class="text-center">Sep 4, 2025</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="2">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="2">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="2">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-role="Volunteer" data-date="2025-09-03">
-                        <td class="text-center">3</td>
-                        <td>Robert Johnson</td>
-                        <td>robert@example.com</td>
-                        <td>555-123-4567</td>
-                        <td class="text-center"><span class="role-badge badge-volunteer">Volunteer</span></td>
-                        <td class="text-center">Sep 3, 2025</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="3">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="3">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="3">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-role="User" data-date="2025-08-28">
-                        <td class="text-center">4</td>
-                        <td>Sarah Williams</td>
-                        <td>sarah@example.com</td>
-                        <td>444-987-6543</td>
-                        <td class="text-center"><span class="role-badge badge-user">User</span></td>
-                        <td class="text-center">Aug 28, 2025</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="4">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="4">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="4">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-role="Volunteer" data-date="2025-08-25">
-                        <td class="text-center">5</td>
-                        <td>Michael Brown</td>
-                        <td>michael@example.com</td>
-                        <td>777-555-1234</td>
-                        <td class="text-center"><span class="role-badge badge-volunteer">Volunteer</span></td>
-                        <td class="text-center">Aug 25, 2025</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="5">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="5">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="5">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                    <!-- Users will be populated by JavaScript -->
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <i class="bi bi-people fs-1"></i>
+        <h4>No Users Found</h4>
+        <p>There are no users in the system yet.</p>
+    </div>
+
     <!-- Pagination -->
-    <div class="pagination-container">
+    <div class="pagination-container" id="paginationContainer" style="display: none;">
         <nav aria-label="Users pagination">
             <ul class="pagination">
                 <li class="page-item disabled">
@@ -588,214 +546,373 @@
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get elements
+        // Load users when page loads
+        loadUsers();
+
+        // Set up event listeners for filters
+        setupEventListeners();
+    });
+
+    // Global variables
+    let allUsers = [];
+    let filteredUsers = [];
+    let currentUserIdToDelete = null;
+
+    // Function to load users from API
+    async function loadUsers() {
+        try {
+            // Show loading, hide other elements
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('usersTableContainer').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('paginationContainer').style.display = 'none';
+
+            // Get token from localStorage
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                throw new Error('Please log in to view users');
+            }
+
+            // Make API request to /api/users (not /users)
+            const response = await fetch('/api/users', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    throw new Error('Authentication failed. Please log in again.');
+                } else if (response.status === 403) {
+                    throw new Error('You do not have permission to view users. Admin access required.');
+                }
+                throw new Error('Failed to fetch users');
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                allUsers = data.data;
+                filteredUsers = [...allUsers];
+
+                // Hide loading, show table
+                document.getElementById('loadingSpinner').style.display = 'none';
+
+                if (allUsers.length > 0) {
+                    document.getElementById('usersTableContainer').style.display = 'block';
+                    document.getElementById('paginationContainer').style.display = 'flex';
+                    populateUsersTable(allUsers);
+                    applyFilters(); // Apply any existing filters
+                } else {
+                    document.getElementById('emptyState').style.display = 'block';
+                }
+            } else {
+                throw new Error(data.message || 'Failed to load users');
+            }
+        } catch (error) {
+            console.error('Error loading users:', error);
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorText').textContent = error.message;
+        }
+    }
+
+    // Function to populate users table
+    function populateUsersTable(users) {
+        const tableBody = document.getElementById('usersTableBody');
+        tableBody.innerHTML = '';
+
+        users.forEach((user, index) => {
+            const row = document.createElement('tr');
+
+            // Format the date for display
+            const joinDate = new Date(user.createdAt);
+            const formattedDate = formatDate(joinDate);
+
+            // Determine badge class based on role
+            let badgeClass = '';
+            switch(user.roleName) {
+                case 'Admin':
+                    badgeClass = 'badge-admin';
+                    break;
+                case 'User':
+                    badgeClass = 'badge-user';
+                    break;
+                case 'Volunteer':
+                    badgeClass = 'badge-volunteer';
+                    break;
+                default:
+                    badgeClass = 'badge-user';
+            }
+
+            row.setAttribute('data-role', user.roleName);
+            row.setAttribute('data-date', user.createdAt);
+            row.setAttribute('data-user-id', user.userID);
+
+            row.innerHTML = `
+                <td class="text-center">${index + 1}</td>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.phoneNo || 'N/A'}</td>
+                <td class="text-center"><span class="role-badge ${badgeClass}">${user.roleName}</span></td>
+                <td class="text-center">${formattedDate}</td>
+                <td class="text-center">
+                    <div class="action-buttons">
+                        <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="${user.userID}">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="${user.userID}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewUserModal" data-user-id="${user.userID}">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+
+        // Set up event listeners for the action buttons
+        setupActionButtonListeners();
+    }
+
+    // Function to format date for display
+    function formatDate(date) {
+        if (isNaN(date.getTime())) {
+            return 'Invalid Date';
+        }
+
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+
+    // Function to set up event listeners
+    function setupEventListeners() {
         const roleFilter = document.getElementById('roleFilter');
         const sortOrder = document.getElementById('sortOrder');
         const searchInput = document.getElementById('search');
         const applyButton = document.getElementById('applyFilters');
         const resetButton = document.getElementById('resetFilters');
-        const tableBody = document.getElementById('usersTableBody');
-        const rows = tableBody.querySelectorAll('tr');
 
-        // Store original rows for resetting
-        const originalRows = Array.from(rows);
-
-        // Apply filters function
-        function applyFilters() {
-            const roleValue = roleFilter.value;
-            const searchTerm = searchInput.value.toLowerCase();
-            const sortValue = sortOrder.value;
-
-            // First, show all rows
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-            });
-
-            // Apply role filter
-            if (roleValue !== 'all') {
-                rows.forEach(row => {
-                    const rowRole = row.getAttribute('data-role');
-                    if (rowRole !== roleValue) {
-                        row.style.display = 'none';
-                    }
-                });
-            }
-
-            // Apply search filter
-            if (searchTerm) {
-                rows.forEach(row => {
-                    if (row.style.display !== 'none') {
-                        const name = row.cells[1].textContent.toLowerCase();
-                        const email = row.cells[2].textContent.toLowerCase();
-
-                        if (name.includes(searchTerm) || email.includes(searchTerm)) {
-                            row.classList.add('highlight');
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-            }
-
-            // Apply sorting
-            if (sortValue === 'latest') {
-                sortTable(true);
-            } else if (sortValue === 'oldest') {
-                sortTable(false);
-            }
-        }
-
-        // Sort table by date
-        function sortTable(newestFirst = true) {
-            const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
-
-            visibleRows.sort((a, b) => {
-                const dateA = new Date(a.getAttribute('data-date'));
-                const dateB = new Date(b.getAttribute('data-date'));
-
-                return newestFirst ? dateB - dateA : dateA - dateB;
-            });
-
-            // Reorder the table
-            visibleRows.forEach(row => {
-                tableBody.appendChild(row);
-            });
-
-            // Update row numbers
-            updateRowNumbers();
-        }
-
-        // Update row numbers after sorting
-        function updateRowNumbers() {
-            const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
-            visibleRows.forEach((row, index) => {
-                row.cells[0].textContent = index + 1;
-            });
-        }
-
-        // Reset filters function
-        function resetFilters() {
-            roleFilter.value = 'all';
-            sortOrder.value = 'latest';
-            searchInput.value = '';
-
-            // Show all rows and remove highlights
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-            });
-
-            // Restore original order
-            originalRows.forEach(row => {
-                tableBody.appendChild(row);
-            });
-
-            // Reset row numbers
-            updateRowNumbers();
-        }
-
-        // Event listeners
         applyButton.addEventListener('click', applyFilters);
-
         resetButton.addEventListener('click', resetFilters);
-
-        // Also apply filters when search input changes
-        searchInput.addEventListener('keyup', function() {
-            applyFilters();
-        });
-
-        // Apply filters when dropdowns change
+        searchInput.addEventListener('keyup', applyFilters);
         roleFilter.addEventListener('change', applyFilters);
         sortOrder.addEventListener('change', applyFilters);
 
-        // Edit User Modal functionality
-        const editUserModal = document.getElementById('editUserModal');
+        // Set up modal event listeners
+        setupModalListeners();
+    }
 
-        editUserModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const userId = button.getAttribute('data-user-id');
+    // Function to set up action button listeners
+    function setupActionButtonListeners() {
+        // Edit buttons
+        document.querySelectorAll('.btn-edit').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                const user = allUsers.find(u => u.userID == userId);
 
-            // In a real application, you would fetch user data from the server
-            // For this example, we'll use the data from the table row
-            const row = button.closest('tr');
-            const name = row.cells[1].textContent;
-            const email = row.cells[2].textContent;
-            const phone = row.cells[3].textContent;
-            const role = row.getAttribute('data-role');
-
-            document.getElementById('editUserId').value = userId;
-            document.getElementById('editUserName').value = name;
-            document.getElementById('editUserEmail').value = email;
-            document.getElementById('editUserPhone').value = phone;
-            document.getElementById('editUserRole').value = role;
-        });
-
-        document.getElementById('saveUserChanges').addEventListener('click', function() {
-            // In a real application, you would submit the form to the server
-            alert('User details would be saved here in a real application');
-            bootstrap.Modal.getInstance(editUserModal).hide();
-        });
-
-        // View User Modal functionality
-        const viewUserModal = document.getElementById('viewUserModal');
-
-        viewUserModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-
-            // In a real application, you would fetch user data from the server
-            // For this example, we'll use the data from the table row
-            const row = button.closest('tr');
-            const name = row.cells[1].textContent;
-            const email = row.cells[2].textContent;
-            const phone = row.cells[3].textContent;
-            const role = row.getAttribute('data-role');
-            const joinDate = row.cells[5].textContent;
-
-            document.getElementById('viewUserName').textContent = name;
-            document.getElementById('viewUserEmail').textContent = email;
-            document.getElementById('viewUserPhone').textContent = phone;
-            document.getElementById('viewUserRole').textContent = role;
-            document.getElementById('viewUserJoinDate').textContent = joinDate;
-        });
-
-        // Delete User Modal functionality
-        const deleteUserModal = document.getElementById('deleteUserModal');
-        let userIdToDelete = null;
-
-        deleteUserModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            userIdToDelete = button.getAttribute('data-user-id');
-
-            // In a real application, you would fetch user data from the server
-            // For this example, we'll use the data from the table row
-            const row = button.closest('tr');
-            const name = row.cells[1].textContent;
-            const email = row.cells[2].textContent;
-            const role = row.getAttribute('data-role');
-
-            document.getElementById('deleteUserName').textContent = name;
-            document.getElementById('deleteUserEmail').textContent = email;
-            document.getElementById('deleteUserRole').textContent = role;
-        });
-
-        document.getElementById('confirmDeleteUser').addEventListener('click', function() {
-            // In a real application, you would send a delete request to the server
-            alert(`User with ID ${userIdToDelete} would be deleted here in a real application`);
-            bootstrap.Modal.getInstance(deleteUserModal).hide();
-
-            // Remove the row from the table
-            const row = document.querySelector(`button[data-user-id="${userIdToDelete}"]`).closest('tr');
-            row.remove();
-
-            // Update row numbers
-            const tableBody = document.getElementById('usersTableBody');
-            const rows = tableBody.querySelectorAll('tr');
-            rows.forEach((row, index) => {
-                row.cells[0].textContent = index + 1;
+                if (user) {
+                    document.getElementById('editUserId').value = user.userID;
+                    document.getElementById('editUserName').value = user.name;
+                    document.getElementById('editUserEmail').value = user.email;
+                    document.getElementById('editUserPhone').value = user.phoneNo || '';
+                    document.getElementById('editUserRole').value = user.roleName;
+                }
             });
         });
-    });
+
+        // View buttons
+        document.querySelectorAll('.btn-view').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                const user = allUsers.find(u => u.userID == userId);
+
+                if (user) {
+                    const joinDate = new Date(user.createdAt);
+                    const formattedDate = formatDate(joinDate);
+
+                    document.getElementById('viewUserName').textContent = user.name;
+                    document.getElementById('viewUserEmail').textContent = user.email;
+                    document.getElementById('viewUserPhone').textContent = user.phoneNo || 'N/A';
+                    document.getElementById('viewUserRole').textContent = user.roleName;
+                    document.getElementById('viewUserJoinDate').textContent = formattedDate;
+                }
+            });
+        });
+
+        // Delete buttons
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                const user = allUsers.find(u => u.userID == userId);
+
+                if (user) {
+                    currentUserIdToDelete = userId;
+                    document.getElementById('deleteUserName').textContent = user.name;
+                    document.getElementById('deleteUserEmail').textContent = user.email;
+                    document.getElementById('deleteUserRole').textContent = user.roleName;
+                }
+            });
+        });
+    }
+
+    // Function to set up modal listeners
+    function setupModalListeners() {
+        // Save changes button
+        document.getElementById('saveUserChanges').addEventListener('click', async function() {
+            try {
+                const userId = document.getElementById('editUserId').value;
+                const name = document.getElementById('editUserName').value;
+                const email = document.getElementById('editUserEmail').value;
+                const phoneNo = document.getElementById('editUserPhone').value;
+                const roleName = document.getElementById('editUserRole').value;
+
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('Please log in to update user');
+                }
+
+                // Make API request to update user - use /api/users/{id}
+                const response = await fetch(`/api/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        Email: email,
+                        Name: name,
+                        RoleName: roleName,
+                        PhoneNo: phoneNo
+                    })
+                });
+
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error('You do not have permission to update users. Admin access required.');
+                    }
+
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to update user');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Close modal and reload users
+                    bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+                    loadUsers();
+                    alert('User updated successfully');
+                } else {
+                    throw new Error(data.message || 'Failed to update user');
+                }
+            } catch (error) {
+                console.error('Error updating user:', error);
+                alert('Error updating user: ' + error.message);
+            }
+        });
+
+        // Confirm delete button
+        document.getElementById('confirmDeleteUser').addEventListener('click', async function() {
+            try {
+                if (!currentUserIdToDelete) {
+                    throw new Error('No user selected for deletion');
+                }
+
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('Please log in to delete user');
+                }
+
+                // Make API request to delete user - use /api/users/{id}
+                const response = await fetch(`/api/users/${currentUserIdToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error('You do not have permission to delete users. Admin access required.');
+                    }
+
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to delete user');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Close modal and reload users
+                    bootstrap.Modal.getInstance(document.getElementById('deleteUserModal')).hide();
+                    loadUsers();
+                    alert('User deleted successfully');
+                } else {
+                    throw new Error(data.message || 'Failed to delete user');
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('Error deleting user: ' + error.message);
+            }
+        });
+    }
+
+    // Apply filters function
+    function applyFilters() {
+        const roleValue = document.getElementById('roleFilter').value;
+        const searchTerm = document.getElementById('search').value.toLowerCase();
+        const sortValue = document.getElementById('sortOrder').value;
+
+        filteredUsers = allUsers.filter(user => {
+            let matches = true;
+
+            // Apply role filter
+            if (roleValue !== 'all' && user.roleName !== roleValue) {
+                matches = false;
+            }
+
+            // Apply search filter
+            if (searchTerm && !user.name.toLowerCase().includes(searchTerm) && !user.email.toLowerCase().includes(searchTerm)) {
+                matches = false;
+            }
+
+            return matches;
+        });
+
+        // Apply sorting
+        if (sortValue === 'latest') {
+            filteredUsers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        } else if (sortValue === 'oldest') {
+            filteredUsers.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        }
+
+        populateUsersTable(filteredUsers);
+    }
+
+    // Reset filters function
+    function resetFilters() {
+        document.getElementById('roleFilter').value = 'all';
+        document.getElementById('sortOrder').value = 'latest';
+        document.getElementById('search').value = '';
+
+        filteredUsers = [...allUsers];
+        populateUsersTable(filteredUsers);
+    }
 </script>

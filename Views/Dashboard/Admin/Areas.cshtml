@@ -3,666 +3,782 @@
     ViewData["Title"] = "Affected Areas";
 }
 
-<!-- Bootstrap 5 CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
-    * {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    :root {
-        --primary-color: #2c5f2d;
-        --secondary-color: #97bc62;
-        --accent-color: #ffd700;
-        --text-dark: #333;
-        --text-light: #666;
-        --bg-light: #f8f9fa;
-        --modal-bg: rgba(151, 188, 98, 0.1);
-    }
-
-    .page-header {
-        margin-bottom: 2rem;
-    }
-
-    .page-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-    }
-
-    .page-subtitle {
-        color: var(--text-light);
-        font-size: 1.1rem;
-    }
-
-    .filter-section {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .filter-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--secondary-color);
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: var(--text-dark);
-        margin-bottom: 8px;
-    }
-
-    .form-control, .form-select {
-        padding: 10px 14px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        transition: all 0.3s;
-    }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affected Areas</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
         }
 
-        .form-select option:hover,
-        .form-select option:focus,
-        .form-select option:active,
-        .form-select option:checked {
-            background-color: var(--secondary-color) !important;
-            color: white !important;
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --accent-color: #ffd700;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
+            --modal-bg: rgba(151, 188, 98, 0.1);
         }
 
-    .table-container {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-        margin-bottom: 2rem;
-    }
+        .page-header {
+            margin-bottom: 2rem;
+        }
 
-    .table {
-        margin-bottom: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
 
-        .table thead th {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-            color: white;
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
             font-weight: 600;
-            padding: 1rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+            }
+
+            .form-select option:hover,
+            .form-select option:focus,
+            .form-select option:active,
+            .form-select option:checked {
+                background-color: var(--secondary-color) !important;
+                color: white !important;
+            }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+            .table thead th {
+                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                border: none;
+                text-align: left;
+            }
+
+            .table tbody td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .table tbody tr:hover {
+                background-color: rgba(151, 188, 98, 0.1);
+            }
+
+        .severity-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .badge-low {
+            background-color: rgba(151, 188, 98, 0.2);
+            color: #2c5f2d;
+        }
+
+        .badge-medium {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #b8860b;
+        }
+
+        .badge-high {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             border: none;
-            text-align: left;
-        }
-
-        .table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #eee;
-        }
-
-        .table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .table tbody tr:hover {
-            background-color: rgba(151, 188, 98, 0.1);
-        }
-
-    .severity-badge {
-        padding: 0.35rem 0.65rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
-
-    .badge-low {
-        background-color: rgba(151, 188, 98, 0.2);
-        color: #2c5f2d;
-    }
-
-    .badge-medium {
-        background-color: rgba(255, 193, 7, 0.2);
-        color: #b8860b;
-    }
-
-    .badge-high {
-        background-color: rgba(220, 53, 69, 0.2);
-        color: #dc3545;
-    }
-
-    .search-icon {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-light);
-    }
-
-    .btn-primary-custom {
-        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s;
-    }
-
-        .btn-primary-custom:hover {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
             color: white;
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
 
-    .btn-reset {
-        background: transparent;
-        border: 1px solid var(--secondary-color);
-        color: var(--primary-color);
-        padding: 10px 20px;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s;
-    }
+            .btn-primary-custom:hover {
+                background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+                color: white;
+            }
 
-        .btn-reset:hover {
-            background: rgba(151, 188, 98, 0.1);
-            border-color: var(--primary-color);
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--secondary-color);
+            color: var(--primary-color);
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
 
-    .highlight {
-        background-color: rgba(151, 188, 98, 0.2) !important;
-        transition: background-color 0.3s ease;
-    }
+            .btn-reset:hover {
+                background: rgba(151, 188, 98, 0.1);
+                border-color: var(--primary-color);
+            }
 
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: center;
-    }
-
-    .btn-action {
-        padding: 0.5rem;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 2.5rem;
-        height: 2.5rem;
-        transition: all 0.3s;
-    }
-
-    .btn-edit {
-        background-color: rgba(25, 135, 84, 0.2);
-        color: #198754;
-        border: none;
-    }
-
-        .btn-edit:hover {
-            background-color: #198754;
-            color: white;
+        .highlight {
+            background-color: rgba(151, 188, 98, 0.2) !important;
+            transition: background-color 0.3s ease;
         }
 
-    .btn-delete {
-        background-color: rgba(220, 53, 69, 0.2);
-        color: #dc3545;
-        border: none;
-    }
-
-        .btn-delete:hover {
-            background-color: #dc3545;
-            color: white;
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
         }
 
-    /* Modal styling with light green background */
-    .modal-content {
-        background-color: var(--secondary-color);
-       
-    }
+        .btn-action {
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            transition: all 0.3s;
+        }
 
-   
+        .btn-edit {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: #198754;
+            border: none;
+        }
 
-    .loader-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 200px;
-    }
-</style>
+            .btn-edit:hover {
+                background-color: #198754;
+                color: white;
+            }
 
-<div class="container-fluid py-4">
-    <div class="page-header d-flex justify-content-between align-items-center">
-        <div>
-            <h1 class="page-title">Affected Areas</h1>
-            <p class="page-subtitle">View and manage all affected areas in the system</p>
+        .btn-delete {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: none;
+        }
+
+            .btn-delete:hover {
+                background-color: #dc3545;
+                color: white;
+            }
+
+        /* Modal styling with light green background */
+        .modal-content {
+            background-color: var(--secondary-color);
+        }
+
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">Affected Areas</h1>
+                <p class="page-subtitle">View and manage all affected areas in the system</p>
+            </div>
+            <button id="newAreaBtn" class="btn btn-primary-custom">
+                New Area
+            </button>
         </div>
-        <button id="newAreaBtn" class="btn btn-primary-custom">
-            New Area
-        </button>
-    </div>
 
-    <!-- Filters, Sorting, and Search Controls -->
-    <div class="filter-section">
-        <h3 class="filter-title">Filter & Search Areas</h3>
-        <div class="row">
-            <div class="col-md-3 mb-3">
-                <label class="form-label">Area Type</label>
-                <select id="typeFilter" class="form-select">
-                    <option value="all">All Types</option>
-                    <option value="Flood">Flood</option>
-                    <option value="Earthquake">Earthquake</option>
-                    <option value="Fire">Fire</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label class="form-label">Severity Level</label>
-                <select id="severityFilter" class="form-select">
-                    <option value="all">All Levels</option>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                </select>
-            </div>
-            <div class="col-md-4 mb-3">
-                <label class="form-label">Search by Area Name</label>
-                <div class="position-relative">
-                    <input type="text" id="search" class="form-control" placeholder="Search areas...">
-                    <i class="bi bi-search search-icon"></i>
+        <!-- Filters, Sorting, and Search Controls -->
+        <div class="filter-section">
+            <h3 class="filter-title">Filter & Search Areas</h3>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Area Type</label>
+                    <select id="typeFilter" class="form-select">
+                        <option value="all">All Types</option>
+                        <option value="Flood">Flood</option>
+                        <option value="Earthquake">Earthquake</option>
+                        <option value="Fire">Fire</option>
+                    </select>
                 </div>
-            </div>
-            <div class="col-md-2 mb-3 d-flex align-items-end">
-                <button id="applyFilters" class="btn btn-primary-custom w-100 me-2">Apply</button>
-                <button id="resetFilters" class="btn btn-reset">Reset</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Areas Table -->
-    <div class="table-container">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col" class="text-center">#</th>
-                        <th scope="col">Area Name</th>
-                        <th scope="col">Area Type</th>
-                        <th scope="col" class="text-center">Severity Level</th>
-                        <th scope="col">Population</th>
-                        <th scope="col" class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="areasTableBody">
-                    <tr data-type="Flood" data-severity="High">
-                        <td class="text-center">1</td>
-                        <td>Downtown District</td>
-                        <td>Flood</td>
-                        <td class="text-center"><span class="severity-badge badge-high">High</span></td>
-                        <td>15,000</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editAreaModal" data-area-id="1">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteAreaModal" data-area-id="1">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-type="Earthquake" data-severity="Medium">
-                        <td class="text-center">2</td>
-                        <td>North Hills</td>
-                        <td>Earthquake</td>
-                        <td class="text-center"><span class="severity-badge badge-medium">Medium</span></td>
-                        <td>8,500</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editAreaModal" data-area-id="2">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteAreaModal" data-area-id="2">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-type="Fire" data-severity="Low">
-                        <td class="text-center">3</td>
-                        <td>Westwood Subdivision</td>
-                        <td>Fire</td>
-                        <td class="text-center"><span class="severity-badge badge-low">Low</span></td>
-                        <td>3,200</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editAreaModal" data-area-id="3">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteAreaModal" data-area-id="3">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-type="Flood" data-severity="Medium">
-                        <td class="text-center">4</td>
-                        <td>Riverside Community</td>
-                        <td>Flood</td>
-                        <td class="text-center"><span class="severity-badge badge-medium">Medium</span></td>
-                        <td>12,800</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editAreaModal" data-area-id="4">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteAreaModal" data-area-id="4">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-type="Earthquake" data-severity="High">
-                        <td class="text-center">5</td>
-                        <td>Mountain View Area</td>
-                        <td>Earthquake</td>
-                        <td class="text-center"><span class="severity-badge badge-high">High</span></td>
-                        <td>5,600</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editAreaModal" data-area-id="5">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteAreaModal" data-area-id="5">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- New/Edit Area Modal -->
-<div class="modal fade" id="areaModal" tabindex="-1" aria-labelledby="areaModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="areaModalLabel">New Affected Area</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="areaForm">
-                    <input type="hidden" id="areaId" name="Id" />
-                    <div class="mb-3">
-                        <label for="areaName" class="form-label">Area Name</label>
-                        <input type="text" class="form-control" id="areaName" name="AreaName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="areaType" class="form-label">Area Type</label>
-                        <select class="form-select" id="areaType" name="AreaType" required>
-                            <option value="Flood">Flood</option>
-                            <option value="Earthquake">Earthquake</option>
-                            <option value="Fire">Fire</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="severityLevel" class="form-label">Severity Level</label>
-                        <select class="form-select" id="severityLevel" name="SeverityLevel" required>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="population" class="form-label">Population</label>
-                        <input type="number" class="form-control" id="population" name="Population" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveArea">Save Area</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Delete Area Modal -->
-<div class="modal fade" id="deleteAreaModal" tabindex="-1" aria-labelledby="deleteAreaModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteAreaModalLabel">Delete Area</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this area?</p>
-                <div class="area-details">
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Area Name:</label>
-                        <p id="deleteAreaName" class="mb-0"></p>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Area Type:</label>
-                        <p id="deleteAreaType" class="mb-0"></p>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Severity Level:</label>
-                        <p id="deleteAreaSeverity" class="mb-0"></p>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Severity Level</label>
+                    <select id="severityFilter" class="form-select">
+                        <option value="all">All Levels</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Search by Area Name</label>
+                    <div class="position-relative">
+                        <input type="text" id="search" class="form-control" placeholder="Search areas...">
+                        <i class="bi bi-search search-icon"></i>
                     </div>
                 </div>
-                <div class="alert alert-warning mt-3" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill"></i> This action cannot be undone.
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+                    <button id="applyFilters" class="btn btn-primary-custom w-100 me-2">Apply</button>
+                    <button id="resetFilters" class="btn btn-reset">Reset</button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteArea">Delete Area</button>
+        </div>
+
+        <!-- Areas Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">#</th>
+                            <th scope="col">Area Name</th>
+                            <th scope="col">Area Type</th>
+                            <th scope="col" class="text-center">Severity Level</th>
+                            <th scope="col">Population</th>
+                            <th scope="col" class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="areasTableBody">
+                        <!-- Data will be populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="loadingIndicator" class="loader-container d-none">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Toast container for notifications -->
+    <div class="toast-container"></div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get elements
-        const typeFilter = document.getElementById('typeFilter');
-        const severityFilter = document.getElementById('severityFilter');
-        const searchInput = document.getElementById('search');
-        const applyButton = document.getElementById('applyFilters');
-        const resetButton = document.getElementById('resetFilters');
-        const newAreaBtn = document.getElementById('newAreaBtn');
-        const tableBody = document.getElementById('areasTableBody');
-        const rows = tableBody.querySelectorAll('tr');
-        const areaModal = new bootstrap.Modal(document.getElementById('areaModal'));
-        const deleteAreaModal = new bootstrap.Modal(document.getElementById('deleteAreaModal'));
+    <!-- New Area Modal -->
+    <div class="modal fade" id="areaModal" tabindex="-1" aria-labelledby="areaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="areaModalLabel">New Affected Area</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="areaForm">
+                        <input type="hidden" id="areaId" name="Id" />
+                        <div class="mb-3">
+                            <label for="areaName" class="form-label">Area Name</label>
+                            <input type="text" class="form-control" id="areaName" name="AreaName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="areaType" class="form-label">Area Type</label>
+                            <select class="form-select" id="areaType" name="AreaType" required>
+                                <option value="Flood">Flood</option>
+                                <option value="Earthquake">Earthquake</option>
+                                <option value="Fire">Fire</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="severityLevel" class="form-label">Severity Level</label>
+                            <select class="form-select" id="severityLevel" name="SeverityLevel" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="population" class="form-label">Population</label>
+                            <input type="number" class="form-control" id="population" name="Population" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveArea">Save Area</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Store original rows for resetting
-        const originalRows = Array.from(rows);
-        let areaIdToDelete = null;
+    <!-- Edit Area Modal -->
+    <div class="modal fade" id="editAreaModal" tabindex="-1" aria-labelledby="editAreaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAreaModalLabel">Edit Affected Area</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAreaForm">
+                        <input type="hidden" id="editAreaId" name="Id" />
+                        <div class="mb-3">
+                            <label for="editAreaName" class="form-label">Area Name</label>
+                            <input type="text" class="form-control" id="editAreaName" name="AreaName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editAreaType" class="form-label">Area Type</label>
+                            <select class="form-select" id="editAreaType" name="AreaType" required>
+                                <option value="Flood">Flood</option>
+                                <option value="Earthquake">Earthquake</option>
+                                <option value="Fire">Fire</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSeverityLevel" class="form-label">Severity Level</label>
+                            <select class="form-select" id="editSeverityLevel" name="SeverityLevel" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPopulation" class="form-label">Population</label>
+                            <input type="number" class="form-control" id="editPopulation" name="Population" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="updateArea">Update Area</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Apply filters function
-        function applyFilters() {
-            const typeValue = typeFilter.value;
-            const severityValue = severityFilter.value;
-            const searchTerm = searchInput.value.toLowerCase();
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the following affected area?</p>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 id="deleteAreaName" class="card-title"></h6>
+                            <p class="card-text mb-1">Type: <span id="deleteAreaType"></span></p>
+                            <p class="card-text mb-1">Severity: <span id="deleteAreaSeverity"></span></p>
+                            <p class="card-text">Population: <span id="deleteAreaPopulation"></span></p>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning mt-3" role="alert">
+                        <i class="bi bi-exclamation-triangle"></i> This action cannot be undone.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            // First, show all rows
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-            });
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-            // Apply type filter
-            if (typeValue !== 'all') {
-                rows.forEach(row => {
-                    const rowType = row.getAttribute('data-type');
-                    if (rowType !== typeValue) {
-                        row.style.display = 'none';
-                    }
+    <script>
+        // API base URL - replace with your actual API endpoint
+        const API_BASE_URL = '/api/affected-areas';
+
+        // Global variables
+        let currentEditId = null;
+        let currentDeleteId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const typeFilter = document.getElementById('typeFilter');
+            const severityFilter = document.getElementById('severityFilter');
+            const searchInput = document.getElementById('search');
+            const applyButton = document.getElementById('applyFilters');
+            const resetButton = document.getElementById('resetFilters');
+            const newAreaBtn = document.getElementById('newAreaBtn');
+            const tableBody = document.getElementById('areasTableBody');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const areaModal = new bootstrap.Modal(document.getElementById('areaModal'));
+            const editAreaModal = new bootstrap.Modal(document.getElementById('editAreaModal'));
+            const deleteConfirmationModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+
+            let areasData = [];
+
+            // Initialize the page
+            loadAreas();
+
+            // Function to show toast notifications
+            function showToast(message, type = 'success') {
+                const toastContainer = document.querySelector('.toast-container');
+                const toastId = 'toast-' + Date.now();
+
+                const toastHtml = `
+                    <div id="${toastId}" class="toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+
+                toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+
+                const toastElement = document.getElementById(toastId);
+                const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+                toast.show();
+
+                // Remove toast from DOM after it's hidden
+                toastElement.addEventListener('hidden.bs.toast', function() {
+                    toastElement.remove();
                 });
             }
 
-            // Apply severity filter
-            if (severityValue !== 'all') {
-                rows.forEach(row => {
-                    if (row.style.display !== 'none') {
-                        const rowSeverity = row.getAttribute('data-severity');
-                        if (rowSeverity !== severityValue) {
-                            row.style.display = 'none';
-                        }
+            // Function to load areas from API
+            async function loadAreas() {
+                try {
+                    showLoading(true);
+                    const response = await fetch(API_BASE_URL);
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch areas');
                     }
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        areasData = result.data;
+                        renderAreasTable(areasData);
+                    } else {
+                        throw new Error(result.message || 'Failed to load areas');
+                    }
+                } catch (error) {
+                    console.error('Error loading areas:', error);
+                    showToast('Error loading areas: ' + error.message, 'error');
+                    // Fallback to sample data if API fails
+                    loadSampleData();
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            // Function to show/hide loading indicator
+            function showLoading(show) {
+                if (show) {
+                    loadingIndicator.classList.remove('d-none');
+                    tableBody.innerHTML = '';
+                } else {
+                    loadingIndicator.classList.add('d-none');
+                }
+            }
+
+            // Function to render areas table
+            function renderAreasTable(areas) {
+                tableBody.innerHTML = '';
+
+                if (areas.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                <p class="mt-2">No affected areas found</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                areas.forEach((area, index) => {
+                    const severityClass = getSeverityClass(area.severityLevel);
+
+                    const row = document.createElement('tr');
+                    row.setAttribute('data-type', area.areaType);
+                    row.setAttribute('data-severity', area.severityLevel);
+
+                    // Escape quotes in area object for use in onclick
+                    const areaJson = JSON.stringify(area).replace(/"/g, '&quot;');
+
+                    row.innerHTML = `
+                        <td class="text-center">${index + 1}</td>
+                        <td>${area.areaName}</td>
+                        <td>${area.areaType}</td>
+                        <td class="text-center"><span class="severity-badge ${severityClass}">${area.severityLevel}</span></td>
+                        <td>${area.population.toLocaleString()}</td>
+                        <td class="text-center">
+                            <div class="action-buttons">
+                                <button class="btn-action btn-edit" onclick="openEditModal(${areaJson})">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-action btn-delete" onclick="openDeleteModal(${areaJson})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
                 });
             }
 
-            // Apply search filter
-            if (searchTerm) {
-                rows.forEach(row => {
-                    if (row.style.display !== 'none') {
-                        const areaName = row.cells[1].textContent.toLowerCase();
-
-                        if (areaName.includes(searchTerm)) {
-                            row.classList.add('highlight');
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
+            // Function to get severity CSS class
+            function getSeverityClass(severity) {
+                switch (severity) {
+                    case 'Low': return 'badge-low';
+                    case 'Medium': return 'badge-medium';
+                    case 'High': return 'badge-high';
+                    default: return 'badge-low';
+                }
             }
-        }
 
-        // Reset filters function
-        function resetFilters() {
-            typeFilter.value = 'all';
-            severityFilter.value = 'all';
-            searchInput.value = '';
+            // Function to open edit modal with area data
+            window.openEditModal = function(area) {
+                currentEditId = area.id;
+                document.getElementById('editAreaId').value = area.id;
+                document.getElementById('editAreaName').value = area.areaName;
+                document.getElementById('editAreaType').value = area.areaType;
+                document.getElementById('editSeverityLevel').value = area.severityLevel;
+                document.getElementById('editPopulation').value = area.population;
 
-            // Show all rows and remove highlights
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-            });
+                editAreaModal.show();
+            }
 
-            // Restore original order
-            originalRows.forEach(row => {
-                tableBody.appendChild(row);
-            });
-        }
+            // Function to open delete confirmation modal
+            window.openDeleteModal = function(area) {
+                currentDeleteId = area.id;
+                document.getElementById('deleteAreaName').textContent = area.areaName;
+                document.getElementById('deleteAreaType').textContent = area.areaType;
+                document.getElementById('deleteAreaSeverity').textContent = area.severityLevel;
+                document.getElementById('deleteAreaPopulation').textContent = area.population.toLocaleString();
 
-        // New Area button click handler
-        newAreaBtn.addEventListener('click', function() {
-            // Reset form
-            document.getElementById('areaForm').reset();
-            document.getElementById('areaId').value = '';
-            document.getElementById('areaModalLabel').textContent = 'New Affected Area';
+                deleteConfirmationModal.show();
+            }
 
-            // Show modal
-            areaModal.show();
-        });
+            // Function to save area (create)
+            async function saveArea() {
+                const areaData = {
+                    areaName: document.getElementById('areaName').value,
+                    areaType: document.getElementById('areaType').value,
+                    severityLevel: document.getElementById('severityLevel').value,
+                    population: parseInt(document.getElementById('population').value)
+                };
 
-        // Edit Area button click handlers
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function() {
-                const areaId = this.getAttribute('data-area-id');
-                const row = this.closest('tr');
+                try {
+                    // Create new area
+                    const response = await fetch(API_BASE_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(areaData)
+                    });
 
-                // Populate form with existing data
-                document.getElementById('areaId').value = areaId;
-                document.getElementById('areaName').value = row.cells[1].textContent;
-                document.getElementById('areaType').value = row.cells[2].textContent;
-                document.getElementById('severityLevel').value = row.cells[3].querySelector('.severity-badge').textContent.trim();
-                document.getElementById('population').value = row.cells[4].textContent.replace(/,/g, '');
+                    const result = await response.json();
 
-                // Update modal title
-                document.getElementById('areaModalLabel').textContent = 'Edit Affected Area';
+                    if (result.success) {
+                        showToast('Area created successfully!');
+                        areaModal.hide();
+                        loadAreas(); // Reload the areas list
+                    } else {
+                        throw new Error(result.message || 'Failed to create area');
+                    }
+                } catch (error) {
+                    console.error('Error creating area:', error);
+                    showToast('Error creating area: ' + error.message, 'error');
+                }
+            }
 
-                // Show modal
+            // Function to update area
+            async function updateArea() {
+                const areaData = {
+                    AreaName: document.getElementById('editAreaName').value,
+                    AreaType: document.getElementById('editAreaType').value,
+                    SeverityLevel: document.getElementById('editSeverityLevel').value,
+                    Population: parseInt(document.getElementById('editPopulation').value)
+                };
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/${currentEditId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(areaData)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showToast('Area updated successfully!');
+                        editAreaModal.hide();
+                        loadAreas(); // Reload the table
+                    } else {
+                        showToast('Error: ' + result.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error updating area:', error);
+                    showToast('Error updating area: ' + error.message, 'error');
+                }
+            }
+
+            // Function to delete area
+            async function deleteArea() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/${currentDeleteId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showToast('Area deleted successfully!');
+                        deleteConfirmationModal.hide();
+                        loadAreas(); // Reload the table
+                    } else {
+                        showToast('Error: ' + result.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting area:', error);
+                    showToast('Error deleting area: ' + error.message, 'error');
+                }
+            }
+
+            // Apply filters function
+            function applyFilters() {
+                const typeValue = typeFilter.value;
+                const severityValue = severityFilter.value;
+                const searchTerm = searchInput.value.toLowerCase();
+
+                let filteredData = areasData;
+
+                // Apply type filter
+                if (typeValue !== 'all') {
+                    filteredData = filteredData.filter(area => area.areaType === typeValue);
+                }
+
+                // Apply severity filter
+                if (severityValue !== 'all') {
+                    filteredData = filteredData.filter(area => area.severityLevel === severityValue);
+                }
+
+                // Apply search filter
+                if (searchTerm) {
+                    filteredData = filteredData.filter(area =>
+                        area.areaName.toLowerCase().includes(searchTerm)
+                    );
+                }
+
+                renderAreasTable(filteredData);
+            }
+
+            // Reset filters function
+            function resetFilters() {
+                typeFilter.value = 'all';
+                severityFilter.value = 'all';
+                searchInput.value = '';
+                renderAreasTable(areasData);
+            }
+
+            // Fallback to sample data if API fails
+            function loadSampleData() {
+                areasData = [
+                    { id: 1, areaName: 'Downtown District', areaType: 'Flood', severityLevel: 'High', population: 15000 },
+                    { id: 2, areaName: 'North Hills', areaType: 'Earthquake', severityLevel: 'Medium', population: 8500 },
+                    { id: 3, areaName: 'Westwood Subdivision', areaType: 'Fire', severityLevel: 'Low', population: 3200 },
+                    { id: 4, areaName: 'Riverside Community', areaType: 'Flood', severityLevel: 'Medium', population: 12800 },
+                    { id: 5, areaName: 'Mountain View Area', areaType: 'Earthquake', severityLevel: 'High', population: 5600 }
+                ];
+                renderAreasTable(areasData);
+            }
+
+            // Event listeners
+            newAreaBtn.addEventListener('click', function() {
+                document.getElementById('areaForm').reset();
+                document.getElementById('areaId').value = '';
+                document.getElementById('areaModalLabel').textContent = 'New Affected Area';
                 areaModal.show();
             });
+
+            document.getElementById('saveArea').addEventListener('click', saveArea);
+            document.getElementById('updateArea').addEventListener('click', updateArea);
+            document.getElementById('confirmDelete').addEventListener('click', deleteArea);
+            applyButton.addEventListener('click', applyFilters);
+            resetButton.addEventListener('click', resetFilters);
+
+            // Also apply filters when search input changes
+            searchInput.addEventListener('keyup', applyFilters);
+
+            // Apply filters when dropdowns change
+            typeFilter.addEventListener('change', applyFilters);
+            severityFilter.addEventListener('change', applyFilters);
         });
-
-        // Delete Area button click handlers
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function() {
-                const areaId = this.getAttribute('data-area-id');
-                const row = this.closest('tr');
-
-                // Store area ID for deletion
-                areaIdToDelete = areaId;
-
-                // Populate delete modal with area details
-                document.getElementById('deleteAreaName').textContent = row.cells[1].textContent;
-                document.getElementById('deleteAreaType').textContent = row.cells[2].textContent;
-                document.getElementById('deleteAreaSeverity').textContent = row.cells[3].querySelector('.severity-badge').textContent.trim();
-
-                // Show delete confirmation modal
-                deleteAreaModal.show();
-            });
-        });
-
-        // Save Area button click handler
-        document.getElementById('saveArea').addEventListener('click', function() {
-            // In a real application, you would submit the form to the server
-            const areaId = document.getElementById('areaId').value;
-            const areaName = document.getElementById('areaName').value;
-            const areaType = document.getElementById('areaType').value;
-            const severityLevel = document.getElementById('severityLevel').value;
-            const population = document.getElementById('population').value;
-
-            alert(`Area ${areaId ? 'updated' : 'created'} successfully!\n\nName: ${areaName}\nType: ${areaType}\nSeverity: ${severityLevel}\nPopulation: ${population}`);
-
-            // Hide modal
-            areaModal.hide();
-        });
-
-        // Confirm Delete button click handler
-        document.getElementById('confirmDeleteArea').addEventListener('click', function() {
-            // In a real application, you would send a delete request to the server
-            alert(`Area with ID ${areaIdToDelete} would be deleted here in a real application`);
-
-            // Remove the row from the table
-            const row = document.querySelector(`button[data-area-id="${areaIdToDelete}"]`).closest('tr');
-            row.remove();
-
-            // Hide modal
-            deleteAreaModal.hide();
-
-            // Update row numbers
-            const tableBody = document.getElementById('areasTableBody');
-            const rows = tableBody.querySelectorAll('tr');
-            rows.forEach((row, index) => {
-                row.cells[0].textContent = index + 1;
-            });
-        });
-
-        // Event listeners
-        applyButton.addEventListener('click', applyFilters);
-        resetButton.addEventListener('click', resetFilters);
-
-        // Also apply filters when search input changes
-        searchInput.addEventListener('keyup', function() {
-            applyFilters();
-        });
-
-        // Apply filters when dropdowns change
-        typeFilter.addEventListener('change', applyFilters);
-        severityFilter.addEventListener('change', applyFilters);
-    });
-</script>
+    </script>
+</body>
+</html>

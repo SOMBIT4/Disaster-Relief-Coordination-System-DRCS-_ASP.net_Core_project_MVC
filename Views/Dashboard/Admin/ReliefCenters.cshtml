@@ -188,6 +188,8 @@
         font-weight: 600;
         border-radius: 8px;
         transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
     }
 
         .btn-reset:hover {
@@ -222,10 +224,30 @@
             color: white;
         }
 
-    /* Modal styling with light green background */
+    /* Modal styling */
     .modal-content {
-        background-color: var(--secondary-color);
-        
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .modal-title {
+        font-weight: 600;
+    }
+
+    .btn-close {
+        filter: invert(1);
+    }
+
+    .modal-footer {
+        border-top: 1px solid #eee;
+        padding: 1rem;
     }
 
     .loader-container {
@@ -238,13 +260,11 @@
     .expanded-details {
         background-color: rgba(151, 188, 98, 0.05);
         border-top: 1px solid var(--secondary-color);
-       
     }
 
     .details-table {
         width: 100%;
         font-size: 0.9rem;
-
     }
 
         .details-table th {
@@ -256,7 +276,41 @@
         .details-table td {
             padding: 0.5rem;
             border-bottom: 1px solid rgba(151, 188, 98, 0.2);
-            background-color: var(--secondary-color);
+            background-color: white;
+        }
+
+    .error-message {
+        color: #dc3545;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-light);
+    }
+
+    .btn-delete {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+        .btn-delete:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    .btn-edit {
+        background-color: rgba(25, 135, 84, 0.2);
+        color: #198754;
+        border: 1px solid #198754;
+    }
+
+        .btn-edit:hover {
+            background-color: #198754;
+            color: white;
         }
 </style>
 
@@ -267,7 +321,7 @@
             <p class="page-subtitle">View and manage all relief centers in the system</p>
         </div>
         <button id="newCenterBtn" class="btn btn-primary-custom">
-            Add New Relief Center
+            <i class="bi bi-plus-circle me-2"></i>Add New Relief Center
         </button>
     </div>
 
@@ -291,13 +345,30 @@
             </div>
             <div class="col-md-3 mb-3 d-flex align-items-end">
                 <button id="applyFilters" class="btn btn-primary-custom w-100 me-2">Apply</button>
-                <button id="resetFilters" class="btn btn-reset">Reset</button>
+                <button id="resetFilters" class="btn btn-reset">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loader-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="ms-2 mb-0">Loading relief centers...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message" style="display: none;">
+        <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+        <p class="mt-2" id="errorText">Failed to load relief centers</p>
+        <button class="btn btn-primary-custom mt-2" onclick="loadReliefCenters()">Try Again</button>
+    </div>
+
     <!-- Centers Table -->
-    <div class="table-container">
+    <div class="table-container" id="centersTableContainer" style="display: none;">
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -305,119 +376,27 @@
                         <th scope="col" class="text-center">#</th>
                         <th scope="col">Center Name</th>
                         <th scope="col">Location</th>
-                        <th scope="col" class="text-center">Volunteers Working</th>
+                        <th scope="col" class="text-center">Volunteers</th>
                         <th scope="col" class="text-center">Max Capacity</th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="centersTableBody">
-                    <tr data-date="2025-09-01">
-                        <td class="text-center">1</td>
-                        <td>Downtown Relief Center</td>
-                        <td>123 Main Street</td>
-                        <td class="text-center">15</td>
-                        <td class="text-center">25</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action" data-center-id="1" data-section="volunteers">
-                                    Volunteers
-                                </button>
-                                <button class="btn-action" data-center-id="1" data-section="donations">
-                                    Donations
-                                </button>
-                                <button class="btn-action" data-center-id="1" data-section="resources">
-                                    Resources
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-date="2025-09-04">
-                        <td class="text-center">2</td>
-                        <td>Northside Aid Station</td>
-                        <td>456 Oak Avenue</td>
-                        <td class="text-center">8</td>
-                        <td class="text-center">20</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action" data-center-id="2" data-section="volunteers">
-                                    Volunteers
-                                </button>
-                                <button class="btn-action" data-center-id="2" data-section="donations">
-                                    Donations
-                                </button>
-                                <button class="btn-action" data-center-id="2" data-section="resources">
-                                    Resources
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-date="2025-09-03">
-                        <td class="text-center">3</td>
-                        <td>Westwood Shelter</td>
-                        <td>789 Pine Road</td>
-                        <td class="text-center">12</td>
-                        <td class="text-center">30</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action" data-center-id="3" data-section="volunteers">
-                                    Volunteers
-                                </button>
-                                <button class="btn-action" data-center-id="3" data-section="donations">
-                                    Donations
-                                </button>
-                                <button class="btn-action" data-center-id="3" data-section="resources">
-                                    Resources
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-date="2025-08-28">
-                        <td class="text-center">4</td>
-                        <td>Riverside Assistance Center</td>
-                        <td>101 River Drive</td>
-                        <td class="text-center">5</td>
-                        <td class="text-center">15</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action" data-center-id="4" data-section="volunteers">
-                                    Volunteers
-                                </button>
-                                <button class="btn-action" data-center-id="4" data-section="donations">
-                                    Donations
-                                </button>
-                                <button class="btn-action" data-center-id="4" data-section="resources">
-                                    Resources
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-date="2025-08-25">
-                        <td class="text-center">5</td>
-                        <td>Mountain View Relief</td>
-                        <td>202 Hilltop Boulevard</td>
-                        <td class="text-center">18</td>
-                        <td class="text-center">22</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <button class="btn-action" data-center-id="5" data-section="volunteers">
-                                    Volunteers
-                                </button>
-                                <button class="btn-action" data-center-id="5" data-section="donations">
-                                    Donations
-                                </button>
-                                <button class="btn-action" data-center-id="5" data-section="resources">
-                                    Resources
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                    <!-- Centers will be populated by JavaScript -->
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <i class="bi bi-building fs-1"></i>
+        <h4>No Relief Centers Found</h4>
+        <p>There are no relief centers in the system yet.</p>
+    </div>
+
     <!-- Pagination -->
-    <div class="pagination-container">
+    <div class="pagination-container" id="paginationContainer" style="display: none;">
         <nav aria-label="Centers pagination">
             <ul class="pagination">
                 <li class="page-item disabled">
@@ -452,37 +431,48 @@
                 <form id="centerForm">
                     <input type="hidden" id="centerId" name="Id" />
                     <div class="mb-3">
-                        <label for="centerName" class="form-label">Center Name</label>
+                        <label for="centerName" class="form-label">Center Name *</label>
                         <input type="text" class="form-control" id="centerName" name="CenterName" required>
                     </div>
                     <div class="mb-3">
-                        <label for="location" class="form-label">Location</label>
+                        <label for="location" class="form-label">Location *</label>
                         <input type="text" class="form-control" id="location" name="Location" required>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="volunteersWorking" class="form-label">Volunteers Working</label>
-                            <input type="number" class="form-control" id="volunteersWorking" name="NumberOfVolunteersWorking" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="maxCapacity" class="form-label">Max Capacity</label>
-                            <input type="number" class="form-control" id="maxCapacity" name="MaxVolunteersCapacity" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="maxCapacity" class="form-label">Max Capacity *</label>
+                        <input type="number" class="form-control" id="maxCapacity" name="MaxVolunteersCapacity" required min="1">
                     </div>
                     <div class="mb-3">
-                        <label for="managerId" class="form-label">Manager</label>
-                        <select class="form-select" id="managerId" name="ManagerID" required>
-                            <option value="">Select a Manager</option>
-                            <option value="1">John Doe (john@example.com)</option>
-                            <option value="2">Jane Smith (jane@example.com)</option>
-                            <option value="3">Robert Johnson (robert@example.com)</option>
-                        </select>
+                        <label for="managerId" class="form-label">Manager ID *</label>
+                        <input type="number" class="form-control" id="managerId" name="ManagerID" required min="1">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveCenter">Save Center</button>
+                <button type="button" class="btn btn-primary-custom" id="saveCenter">Save Center</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Relief Center</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this relief center?</p>
+                <div class="alert alert-warning mt-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i> This action cannot be undone.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Delete Center</button>
             </div>
         </div>
     </div>
@@ -493,117 +483,337 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get elements
-        const searchInput = document.getElementById('search');
-        const sortOrder = document.getElementById('sortOrder');
-        const applyButton = document.getElementById('applyFilters');
-        const resetButton = document.getElementById('resetFilters');
-        const newCenterBtn = document.getElementById('newCenterBtn');
-        const tableBody = document.getElementById('centersTableBody');
-        const rows = tableBody.querySelectorAll('tr');
+        // Initialize modals
         const centerModal = new bootstrap.Modal(document.getElementById('centerModal'));
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
 
-        // Store original rows for resetting
-        const originalRows = Array.from(rows);
+        // Global variables
+        let allCenters = [];
+        let filteredCenters = [];
+        let currentCenterId = null;
         let expandedCenter = null;
         let expandedSection = "";
 
-        // Apply filters function
-        function applyFilters() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const sortValue = sortOrder.value;
+        // Load relief centers when page loads
+        loadReliefCenters();
 
-            // First, show all rows
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-                // Hide any expanded rows
-                const expandedRow = row.nextElementSibling;
-                if (expandedRow && expandedRow.classList.contains('expanded-details')) {
-                    expandedRow.style.display = 'none';
+        // Set up event listeners
+        setupEventListeners();
+
+        // Function to load relief centers from API
+        async function loadReliefCenters() {
+            try {
+                // Show loading, hide other elements
+                document.getElementById('loadingSpinner').style.display = 'flex';
+                document.getElementById('centersTableContainer').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('paginationContainer').style.display = 'none';
+
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('Please log in to view relief centers');
                 }
-            });
 
-            // Apply search filter
-            if (searchTerm) {
-                rows.forEach(row => {
-                    const centerName = row.cells[1].textContent.toLowerCase();
-                    const location = row.cells[2].textContent.toLowerCase();
-
-                    if (centerName.includes(searchTerm) || location.includes(searchTerm)) {
-                        row.classList.add('highlight');
-                    } else {
-                        row.style.display = 'none';
+                // Make API request
+                const response = await fetch('/api/relief-centers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 });
-            }
 
-            // Apply sorting
-            if (sortValue === 'latest') {
-                sortTable(true);
-            } else if (sortValue === 'oldest') {
-                sortTable(false);
-            }
-        }
-
-        // Sort table by date
-        function sortTable(newestFirst = true) {
-            const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
-
-            visibleRows.sort((a, b) => {
-                const dateA = new Date(a.getAttribute('data-date'));
-                const dateB = new Date(b.getAttribute('data-date'));
-
-                return newestFirst ? dateB - dateA : dateA - dateB;
-            });
-
-            // Reorder the table
-            visibleRows.forEach(row => {
-                tableBody.appendChild(row);
-            });
-
-            // Update row numbers
-            updateRowNumbers();
-        }
-
-        // Update row numbers after sorting
-        function updateRowNumbers() {
-            const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
-            visibleRows.forEach((row, index) => {
-                row.cells[0].textContent = index + 1;
-            });
-        }
-
-        // Reset filters function
-        function resetFilters() {
-            searchInput.value = '';
-            sortOrder.value = 'latest';
-
-            // Show all rows and remove highlights
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight');
-                // Hide any expanded rows
-                const expandedRow = row.nextElementSibling;
-                if (expandedRow && expandedRow.classList.contains('expanded-details')) {
-                    expandedRow.style.display = 'none';
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed. Please log in again.');
+                    } else if (response.status === 403) {
+                        throw new Error('You do not have permission to view relief centers.');
+                    }
+                    throw new Error('Failed to fetch relief centers');
                 }
-            });
 
-            // Restore original order
-            originalRows.forEach(row => {
+                const data = await response.json();
+
+                if (data.success) {
+                    allCenters = data.data;
+                    filteredCenters = [...allCenters];
+
+                    // Hide loading, show table
+                    document.getElementById('loadingSpinner').style.display = 'none';
+
+                    if (allCenters.length > 0) {
+                        document.getElementById('centersTableContainer').style.display = 'block';
+                        document.getElementById('paginationContainer').style.display = 'flex';
+                        populateCentersTable(allCenters);
+                        applyFilters(); // Apply any existing filters
+                    } else {
+                        document.getElementById('emptyState').style.display = 'block';
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to load relief centers');
+                }
+            } catch (error) {
+                console.error('Error loading relief centers:', error);
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorText').textContent = error.message;
+            }
+        }
+
+        // Function to populate centers table
+        function populateCentersTable(centers) {
+            const tableBody = document.getElementById('centersTableBody');
+            tableBody.innerHTML = '';
+
+            centers.forEach((center, index) => {
+                const row = document.createElement('tr');
+
+                // Count volunteers
+                const volunteersCount = center.volunteers ? center.volunteers.length : 0;
+
+                row.setAttribute('data-center-id', center.centerID);
+                row.setAttribute('data-date', center.createdAt || new Date().toISOString());
+
+                row.innerHTML = `
+                    <td class="text-center">${index + 1}</td>
+                    <td>${center.centerName}</td>
+                    <td>${center.location}</td>
+                    <td class="text-center">${volunteersCount}</td>
+                    <td class="text-center">${center.maxVolunteersCapacity}</td>
+                    <td class="text-center">
+                        <div class="action-buttons">
+                            <button class="btn-action" data-center-id="${center.centerID}" data-section="volunteers">
+                                Volunteers
+                            </button>
+                            <button class="btn-action" data-center-id="${center.centerID}" data-section="donations">
+                                Donations
+                            </button>
+                            <button class="btn-action" data-center-id="${center.centerID}" data-section="resources">
+                                Resources
+                            </button>
+                            <button class="btn-action btn-edit" data-center-id="${center.centerID}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-action btn-delete" data-center-id="${center.centerID}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+
                 tableBody.appendChild(row);
             });
 
-            // Reset row numbers
-            updateRowNumbers();
-
-            // Reset expanded center
-            expandedCenter = null;
-            expandedSection = "";
+            // Set up event listeners for the action buttons
+            setupActionButtonListeners();
         }
 
-        // Toggle expanded details
+        // Function to set up event listeners
+        function setupEventListeners() {
+            const searchInput = document.getElementById('search');
+            const sortOrder = document.getElementById('sortOrder');
+            const applyButton = document.getElementById('applyFilters');
+            const resetButton = document.getElementById('resetFilters');
+            const newCenterBtn = document.getElementById('newCenterBtn');
+            const saveCenterBtn = document.getElementById('saveCenter');
+            const confirmDeleteBtn = document.getElementById('confirmDelete');
+
+            // Filter and search
+            applyButton.addEventListener('click', applyFilters);
+            resetButton.addEventListener('click', resetFilters);
+            searchInput.addEventListener('keyup', applyFilters);
+            sortOrder.addEventListener('change', applyFilters);
+
+            // New center button
+            newCenterBtn.addEventListener('click', function() {
+                // Reset form
+                document.getElementById('centerForm').reset();
+                document.getElementById('centerId').value = '';
+                document.getElementById('centerModalLabel').textContent = 'New Relief Center';
+                currentCenterId = null;
+
+                // Show modal
+                centerModal.show();
+            });
+
+            // Save center button
+            saveCenterBtn.addEventListener('click', saveCenter);
+
+            // Confirm delete button
+            confirmDeleteBtn.addEventListener('click', deleteCenter);
+        }
+
+        // Function to set up action button listeners
+        function setupActionButtonListeners() {
+            // Detail buttons (volunteers, donations, resources)
+            document.querySelectorAll('.btn-action:not(.btn-edit):not(.btn-delete)').forEach(button => {
+                button.addEventListener('click', function() {
+                    const centerId = this.getAttribute('data-center-id');
+                    const section = this.getAttribute('data-section');
+                    toggleExpand(centerId, section);
+                });
+            });
+
+            // Edit buttons
+            document.querySelectorAll('.btn-edit').forEach(button => {
+                button.addEventListener('click', function() {
+                    const centerId = this.getAttribute('data-center-id');
+                    const center = allCenters.find(c => c.centerID == centerId);
+
+                    if (center) {
+                        document.getElementById('centerId').value = center.centerID;
+                        document.getElementById('centerName').value = center.centerName;
+                        document.getElementById('location').value = center.location;
+                        document.getElementById('maxCapacity').value = center.maxVolunteersCapacity;
+                        document.getElementById('managerId').value = center.managerID || '';
+                        document.getElementById('centerModalLabel').textContent = 'Edit Relief Center';
+                        currentCenterId = center.centerID;
+
+                        // Show modal
+                        centerModal.show();
+                    }
+                });
+            });
+
+            // Delete buttons
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const centerId = this.getAttribute('data-center-id');
+                    const center = allCenters.find(c => c.centerID == centerId);
+
+                    if (center) {
+                        currentCenterId = centerId;
+                        document.getElementById('deleteModalLabel').textContent = `Delete ${center.centerName}`;
+
+                        // Show modal
+                        deleteModal.show();
+                    }
+                });
+            });
+        }
+
+        // Function to save center (create or update)
+        async function saveCenter() {
+            try {
+                const centerId = document.getElementById('centerId').value;
+                const centerName = document.getElementById('centerName').value;
+                const location = document.getElementById('location').value;
+                const maxCapacity = document.getElementById('maxCapacity').value;
+                const managerId = document.getElementById('managerId').value;
+
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('Please log in to manage relief centers');
+                }
+
+                // Prepare request data
+                const requestData = {
+                    CenterName: centerName,
+                    Location: location,
+                    MaxVolunteersCapacity: parseInt(maxCapacity),
+                    ManagerID: parseInt(managerId)
+                };
+
+                let response;
+                let url = '/api/relief-centers';
+                let method = 'POST';
+
+                if (centerId) {
+                    // Update existing center
+                    url = `/api/relief-centers/${centerId}`;
+                    method = 'PUT';
+                }
+
+                // Make API request
+                response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed. Please log in again.');
+                    } else if (response.status === 403) {
+                        throw new Error('You do not have permission to manage relief centers. Admin access required.');
+                    }
+
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to save relief center');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Close modal and reload centers
+                    centerModal.hide();
+                    loadReliefCenters();
+                    alert(`Relief center ${centerId ? 'updated' : 'created'} successfully!`);
+                } else {
+                    throw new Error(data.message || 'Failed to save relief center');
+                }
+            } catch (error) {
+                console.error('Error saving relief center:', error);
+                alert('Error saving relief center: ' + error.message);
+            }
+        }
+
+        // Function to delete center
+        async function deleteCenter() {
+            try {
+                if (!currentCenterId) {
+                    throw new Error('No center selected for deletion');
+                }
+
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('Please log in to delete relief centers');
+                }
+
+                // Make API request
+                const response = await fetch(`/api/relief-centers/${currentCenterId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed. Please log in again.');
+                    } else if (response.status === 403) {
+                        throw new Error('You do not have permission to delete relief centers. Admin access required.');
+                    }
+
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to delete relief center');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Close modal and reload centers
+                    deleteModal.hide();
+                    loadReliefCenters();
+                    alert('Relief center deleted successfully!');
+                } else {
+                    throw new Error(data.message || 'Failed to delete relief center');
+                }
+            } catch (error) {
+                console.error('Error deleting relief center:', error);
+                alert('Error deleting relief center: ' + error.message);
+            }
+        }
+
+        // Function to toggle expanded details
         function toggleExpand(centerId, section) {
             // Remove any existing expanded rows
             document.querySelectorAll('.expanded-details').forEach(row => {
@@ -620,6 +830,10 @@
             expandedCenter = centerId;
             expandedSection = section;
 
+            // Find the center data
+            const center = allCenters.find(c => c.centerID == centerId);
+            if (!center) return;
+
             // Find the row to expand
             const rowToExpand = document.querySelector(`button[data-center-id="${centerId}"]`).closest('tr');
 
@@ -628,8 +842,8 @@
             expandedRow.className = 'expanded-details';
             expandedRow.innerHTML = `
                 <td colspan="6" class="p-3">
-                    <h6 class="mb-2">${section.charAt(0).toUpperCase() + section.slice(1)} for ${rowToExpand.cells[1].textContent}</h6>
-                    ${generateDetailsContent(section, centerId)}
+                    <h6 class="mb-2">${section.charAt(0).toUpperCase() + section.slice(1)} for ${center.centerName}</h6>
+                    ${generateDetailsContent(section, center)}
                 </td>
             `;
 
@@ -638,95 +852,75 @@
         }
 
         // Generate content for expanded details
-        function generateDetailsContent(section, centerId) {
+        function generateDetailsContent(section, center) {
             if (section === 'volunteers') {
+                if (!center.volunteers || center.volunteers.length === 0) {
+                    return '<p>No volunteers assigned to this center.</p>';
+                }
+
                 return `
                     <table class="details-table">
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Contact Info</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>john@example.com</td>
-                                <td>Active</td>
-                            </tr>
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td>jane@example.com</td>
-                                <td>Active</td>
-                            </tr>
-                            <tr>
-                                <td>Robert Johnson</td>
-                                <td>robert@example.com</td>
-                                <td>On Leave</td>
-                            </tr>
+                            ${center.volunteers.map(volunteer => `
+                                <tr>
+                                    <td>${volunteer.name || 'Unknown'}</td>
+                                    <td>${volunteer.status || 'Unknown'}</td>
+                                </tr>
+                            `).join('')}
                         </tbody>
                     </table>
                 `;
             } else if (section === 'donations') {
+                if (!center.donations || center.donations.length === 0) {
+                    return '<p>No donations received at this center.</p>';
+                }
+
                 return `
                     <table class="details-table">
                         <thead>
                             <tr>
-                                <th>Donor Name</th>
+                                <th>Donor</th>
                                 <th>Type</th>
                                 <th>Quantity</th>
-                                <th>Date Received</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>ABC Corporation</td>
-                                <td>Food</td>
-                                <td>200 kg</td>
-                                <td>2025-09-01</td>
-                            </tr>
-                            <tr>
-                                <td>Local Community</td>
-                                <td>Clothing</td>
-                                <td>150 items</td>
-                                <td>2025-08-28</td>
-                            </tr>
-                            <tr>
-                                <td>XYZ Foundation</td>
-                                <td>Medical Supplies</td>
-                                <td>50 boxes</td>
-                                <td>2025-08-25</td>
-                            </tr>
+                            ${center.donations.map(donation => `
+                                <tr>
+                                    <td>${donation.donorName || 'Unknown'}</td>
+                                    <td>${donation.donationType || 'Unknown'}</td>
+                                    <td>${donation.quantity || 'Unknown'}</td>
+                                </tr>
+                            `).join('')}
                         </tbody>
                     </table>
                 `;
             } else if (section === 'resources') {
+                if (!center.resources || center.resources.length === 0) {
+                    return '<p>No resources available at this center.</p>';
+                }
+
                 return `
                     <table class="details-table">
                         <thead>
                             <tr>
                                 <th>Type</th>
                                 <th>Quantity</th>
-                                <th>Expiration Date</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Food</td>
-                                <td>500 kg</td>
-                                <td>2025-12-31</td>
-                            </tr>
-                            <tr>
-                                <td>Water</td>
-                                <td>300 liters</td>
-                                <td>2026-06-30</td>
-                            </tr>
-                            <tr>
-                                <td>Medical Kits</td>
-                                <td>75 units</td>
-                                <td>2025-10-15</td>
-                            </tr>
+                            ${center.resources.map(resource => `
+                                <tr>
+                                    <td>${resource.resourceType || 'Unknown'}</td>
+                                    <td>${resource.quantity || 0}</td>
+                                </tr>
+                            `).join('')}
                         </tbody>
                     </table>
                 `;
@@ -734,52 +928,45 @@
             return '<p>No data available.</p>';
         }
 
-        // New Center button click handler
-        newCenterBtn.addEventListener('click', function() {
-            // Reset form
-            document.getElementById('centerForm').reset();
-            document.getElementById('centerId').value = '';
-            document.getElementById('centerModalLabel').textContent = 'New Relief Center';
+        // Apply filters function
+        function applyFilters() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const sortValue = document.getElementById('sortOrder').value;
 
-            // Show modal
-            centerModal.show();
-        });
+            filteredCenters = allCenters.filter(center => {
+                let matches = true;
 
-        // Action buttons click handlers
-        document.querySelectorAll('.btn-action').forEach(button => {
-            button.addEventListener('click', function() {
-                const centerId = this.getAttribute('data-center-id');
-                const section = this.getAttribute('data-section');
-                toggleExpand(centerId, section);
+                // Apply search filter
+                if (searchTerm && !center.centerName.toLowerCase().includes(searchTerm) && !center.location.toLowerCase().includes(searchTerm)) {
+                    matches = false;
+                }
+
+                return matches;
             });
-        });
 
-        // Save Center button click handler
-        document.getElementById('saveCenter').addEventListener('click', function() {
-            // In a real application, you would submit the form to the server
-            const centerId = document.getElementById('centerId').value;
-            const centerName = document.getElementById('centerName').value;
-            const location = document.getElementById('location').value;
-            const volunteersWorking = document.getElementById('volunteersWorking').value;
-            const maxCapacity = document.getElementById('maxCapacity').value;
-            const managerId = document.getElementById('managerId').value;
+            // Apply sorting
+            if (sortValue === 'latest') {
+                // Sort by ID descending (assuming newer centers have higher IDs)
+                filteredCenters.sort((a, b) => b.centerID - a.centerID);
+            } else if (sortValue === 'oldest') {
+                // Sort by ID ascending
+                filteredCenters.sort((a, b) => a.centerID - b.centerID);
+            }
 
-            alert(`Center ${centerId ? 'updated' : 'created'} successfully!\n\nName: ${centerName}\nLocation: ${location}\nVolunteers: ${volunteersWorking}\nCapacity: ${maxCapacity}\nManager ID: ${managerId}`);
+            populateCentersTable(filteredCenters);
+        }
 
-            // Hide modal
-            centerModal.hide();
-        });
+        // Reset filters function
+        function resetFilters() {
+            document.getElementById('search').value = '';
+            document.getElementById('sortOrder').value = 'latest';
 
-        // Event listeners
-        applyButton.addEventListener('click', applyFilters);
-        resetButton.addEventListener('click', resetFilters);
+            filteredCenters = [...allCenters];
+            populateCentersTable(filteredCenters);
 
-        // Also apply filters when search input changes
-        searchInput.addEventListener('keyup', function() {
-            applyFilters();
-        });
-
-        // Apply filters when dropdown changes
-        sortOrder.addEventListener('change', applyFilters);
+            // Reset expanded center
+            expandedCenter = null;
+            expandedSection = "";
+        }
     });
 </script>

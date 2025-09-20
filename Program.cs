@@ -10,7 +10,14 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controllers
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        // Prevent circular reference issues
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
+
 
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<DrcsContext>(options =>

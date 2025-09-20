@@ -13,30 +13,78 @@ namespace DRCS.Services
             _context = context;
         }
 
-        // Create donation with logged-in user
+        
+        // Create donation with logged-in user (transaction-safe)
         public async Task<Donation> CreateWithUserAsync(int userId, string donationType, int quantity, int associatedCenter)
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-                throw new InvalidOperationException("User not found");
+            await using var transaction = await _context.Database.BeginTransactionAsync();
 
-            var donation = new Donation
+            try
             {
-                UserID = userId,
-                DonorName = user.Name, // auto-filled
-                DonationType = donationType,
-                Quantity = quantity,
-                DateReceived = DateTime.UtcNow,
-                AssociatedCenter = associatedCenter,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
+                var user = await _context.Users.FindAsync(userId);
+                if (user == null)
+                    throw new InvalidOperationException("User not found");
 
-            _context.Donations.Add(donation);
-            await _context.SaveChangesAsync();
+                var center = await _context.ReliefCenters
+                    .Include(rc => rc.Resources)
+                    .FirstOrDefaultAsync(rc => rc.CenterID == associatedCenter);
 
-            return donation;
+                if (center == null)
+                    throw new InvalidOperationException("Relief center not found");
+
+                // Create the donation entry
+                var donation = new Donation
+                {
+                    UserID = userId,
+                    DonorName = user.Name, // auto-filled
+                    DonationType = donationType,
+                    Quantity = quantity,
+                    DateReceived = DateTime.UtcNow,
+                    AssociatedCenter = associatedCenter,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                _context.Donations.Add(donation);
+
+                // Update resources table
+                var resource = center.Resources.FirstOrDefault(r => r.ResourceType == donationType);
+                if (resource != null)
+                {
+                    // Resource exists → update quantity
+                    resource.Quantity += quantity;
+                    resource.UpdatedAt = DateTime.UtcNow;
+                }
+                else
+                {
+                    // Create new resource entry
+                    var newResource = new Resource
+                    {
+                        ReliefCenterID = center.CenterID,
+                        ResourceType = donationType,
+                        Quantity = quantity,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+                    _context.Resources.Add(newResource);
+                }
+
+                await _context.SaveChangesAsync();
+
+                // Commit transaction
+                await transaction.CommitAsync();
+
+                return donation;
+            }
+            catch
+            {
+                // Rollback if anything fails
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
+
+
 
         // Get donations by user
         public async Task<List<object>> GetUserDonationsAsync(int userId)

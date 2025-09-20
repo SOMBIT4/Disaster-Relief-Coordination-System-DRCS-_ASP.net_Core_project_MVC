@@ -158,7 +158,28 @@
             <a href="/Admin/ReliefCenters">All Relief Centers</a>
             <a href="/Admin/AidRequests">All Aid Requests</a>
             <a href="/Admin/AidPreparation">Aid Preparation</a>
-            <a href="/api/auth/logout">Logout</a>
+            <a href="#" id="logoutLink">Logout</a>
+            <script>
+                document.getElementById('logoutLink').addEventListener('click', async (e) => {
+                    e.preventDefault(); // prevent default link behavior
+
+                    // 1️⃣ Clear localStorage
+                    localStorage.clear();
+
+                    // 2️⃣ Call backend logout endpoint to delete cookies
+                    try {
+                        await fetch('/api/auth/logout', {
+                            method: 'GET',
+                            credentials: 'include' // send cookies
+                        });
+                    } catch (err) {
+                        console.error('Logout failed', err);
+                    }
+
+                    // 3️⃣ Redirect to homepage
+                    window.location.href = '/';
+                });
+            </script>
             <div class="sidebar-footer">
                 <small>DRCS Admin Portal</small>
             </div>

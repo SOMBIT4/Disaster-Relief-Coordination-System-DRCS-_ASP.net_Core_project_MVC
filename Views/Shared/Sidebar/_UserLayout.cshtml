@@ -91,7 +91,28 @@
             <a href="/User/Donate">Donate</a>
             <a href="/User/Donations">All Donations</a>
             <a href="/User/AidRequests">All Aid Requests</a>
-            <a href="/api/auth/logout">Logout</a>
+            <a href="#" id="logoutLink">Logout</a>
+            <script>
+                document.getElementById('logoutLink').addEventListener('click', async (e) => {
+                    e.preventDefault(); // prevent default link behavior
+
+                    // 1️⃣ Clear localStorage
+                    localStorage.clear();
+
+                    // 2️⃣ Call backend logout endpoint to delete cookies
+                    try {
+                        await fetch('/api/auth/logout', {
+                            method: 'GET',
+                            credentials: 'include' // send cookies
+                        });
+                    } catch (err) {
+                        console.error('Logout failed', err);
+                    }
+
+                    // 3️⃣ Redirect to homepage
+                    window.location.href = '/';
+                });
+            </script>
         </div>
 
         <!-- Main content -->
@@ -111,6 +132,7 @@
         const userSidebar = document.getElementById("userSidebar");
         const userContent = document.getElementById("userContent");
         const userToggleBtn = document.getElementById("userToggleBtn");
+        
 
         userToggleBtn.addEventListener("click", () => {
             userSidebar.classList.toggle("open");
@@ -129,5 +151,6 @@
             });
         });
     </script>
+    
 </body>
 </html>
