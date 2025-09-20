@@ -1,28 +1,484 @@
 ﻿@{
-    Layout = "~/Views/Shared/Sidebar/_VolunteerLayout.cshtml";
-    ViewData["Title"] = "Rescue Tracking Tasks";
+    Layout = "~/Views/Shared/Sidebar/_VolunteerLayout.cshtml"; // Changed to volunteer layout
+    ViewData["Title"] = "Rescue Task Tracking";
 }
 
-<h2>Rescue Tracking Tasks</h2>
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Toast notifications -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-<table class="table table-bordered table-striped">
-    <thead class="table-info">
-        <tr>
-            <th>Task</th>
-            <th>Location</th>
-            <th>Progress</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Evacuation</td>
-            <td>Zone C</td>
-            <td>70%</td>
-        </tr>
-        <tr>
-            <td>Relief Delivery</td>
-            <td>Zone D</td>
-            <td>40%</td>
-        </tr>
-    </tbody>
-</table>
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-color: #2c5f2d;
+        --secondary-color: #97bc62;
+        --accent-color: #ffd700;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+        --success-bg: #d4edda;
+        --success-text: #155724;
+        --warning-bg: #fff3cd;
+        --warning-text: #856404;
+        --danger-bg: #f8d7da;
+        --danger-text: #721c24;
+        --info-bg: #d1ecf1;
+        --info-text: #0c5460;
+    }
+
+    .banner-section {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        padding: 2.5rem 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .banner-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .banner-subtitle {
+        font-size: 1rem;
+        font-weight: 400;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .tasks-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .tasks-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .tasks-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .tasks-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .tasks-table tr:hover {
+            background-color: rgba(151, 188, 98, 0.1);
+        }
+
+    .status-badge {
+        padding: 0.35rem 0.65rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background-color: var(--warning-bg);
+        color: var(--warning-text);
+    }
+
+    .status-in-progress {
+        background-color: var(--info-bg);
+        color: var(--info-text);
+    }
+
+    .status-completed {
+        background-color: var(--success-bg);
+        color: var(--success-text);
+    }
+
+    .status-cancelled {
+        background-color: var(--danger-bg);
+        color: var(--danger-text);
+    }
+
+    .btn-action {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        border: none;
+        transition: all 0.3s;
+    }
+
+    .btn-complete {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+
+        .btn-complete:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+    .btn-update {
+        background-color: #f8f9fa;
+        color: var(--text-dark);
+        border: 1px solid #dee2e6;
+    }
+
+        .btn-update:hover {
+            background-color: #e9ecef;
+        }
+
+    .btn-disabled {
+        background-color: #e9ecef;
+        color: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+
+    .loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+    }
+
+    /* Modal customization */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+        border: none;
+    }
+
+    .btn-confirm {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border: none;
+        color: white;
+    }
+
+        .btn-confirm:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .urgent-badge {
+        background-color: #ffd700;
+        color: #856404;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+</style>
+
+<div class="banner-section">
+    <h1 class="banner-title">Rescue Task Tracking</h1>
+    <p class="banner-subtitle">Monitor and manage your assigned rescue tasks</p>
+</div>
+
+<div class="tasks-container">
+    <table class="tasks-table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Area Name</th>
+                <th>Requester Name</th>
+                <th>Contact Info</th>
+                <th>Request Type</th>
+                <th>Description</th>
+                <th>Urgency</th>
+                <th>People Helped</th>
+                <th>Total Needed</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="tasksTableBody">
+            <!-- Tasks will be populated here by JavaScript -->
+        </tbody>
+    </table>
+
+    <div class="empty-state d-none" id="emptyState">
+        <div class="empty-state-icon">
+            <i class="bi bi-inbox"></i>
+        </div>
+        <h3 class="empty-state-title">No tasks assigned</h3>
+        <p class="text-muted">You don't have any rescue tasks assigned at the moment.</p>
+    </div>
+
+    <div class="loader-container d-none" id="loaderContainer">
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<!-- Update Info Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Update Task Information</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+                    <p><strong>Urgency Level:</strong> <span id="modalUrgency"></span></p>
+                    <p><strong>Total People Needed:</strong> <span id="modalTotalPeople"></span></p>
+                    <p><strong>Current People Helped:</strong> <span id="modalCurrentHelped"></span></p>
+                </div>
+                <div class="mb-3">
+                    <label for="updatedPeople" class="form-label">Update People Helped</label>
+                    <input type="number" class="form-control" id="updatedPeople" min="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-confirm" id="saveUpdateBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- Toastr for notifications -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize toastr
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: "toast-top-right",
+            timeOut: "5000"
+        };
+
+        // Initialize modal
+        const updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
+
+        // Sample task data (in a real app, this would come from an API)
+        const tasks = [
+            {
+                task_id: "TASK-001",
+                area_name: "Downtown District",
+                RequesterName: "John Smith",
+                ContactInfo: "john@example.com",
+                RequestType: "Rescue",
+                Description: "Family trapped in building, need immediate evacuation",
+                UrgencyLevel: "High",
+                number_of_people_helped: 2,
+                NumberOfPeople: 4,
+                status: "In Progress",
+                req_id: "REQ-001"
+            },
+            {
+                task_id: "TASK-002",
+                area_name: "Riverside Community",
+                RequesterName: "Maria Garcia",
+                ContactInfo: "555-0123",
+                RequestType: "Aid",
+                Description: "Elderly residents need medication delivery",
+                UrgencyLevel: "Medium",
+                number_of_people_helped: 5,
+                NumberOfPeople: 5,
+                status: "Completed",
+                req_id: "REQ-002"
+            },
+            {
+                task_id: "TASK-003",
+                area_name: "Northern Suburbs",
+                RequesterName: "Robert Johnson",
+                ContactInfo: "robert@example.com",
+                RequestType: "Rescue",
+                Description: "Flood victims stranded on rooftops",
+                UrgencyLevel: "High",
+                number_of_people_helped: 0,
+                NumberOfPeople: 8,
+                status: "Pending",
+                req_id: "REQ-003"
+            }
+        ];
+
+        const tasksTableBody = document.getElementById('tasksTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const loaderContainer = document.getElementById('loaderContainer');
+        let currentTask = null;
+
+        // Render tasks table
+        function renderTasks() {
+            // Show loader
+            loaderContainer.classList.remove('d-none');
+            tasksTableBody.innerHTML = '';
+            emptyState.classList.add('d-none');
+
+            // Simulate API delay
+            setTimeout(() => {
+                if (tasks.length === 0) {
+                    emptyState.classList.remove('d-none');
+                    tasksTableBody.innerHTML = '';
+                } else {
+                    emptyState.classList.add('d-none');
+
+                    tasks.forEach((task, index) => {
+                        const row = document.createElement('tr');
+
+                        // Determine status badge class
+                        let statusClass = 'status-pending';
+                        if (task.status === 'Completed') statusClass = 'status-completed';
+                        else if (task.status === 'In Progress') statusClass = 'status-in-progress';
+
+                        // Determine if urgency is high
+                        const urgencyBadge = task.UrgencyLevel === 'High' ?
+                            '<span class="urgent-badge">Urgent</span>' : task.UrgencyLevel;
+
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${task.area_name}</td>
+                            <td>${task.RequesterName}</td>
+                            <td>${task.ContactInfo}</td>
+                            <td>${task.RequestType}</td>
+                            <td>${task.Description}</td>
+                            <td>${urgencyBadge}</td>
+                            <td>${task.number_of_people_helped}</td>
+                            <td>${task.NumberOfPeople}</td>
+                            <td class="text-center">
+                                ${task.status === 'Completed' ?
+                                    `<button class="btn-action btn-disabled" disabled>Completed</button>` :
+                                    `<button class="btn-action btn-complete me-2" data-task-id="${task.task_id}">
+                                        <i class="bi bi-check-circle"></i> Complete
+                                     </button>
+                                     <button class="btn-action btn-update" data-task-id="${task.task_id}">
+                                        <i class="bi bi-pencil"></i> Update
+                                     </button>`
+                                }
+                            </td>
+                        `;
+
+                        tasksTableBody.appendChild(row);
+                    });
+
+                    // Add event listeners to buttons
+                    document.querySelectorAll('.btn-complete').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const taskId = this.getAttribute('data-task-id');
+                            handleMarkCompleted(taskId);
+                        });
+                    });
+
+                    document.querySelectorAll('.btn-update').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const taskId = this.getAttribute('data-task-id');
+                            handleOpenUpdateModal(taskId);
+                        });
+                    });
+                }
+
+                loaderContainer.classList.add('d-none');
+            }, 800);
+        }
+
+        // Handle mark as completed
+        function handleMarkCompleted(taskId) {
+            const task = tasks.find(t => t.task_id === taskId);
+            if (task) {
+                if (confirm(`Are you sure you want to mark task ${taskId} as completed?`)) {
+                    // Update task status
+                    task.status = 'Completed';
+
+                    // Show success message
+                    toastr.success(`Task ${taskId} marked as completed successfully`);
+
+                    // Re-render tasks
+                    renderTasks();
+                }
+            }
+        }
+
+        // Handle open update modal
+        function handleOpenUpdateModal(taskId) {
+            currentTask = tasks.find(t => t.task_id === taskId);
+            if (currentTask) {
+                document.getElementById('modalDescription').textContent = currentTask.Description;
+                document.getElementById('modalUrgency').textContent = currentTask.UrgencyLevel;
+                document.getElementById('modalTotalPeople').textContent = currentTask.NumberOfPeople;
+                document.getElementById('modalCurrentHelped').textContent = currentTask.number_of_people_helped;
+                document.getElementById('updatedPeople').value = currentTask.number_of_people_helped;
+
+                updateModal.show();
+            }
+        }
+
+        // Handle save update
+        document.getElementById('saveUpdateBtn').addEventListener('click', function() {
+            if (currentTask) {
+                const updatedValue = parseInt(document.getElementById('updatedPeople').value);
+
+                if (isNaN(updatedValue) || updatedValue < 0) {
+                    toastr.error('Please enter a valid number');
+                    return;
+                }
+
+                if (updatedValue > currentTask.NumberOfPeople) {
+                    toastr.warning('People helped cannot exceed total people needed');
+                    return;
+                }
+
+                // Update task
+                currentTask.number_of_people_helped = updatedValue;
+
+                // Show success message
+                toastr.success(`Task ${currentTask.task_id} updated successfully`);
+
+                // Close modal
+                updateModal.hide();
+
+                // Re-render tasks
+                renderTasks();
+            }
+        });
+
+        // Initial render
+        renderTasks();
+    });
+</script>
