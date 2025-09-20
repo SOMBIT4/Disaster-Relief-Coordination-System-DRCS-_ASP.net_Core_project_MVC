@@ -161,19 +161,25 @@
         }
 
         /* Modal styling with light green background */
+        /* Modal styling with white background */
         .modal-content {
-            background-color: var(--modal-bg);
+            background-color: white; /* Changed from var(--modal-bg) to white */
             border: 1px solid var(--secondary-color);
+            border-radius: 12px; /* Added for consistency with other elements */
         }
 
         .modal-header {
             border-bottom: 1px solid var(--secondary-color);
-            background-color: rgba(151, 188, 98, 0.2);
+            background-color: var(--secondary-color);
+            border-top-left-radius: 12px; /* Match the modal-content radius */
+            border-top-right-radius: 12px;
         }
 
         .modal-footer {
             border-top: 1px solid var(--secondary-color);
             background-color: rgba(151, 188, 98, 0.2);
+            border-bottom-left-radius: 12px; /* Match the modal-content radius */
+            border-bottom-right-radius: 12px;
         }
 
         .loader-container {

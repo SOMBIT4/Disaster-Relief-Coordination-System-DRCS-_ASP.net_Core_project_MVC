@@ -550,8 +550,8 @@ namespace DRCS.Migrations
 
             modelBuilder.Entity("backend.Models.Entities.Donation", b =>
                 {
-                    b.HasOne("backend.Models.Entities.ReliefCenter", null)
-                        .WithMany()
+                    b.HasOne("backend.Models.Entities.ReliefCenter", "ReliefCenter")
+                        .WithMany("Donations")
                         .HasForeignKey("AssociatedCenter")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -561,6 +561,8 @@ namespace DRCS.Migrations
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ReliefCenter");
                 });
 
             modelBuilder.Entity("backend.Models.Entities.RescueTracking", b =>
@@ -583,17 +585,19 @@ namespace DRCS.Migrations
 
             modelBuilder.Entity("backend.Models.Entities.Resource", b =>
                 {
-                    b.HasOne("backend.Models.Entities.ReliefCenter", null)
-                        .WithMany()
+                    b.HasOne("backend.Models.Entities.ReliefCenter", "ReliefCenter")
+                        .WithMany("Resources")
                         .HasForeignKey("ReliefCenterID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ReliefCenter");
                 });
 
             modelBuilder.Entity("backend.Models.Entities.Volunteer", b =>
                 {
-                    b.HasOne("backend.Models.Entities.ReliefCenter", null)
-                        .WithMany()
+                    b.HasOne("backend.Models.Entities.ReliefCenter", "ReliefCenter")
+                        .WithMany("Volunteers")
                         .HasForeignKey("AssignedCenter")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -602,6 +606,8 @@ namespace DRCS.Migrations
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ReliefCenter");
                 });
 
             modelBuilder.Entity("backend.Models.Entities.VolunteerSkill", b =>
@@ -617,6 +623,15 @@ namespace DRCS.Migrations
                         .HasForeignKey("VolunteerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.ReliefCenter", b =>
+                {
+                    b.Navigation("Donations");
+
+                    b.Navigation("Resources");
+
+                    b.Navigation("Volunteers");
                 });
 #pragma warning restore 612, 618
         }
