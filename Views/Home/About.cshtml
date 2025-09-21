@@ -1,0 +1,518 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-color: #2c5f2d;
+        --secondary-color: #97bc62;
+        --accent-color: #ffd700;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+        --light-green: #f0f7ee;
+    }
+
+    body {
+        line-height: 1.6;
+        color: var(--text-dark);
+        background: var(--light-green) !important;
+    }
+
+    /* Header Section */
+    .about-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1a3a1b 100%);
+        padding: 80px 0;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .about-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+    .about-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Main Content */
+    .about-content {
+        padding: 80px 0;
+        background: #97bc62;
+        margin-top: -50px;
+        position: relative;
+        z-index: 3;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+        position: relative;
+        text-align: center;
+    }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+    .section-title-white {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 2rem;
+        position: relative;
+        text-align: center;
+    }
+
+        .section-title-white::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+        }
+
+    .lead-text {
+        font-size: 1.3rem;
+        font-weight: 500;
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 3rem;
+        line-height: 1.8;
+    }
+
+    .description-text {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        text-align: center;
+        margin-bottom: 4rem;
+        line-height: 1.8;
+    }
+
+    /* Mission Cards */
+    .mission-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2.5rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(151, 188, 98, 0.2);
+        height: 100%;
+        margin-bottom: 2rem;
+    }
+
+        .mission-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(44, 95, 45, 0.2);
+        }
+
+    .mission-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.8rem;
+        color: white;
+    }
+
+    .mission-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+    }
+
+    .mission-description {
+        color: var(--text-light);
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    /* Features List */
+    .features-section {
+        padding: 60px 0;
+        background: var(--light-green) !important;
+    }
+
+    .feature-item {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--secondary-color);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+        .feature-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--secondary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .feature-text {
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        font-weight: 500;
+        margin: 0;
+    }
+
+    /* Values Section */
+    .values-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+    }
+
+    .value-card {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 2px solid transparent;
+        backdrop-filter: blur(10px);
+    }
+
+        .value-card:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+    .value-icon {
+        font-size: 3rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .value-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .value-description {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: white;
+        padding: 60px 0;
+        color: var(--text-dark);
+        text-align: center;
+    }
+
+    .cta-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+
+    .cta-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: var(--text-light);
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(45deg, var(--accent-color), #ffed4a);
+        border: none;
+        color: var(--text-dark);
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin: 0 10px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+            color: var(--text-dark);
+        }
+
+    .btn-outline-custom {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin: 0 10px;
+    }
+
+        .btn-outline-custom:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+</style>
+
+<!-- Header Section -->
+<section class="about-header">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="about-title">About JonojibonAid</h1>
+                <p class="about-subtitle">Empowering communities through compassion and dedicated humanitarian service</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content Section -->
+<section class="about-content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <p class="lead-text">
+                    JonojibonAid is a humanitarian initiative under the DRCS platform,
+                    dedicated to supporting communities in times of need.
+                </p>
+                <p class="description-text">
+                    Our mission is to bring relief, care, and hope to vulnerable individuals.
+                    We operate with transparency, compassion, and dedication to make a
+                    meaningful impact in people's lives across Bangladesh and beyond.
+                </p>
+            </div>
+        </div>
+
+        <!-- Mission Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-4">
+                <div class="mission-card">
+                    <div class="mission-icon" style="background: linear-gradient(45deg, #16a34a, #22c55e);">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="mission-title">Our Mission</h3>
+                    <p class="mission-description">
+                        To provide immediate relief and long-term support to communities affected by disasters,
+                        poverty, and crisis situations through sustainable humanitarian programs.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="mission-card">
+                    <div class="mission-icon" style="background: linear-gradient(45deg, #dc2626, #ef4444);">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="mission-title">Our Vision</h3>
+                    <p class="mission-description">
+                        A world where every individual has access to basic necessities, healthcare,
+                        education, and opportunities to build a dignified and prosperous life.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="mission-card">
+                    <div class="mission-icon" style="background: linear-gradient(45deg, #2563eb, #3b82f6);">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="mission-title">Our Commitment</h3>
+                    <p class="mission-description">
+                        We are committed to transparency, accountability, and ensuring that every
+                        donation reaches those who need it most with maximum impact and efficiency.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">What We Do</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-hand-holding-medical"></i>
+                    </div>
+                    <p class="feature-text">Emergency Disaster Relief & Recovery Programs</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <p class="feature-text">Community Health Assistance & Medical Aid</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <p class="feature-text">Volunteer-Driven Aid Programs & Community Engagement</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <p class="feature-text">Educational Support & Scholarship Programs</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <p class="feature-text">Housing & Shelter Assistance for Displaced Families</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <p class="feature-text">Environmental Conservation & Sustainable Development</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="values-section">
+    <div class="container">
+        <h2 class="section-title-white">Our Core Values</h2>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h4 class="value-title">Transparency</h4>
+                    <p class="value-description">
+                        We maintain complete transparency in our operations, funding, and impact reporting.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h4 class="value-title">Compassion</h4>
+                    <p class="value-description">
+                        Every action we take is driven by genuine care and empathy for those in need.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h4 class="value-title">Excellence</h4>
+                    <p class="value-description">
+                        We strive for excellence in all our humanitarian efforts and service delivery.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4 class="value-title">Sustainability</h4>
+                    <p class="value-description">
+                        We focus on sustainable solutions that create lasting positive change.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="cta-title">Join Our Mission</h2>
+                <p class="cta-subtitle">
+                    Be part of the change you want to see. Your support helps us reach more communities and save more lives.
+                </p>
+                <div>
+                    <a href="/donateform" class="btn-primary-custom">Make a Donation</a>
+                    <a href="/" class="btn-outline-custom">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

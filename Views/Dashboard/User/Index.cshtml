@@ -1,0 +1,557 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_UserLayout.cshtml";
+}
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-color: #2c5f2d;
+        --secondary-color: #97bc62;
+        --accent-color: #ffd700;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+    }
+
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-subtitle {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .stat-card {
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        overflow: hidden;
+        height: 100%;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        opacity: 0.8;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .card-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0;
+    }
+
+    .card-my-requests {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+    }
+
+    .card-completed {
+        background: linear-gradient(135deg, #97bc62 0%, #7ea34a 100%);
+        color: white;
+    }
+
+    .card-pending {
+        background: linear-gradient(135deg, #ffd700 0%, #f0c500 100%);
+        color: var(--text-dark);
+    }
+
+    .dashboard-section {
+        margin-top: 3rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--secondary-color);
+    }
+
+    .activity-item {
+        padding: 1rem;
+        border-left: 3px solid var(--secondary-color);
+        margin-bottom: 1rem;
+        background-color: var(--bg-light);
+        border-radius: 0 8px 8px 0;
+    }
+
+    .activity-time {
+        font-size: 0.85rem;
+        color: var(--text-light);
+    }
+
+    .action-buttons {
+        margin-bottom: 2rem;
+    }
+
+    /* Custom green button styles */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border: none;
+        color: white;
+        padding: 12px 24px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+            color: white;
+        }
+
+    .btn-outline-primary {
+        background: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        padding: 10px 22px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.3);
+        }
+
+    .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+    }
+
+    .error-message {
+        color: #dc3545;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .badge-status {
+        padding: 0.35rem 0.65rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .badge-pending {
+        background-color: rgba(255, 215, 0, 0.2);
+        color: #b8860b;
+    }
+
+    .badge-processing {
+        background-color: rgba(13, 110, 253, 0.2);
+        color: #0d6efd;
+    }
+
+    .badge-completed {
+        background-color: rgba(151, 188, 98, 0.2);
+        color: #2c5f2d;
+    }
+
+    .badge-rejected {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+
+    .request-badge {
+        padding: 0.35rem 0.65rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .badge-medical {
+        background-color: rgba(70, 130, 180, 0.2);
+        color: #4169e1;
+    }
+
+    .badge-food {
+        background-color: rgba(151, 188, 98, 0.2);
+        color: #2c5f2d;
+    }
+
+    .badge-shelter {
+        background-color: rgba(139, 69, 19, 0.2);
+        color: #8b4513;
+    }
+
+    .badge-other {
+        background-color: rgba(128, 128, 128, 0.2);
+        color: #666;
+    }
+</style>
+
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Dashboard Overview</h1>
+    <p class="dashboard-subtitle">Welcome back! Here's what's happening with your requests and activities.</p>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loadingSpinner" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="ms-2 mb-0">Loading your dashboard data...</p>
+</div>
+
+<!-- Error Message -->
+<div id="errorMessage" class="error-message" style="display: none;">
+    <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+    <p class="mt-2" id="errorText">Failed to load dashboard data</p>
+    <button class="btn btn-primary mt-2" onclick="loadDashboardData()">Try Again</button>
+</div>
+
+<!-- Dashboard Content (initially hidden) -->
+<div id="dashboardContent" style="display: none;">
+    <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card stat-card card-my-requests text-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-title">My Requests</div>
+                            <h3 class="card-value" id="total-requests">0</h3>
+                        </div>
+                        <div class="card-icon">
+                            <i class="bi bi-clipboard-check"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small id="new-requests-text">0 new since last week</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card stat-card card-completed text-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-title">Completed Requests</div>
+                            <h3 class="card-value" id="completed-requests">0</h3>
+                        </div>
+                        <div class="card-icon">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small id="success-rate-text">0% success rate</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card stat-card card-pending">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-title">Pending Requests</div>
+                            <h3 class="card-value" id="pending-requests">0</h3>
+                        </div>
+                        <div class="card-icon">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small id="awaiting-text">0 awaiting volunteer assignment</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <div class="d-grid gap-2 d-md-flex">
+            <a href="https://localhost:7291/User/Donate" class="btn btn-primary btn-lg me-md-2">
+                <i class="bi bi-plus-circle"></i> New Request
+            </a>
+            <a href="https://localhost:7291/User/AidRequests" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-list-check"></i> View All Requests
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-section">
+        <h3 class="section-title">Recent Activities</h3>
+        <div id="recent-activities">
+            <!-- Activities will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        loadDashboardData();
+    });
+
+    // Function to load dashboard data
+    async function loadDashboardData() {
+        // Show loading, hide content and error
+        document.getElementById('loadingSpinner').style.display = 'flex';
+        document.getElementById('dashboardContent').style.display = 'none';
+        document.getElementById('errorMessage').style.display = 'none';
+
+        try {
+            // Get token from localStorage
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                throw new Error('Please log in to view your dashboard');
+            }
+
+            // Parse user ID from token
+            const decodedToken = parseJwt(token);
+            if (!decodedToken || !decodedToken.userId) {
+                throw new Error('Invalid authentication token');
+            }
+
+            const userId = decodedToken.userId;
+
+            // Fetch both API requests in parallel
+            const [aidRequestsResponse, donationsResponse] = await Promise.all([
+                fetch(`/api/aid-requests/user/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }),
+                fetch('/api/donations/history', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+            ]);
+
+            // Check if responses are OK
+            if (!aidRequestsResponse.ok) {
+                throw new Error('Failed to fetch aid requests');
+            }
+
+            if (!donationsResponse.ok) {
+                throw new Error('Failed to fetch donation history');
+            }
+
+            // Parse responses
+            const aidRequests = await aidRequestsResponse.json();
+            const donationsData = await donationsResponse.json();
+            const donations = donationsData.success ? donationsData.data : [];
+
+            // Process and display data
+            processDashboardData(aidRequests, donations);
+
+            // Hide loading, show content
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+
+            // Show error message
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorText').textContent = error.message || 'Failed to load dashboard data';
+        }
+    }
+
+    // Function to parse JWT token
+    function parseJwt(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Function to process and display dashboard data
+    function processDashboardData(aidRequests, donations) {
+        // Update stats
+        updateStats(aidRequests);
+
+        // Update recent activities
+        updateRecentActivities(aidRequests, donations);
+    }
+
+    // Function to update stats cards
+    function updateStats(aidRequests) {
+        const totalRequests = aidRequests.length;
+        const completedRequests = aidRequests.filter(req => req.status === 'Completed').length;
+        const pendingRequests = aidRequests.filter(req => req.status === 'Pending').length;
+        const processingRequests = aidRequests.filter(req => req.status === 'Processing').length;
+
+        // Update DOM elements
+        document.getElementById('total-requests').textContent = totalRequests;
+        document.getElementById('completed-requests').textContent = completedRequests;
+        document.getElementById('pending-requests').textContent = pendingRequests + processingRequests;
+
+        // Update additional text
+        document.getElementById('new-requests-text').textContent =
+            `${Math.min(5, totalRequests)} new since last week`;
+
+        const successRate = totalRequests > 0 ? Math.round((completedRequests / totalRequests) * 100) : 0;
+        document.getElementById('success-rate-text').textContent =
+            `${successRate}% success rate`;
+
+        document.getElementById('awaiting-text').textContent =
+            `${processingRequests} awaiting volunteer assignment`;
+    }
+
+    // Function to update recent activities
+    function updateRecentActivities(aidRequests, donations) {
+        const activitiesContainer = document.getElementById('recent-activities');
+        activitiesContainer.innerHTML = '';
+
+        // Combine and sort activities by date (newest first)
+        const allActivities = [];
+
+        // Add aid requests as activities
+        aidRequests.forEach(request => {
+            allActivities.push({
+                type: 'request',
+                title: `${request.requestType} Request`,
+                status: request.status,
+                description: request.description,
+                date: request.requestDate || request.createdAt,
+                id: request.requestID
+            });
+        });
+
+        // Add donations as activities
+        donations.forEach(donation => {
+            allActivities.push({
+                type: 'donation',
+                title: `${donation.donationType} Donation`,
+                status: 'Completed',
+                description: `Donated ${donation.quantity} items`,
+                date: donation.dateReceived || donation.createdAt,
+                id: donation.donationID
+            });
+        });
+
+        // Sort activities by date (newest first)
+        allActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // Display only the 5 most recent activities
+        const recentActivities = allActivities.slice(0, 5);
+
+        if (recentActivities.length === 0) {
+            activitiesContainer.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No recent activities found.
+                </div>
+            `;
+            return;
+        }
+
+        // Create activity items
+        recentActivities.forEach(activity => {
+            const activityDate = new Date(activity.date);
+            const formattedDate = formatDate(activityDate);
+
+            // Determine badge class based on status
+            let badgeClass = '';
+            switch(activity.status) {
+                case 'Pending':
+                    badgeClass = 'badge-pending';
+                    break;
+                case 'Processing':
+                    badgeClass = 'badge-processing';
+                    break;
+                case 'Completed':
+                    badgeClass = 'badge-completed';
+                    break;
+                case 'Rejected':
+                    badgeClass = 'badge-rejected';
+                    break;
+                default:
+                    badgeClass = 'badge-pending';
+            }
+
+            // Create activity item HTML
+            const activityItem = document.createElement('div');
+            activityItem.className = 'activity-item';
+            activityItem.innerHTML = `
+                <div class="d-flex justify-content-between">
+                    <h5>${activity.title}</h5>
+                    <span class="badge-status ${badgeClass}">${activity.status}</span>
+                </div>
+                <p>${activity.description}</p>
+                <div class="activity-time">
+                    <i class="bi bi-clock"></i> ${formattedDate}
+                </div>
+            `;
+
+            activitiesContainer.appendChild(activityItem);
+        });
+    }
+
+    // Function to format date for display
+    function formatDate(date) {
+        if (isNaN(date.getTime())) {
+            return 'Invalid Date';
+        }
+
+        const now = new Date();
+        const diffTime = Math.abs(now - date);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) {
+            return 'Today at ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } else if (diffDays === 1) {
+            return 'Yesterday at ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } else if (diffDays < 7) {
+            return `${diffDays} days ago`;
+        } else {
+            return date.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+    }
+</script>

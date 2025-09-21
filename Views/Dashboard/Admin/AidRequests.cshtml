@@ -1,0 +1,1035 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_AdminLayout.cshtml";
+    ViewData["Title"] = "Aid Requests";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aid Requests to prepare</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --accent-color: #ffd700;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
+            --modal-bg: rgba(151, 188, 98, 0.1);
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+            .table thead th {
+                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                border: none;
+                text-align: left;
+            }
+
+            .table tbody td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .table tbody tr:hover {
+                background-color: rgba(151, 188, 98, 0.1);
+            }
+
+        .urgency-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .badge-low {
+            background-color: rgba(151, 188, 98, 0.2);
+            color: #2c5f2d;
+        }
+
+        .badge-medium {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #b8860b;
+        }
+
+        .badge-high {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .badge-pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #b8860b;
+        }
+
+        .badge-progress {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+        }
+
+        .badge-completed {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: #198754;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: 1px solid var(--secondary-color);
+            background-color: transparent;
+            color: var(--primary-color);
+        }
+
+            .btn-action:hover {
+                background-color: var(--secondary-color);
+                color: white;
+            }
+
+        .btn-start-prep {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+        }
+
+            .btn-start-prep:hover {
+                background-color: var(--primary-color);
+            }
+
+        .btn-complete-prep {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+            .btn-complete-prep:hover {
+                background-color: #1e4a20;
+            }
+
+        .btn-disabled {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            cursor: not-allowed;
+        }
+
+        .volunteer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(151, 188, 98, 0.2);
+        }
+
+        .volunteer-info {
+            flex: 1;
+        }
+
+        .volunteer-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .volunteer-center {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .btn-join {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+            .btn-join:hover {
+                background-color: var(--primary-color);
+            }
+
+        .btn-joined {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: not-allowed;
+        }
+
+        .form-control {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+            background-color: white;
+        }
+
+            .form-control:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+            }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+     
+
+        .auth-alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .max-h-96 {
+            max-height: 24rem;
+            overflow-y: auto;
+        }
+
+        .request-details {
+            background-color: rgba(151, 188, 98, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="page-header">
+            <h1 class="page-title">Aid Requests</h1>
+            <p class="page-subtitle">Manage aid requests and assign volunteers to make preparations for the asked request</p>
+        </div>
+
+        <!-- Authentication Alert (initially hidden) -->
+        <div id="authAlert" class="auth-alert d-none">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span id="authMessage">Please log in to manage aid preparations</span>
+        </div>
+
+        <!-- Requests Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Request ID</th>
+                            <th scope="col">Requester</th>
+                            <th scope="col">Contact Info</th>
+                            <th scope="col">Description</th>
+                            <th scope="col" class="text-center">Urgency</th>
+                            <th scope="col" class="text-center">Status</th>
+                            <th scope="col" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="loading-spinner"></div> Loading aid requests...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Preparation Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Preparation ID</th>
+                            <th scope="col">Request ID</th>
+                            <th scope="col">Departure Time</th>
+                            <th scope="col">Estimated Arrival</th>
+                            <th scope="col" class="text-center">Status</th>
+                            <th scope="col" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="preparationTableBody">
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                No preparation records found.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Volunteers Modal -->
+    <div class="modal fade" id="volunteersModal" tabindex="-1" aria-labelledby="volunteersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="volunteersModalLabel">Assign Volunteers</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="requestDetails" class="request-details mb-3">
+                        <!-- Request details will be populated here -->
+                    </div>
+                    <div id="volunteersList" class="max-h-96 overflow-y-auto">
+                        <div class="text-center py-4">
+                            <div class="loading-spinner"></div> Loading volunteers...
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveVolunteersBtn">
+                        <span class="loading-spinner d-none" id="volunteerSpinner"></span>
+                        Save Assignments
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complete Preparation Modal -->
+    <div class="modal fade" id="completePrepModal" tabindex="-1" aria-labelledby="completePrepModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="completePrepModalLabel">Complete Preparation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to mark this preparation as completed?</p>
+                    <div class="mb-3">
+                        <label for="departureTime" class="form-label">Departure Time</label>
+                        <input type="datetime-local" class="form-control" id="departureTime">
+                    </div>
+                    <div class="mb-3">
+                        <label for="estimatedArrival" class="form-label">Estimated Arrival</label>
+                        <input type="datetime-local" class="form-control" id="estimatedArrival">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmCompleteBtn">
+                        <span class="loading-spinner d-none" id="completeSpinner"></span>
+                        Complete Preparation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const requestsTableBody = document.getElementById('requestsTableBody');
+            const preparationTableBody = document.getElementById('preparationTableBody');
+            const volunteersModal = new bootstrap.Modal(document.getElementById('volunteersModal'));
+            const completePrepModal = new bootstrap.Modal(document.getElementById('completePrepModal'));
+            const volunteersList = document.getElementById('volunteersList');
+            const requestDetails = document.getElementById('requestDetails');
+            const saveVolunteersBtn = document.getElementById('saveVolunteersBtn');
+            const confirmCompleteBtn = document.getElementById('confirmCompleteBtn');
+            const volunteerSpinner = document.getElementById('volunteerSpinner');
+            const completeSpinner = document.getElementById('completeSpinner');
+            const authAlert = document.getElementById('authAlert');
+            const authMessage = document.getElementById('authMessage');
+            const departureTimeInput = document.getElementById('departureTime');
+            const estimatedArrivalInput = document.getElementById('estimatedArrival');
+
+            let currentRequestId = null;
+            let currentPreparationId = null;
+            let allVolunteers = [];
+            let assignedVolunteers = {};
+            let selectedVolunteers = [];
+            let aidRequests = [];
+            let aidPreparations = [];
+
+            // Get token from localStorage
+            function getToken() {
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    authAlert.classList.remove('d-none');
+                    authMessage.textContent = 'Please log in to manage aid preparations';
+                    throw new Error('Please log in to manage aid preparations');
+                }
+                return token;
+            }
+
+            // Format date for display
+            function formatDate(dateString) {
+                if (!dateString || dateString === "0001-01-01T00:00:00") {
+                    return "Not set";
+                }
+
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleString();
+                } catch (e) {
+                    return "Invalid date";
+                }
+            }
+
+            // Load aid requests and preparations on page load
+            try {
+                getToken(); // Check if user is authenticated
+                loadAidRequests();
+                loadAidPreparations();
+            } catch (error) {
+                requestsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-danger py-4">
+                            ${error.message}
+                        </td>
+                    </tr>
+                `;
+                preparationTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-danger py-4">
+                            ${error.message}
+                        </td>
+                    </tr>
+                `;
+            }
+
+            // Function to load aid requests from API
+            async function loadAidRequests() {
+                try {
+                    const token = getToken();
+                    const response = await fetch('/api/aid-requests', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch aid requests');
+                    }
+
+                    aidRequests = await response.json();
+                    renderAidRequests(aidRequests);
+                } catch (error) {
+                    console.error('Error loading aid requests:', error);
+                    requestsTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="text-center text-danger py-4">
+                                ${error.message}
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // Function to load aid preparations from API
+            async function loadAidPreparations() {
+                try {
+                    const token = getToken();
+                    const response = await fetch('/api/AidPreparation/full-details', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch aid preparations');
+                    }
+
+                    const result = await response.json();
+
+                    // Check if the response has the expected structure
+                    if (result.success && result.data) {
+                        aidPreparations = result.data;
+                        renderAidPreparations(aidPreparations);
+                    } else {
+                        throw new Error('Invalid response format from server');
+                    }
+                } catch (error) {
+                    console.error('Error loading aid preparations:', error);
+                    preparationTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center text-danger py-4">
+                                ${error.message}
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // Function to render aid requests in the table
+            function renderAidRequests(requests) {
+                if (!requests || requests.length === 0) {
+                    requestsTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                No aid requests found.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                requests.forEach(request => {
+                    const urgencyClass = getUrgencyClass(request.urgencyLevel);
+                    const statusClass = getStatusClass(request.status);
+                    const hasPreparation = aidPreparations.some(prep => prep.requestID === request.requestID);
+
+                    html += `
+                        <tr>
+                            <td>${request.requestID}</td>
+                            <td>${request.requesterName}</td>
+                            <td>${request.contactInfo}</td>
+                            <td>${request.description}</td>
+                            <td class="text-center"><span class="urgency-badge ${urgencyClass}">${request.urgencyLevel}</span></td>
+                            <td class="text-center"><span class="status-badge ${statusClass}">${request.status}</span></td>
+                            <td class="text-center">
+                                ${hasPreparation
+                                    ? `<span class="badge badge-progress">Preparation Started</span>`
+                                    : `<button class="btn-action btn-start-prep" data-req-id="${request.requestID}">Start Preparation</button>`}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                requestsTableBody.innerHTML = html;
+
+                // Add event listeners to action buttons
+                document.querySelectorAll('.btn-start-prep').forEach(button => {
+                    button.addEventListener('click', function() {
+                        currentRequestId = this.getAttribute('data-req-id');
+                        startPreparation(currentRequestId);
+                    });
+                });
+            }
+
+            // Function to render aid preparations in the table
+            function renderAidPreparations(preparations) {
+                if (!preparations || preparations.length === 0) {
+                    preparationTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                No aid preparations found.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                preparations.forEach(prep => {
+                    const statusClass = getStatusClass(prep.status);
+
+                    // Check if status is 'PreparationCompleted'
+                    const isCompleted = prep.status && prep.status.toLowerCase() === 'preparationcompleted';
+
+                    html += `
+                        <tr>
+                            <td>${prep.preparationID}</td>
+                            <td>${prep.requestID}</td>
+                            <td>${formatDate(prep.departureTime)}</td>
+                            <td>${formatDate(prep.estimatedArrival)}</td>
+                            <td class="text-center"><span class="status-badge ${statusClass}">${prep.status}</span></td>
+                            <td class="text-center">
+                                ${isCompleted
+                                    ? `<span class="badge badge-completed">Preparation Done</span>`
+                                    : `<div>
+                                        <button class="btn-action mb-1" data-prep-id="${prep.preparationID}" data-req-id="${prep.requestID}">Assign Volunteers</button>
+                                        <button class="btn-action btn-complete-prep" data-prep-id="${prep.preparationID}" data-req-id="${prep.requestID}">Complete Preparation</button>
+                                       </div>`}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                preparationTableBody.innerHTML = html;
+
+                // Add event listeners to action buttons
+                document.querySelectorAll('.btn-action:not(.btn-complete-prep)').forEach(button => {
+                    button.addEventListener('click', function() {
+                        currentPreparationId = this.getAttribute('data-prep-id');
+                        currentRequestId = this.getAttribute('data-req-id');
+                        loadVolunteersForPreparation(currentPreparationId, currentRequestId);
+                        volunteersModal.show();
+                    });
+                });
+
+                // Add event listeners to complete preparation buttons
+                document.querySelectorAll('.btn-complete-prep').forEach(button => {
+                    button.addEventListener('click', function() {
+                        currentPreparationId = this.getAttribute('data-prep-id');
+                        currentRequestId = this.getAttribute('data-req-id');
+
+                        // Set current date and time as default values
+                        const now = new Date();
+                        const formattedNow = now.toISOString().slice(0, 16);
+                        departureTimeInput.value = formattedNow;
+
+                        // Set estimated arrival to 1 hour from now
+                        const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+                        const formattedOneHourLater = oneHourLater.toISOString().slice(0, 16);
+                        estimatedArrivalInput.value = formattedOneHourLater;
+
+                        completePrepModal.show();
+                    });
+                });
+            }
+
+            // Helper function to get urgency badge class
+            function getUrgencyClass(urgency) {
+                if (!urgency) return 'badge-low';
+
+                switch (urgency.toLowerCase()) {
+                    case 'low': return 'badge-low';
+                    case 'medium': return 'badge-medium';
+                    case 'high': return 'badge-high';
+                    default: return 'badge-low';
+                }
+            }
+
+            // Helper function to get status badge class
+            function getStatusClass(status) {
+                if (!status) return 'badge-pending';
+
+                switch (status.toLowerCase()) {
+                    case 'pending': return 'badge-pending';
+                    case 'preparing': return 'badge-progress';
+                    case 'completed': return 'badge-completed';
+                    case 'preparationcompleted': return 'badge-completed';
+                    case 'delivered': return 'badge-completed';
+                    default: return 'badge-pending';
+                }
+            }
+
+            // Function to update aid request status
+            async function updateAidRequestStatus(requestId, status) {
+                try {
+                    const token = getToken();
+                    const response = await fetch(`/api/aid-requests/${requestId}/status`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(status)
+                    });
+
+                    if (response.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Failed to update aid request status');
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error updating aid request status:', error);
+                    throw error;
+                }
+            }
+
+            // Function to start preparation for a request
+            async function startPreparation(requestId) {
+                try {
+                    const token = getToken();
+                    const response = await fetch('/api/AidPreparation', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            requestID: parseInt(requestId)
+                        })
+                    });
+
+                    if (response.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Failed to start preparation');
+                    }
+
+                    // Update the aid request status to "Preparing"
+                    await updateAidRequestStatus(requestId, "Preparing");
+
+                    // Refresh the tables
+                    loadAidRequests();
+                    loadAidPreparations();
+
+                    alert('Preparation started successfully!');
+                } catch (error) {
+                    console.error('Error starting preparation:', error);
+                    alert(error.message);
+                }
+            }
+
+            // Function to complete preparation
+            async function completePreparation(preparationId, requestId, departureTime, estimatedArrival) {
+                try {
+                    const token = getToken();
+
+                    // First update the preparation details
+                    const response = await fetch(`/api/AidPreparation/${preparationId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            departureTime: departureTime,
+                            estimatedArrival: estimatedArrival,
+                            status: "PreparationCompleted"
+                        })
+                    });
+
+                    if (response.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Failed to complete preparation');
+                    }
+
+                    // Update the aid request status to "PreparationCompleted"
+                    await updateAidRequestStatus(requestId, "PreparationCompleted");
+
+                    // Refresh the tables
+                    loadAidRequests();
+                    loadAidPreparations();
+
+                    completePrepModal.hide();
+                    alert('Preparation completed successfully!');
+                } catch (error) {
+                    console.error('Error completing preparation:', error);
+                    alert(error.message);
+                }
+            }
+
+            // Function to load volunteers for a specific preparation
+            async function loadVolunteersForPreparation(preparationId, requestId) {
+                try {
+                    const token = getToken();
+
+                    // Get request details
+                    const request = aidRequests.find(req => req.requestID == requestId);
+                    if (request) {
+                        requestDetails.innerHTML = `
+                            <h6>Request Details (ID: ${request.requestID})</h6>
+                            <p class="mb-1"><strong>Requester:</strong> ${request.requesterName}</p>
+                            <p class="mb-1"><strong>Description:</strong> ${request.description}</p>
+                            <p class="mb-0"><strong>Urgency:</strong> <span class="${getUrgencyClass(request.urgencyLevel)}">${request.urgencyLevel}</span></p>
+                        `;
+                    }
+
+                    // First, get all available volunteers
+                    const allVolunteersResponse = await fetch('/api/users/volunteers', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (allVolunteersResponse.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!allVolunteersResponse.ok) {
+                        throw new Error('Failed to fetch volunteers');
+                    }
+
+                    const allVolunteersResult = await allVolunteersResponse.json();
+
+                    // Handle different response formats
+                    if (Array.isArray(allVolunteersResult)) {
+                        allVolunteers = allVolunteersResult;
+                    } else if (allVolunteersResult.data && Array.isArray(allVolunteersResult.data)) {
+                        allVolunteers = allVolunteersResult.data;
+                    } else if (allVolunteersResult.success && allVolunteersResult.data && Array.isArray(allVolunteersResult.data)) {
+                        allVolunteers = allVolunteersResult.data;
+                    } else {
+                        throw new Error('Invalid volunteers data format');
+                    }
+
+                    // Then, get volunteers already assigned to this preparation
+                    const assignedResponse = await fetch(`/api/AidPreparation/${preparationId}/volunteers`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (assignedResponse.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    let assignedVolunteerIds = [];
+
+                    if (assignedResponse.ok) {
+                        const assignedResult = await assignedResponse.json();
+
+                        if (assignedResult.success && assignedResult.data) {
+                            assignedVolunteerIds = assignedResult.data.map(v => v.volunteerID || v.id);
+                        }
+                    }
+
+                    // Store assigned volunteers for this preparation
+                    assignedVolunteers[preparationId] = assignedVolunteerIds;
+                    selectedVolunteers = [...assignedVolunteerIds];
+
+                    populateVolunteersModal(preparationId);
+                } catch (error) {
+                    console.error('Error loading volunteers:', error);
+                    volunteersList.innerHTML = `
+                        <div class="text-center text-danger py-4">
+                            ${error.message}
+                        </div>
+                    `;
+                }
+            }
+
+            // Populate volunteers modal
+            function populateVolunteersModal(preparationId) {
+                if (!allVolunteers || allVolunteers.length === 0) {
+                    volunteersList.innerHTML = `
+                        <div class="text-center py-4">
+                            No volunteers available at the moment.
+                        </div>
+                    `;
+                    return;
+                }
+
+                const assignedVolunteerIds = assignedVolunteers[preparationId] || [];
+
+                let html = '';
+                allVolunteers.forEach(volunteer => {
+                    const volunteerId = volunteer.volunteerID || volunteer.id;
+                    const isAssigned = assignedVolunteerIds.includes(volunteerId);
+                    const isChecked = selectedVolunteers.includes(volunteerId);
+
+                    html += `
+                        <div class="volunteer-item">
+                            <div class="volunteer-info">
+                                <div class="volunteer-name">${volunteer.name || volunteer.fullName || 'Unknown Volunteer'}</div>
+                                <div class="volunteer-center">${volunteer.center || volunteer.location || 'No center assigned'}</div>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                    value="${volunteerId}"
+                                    id="volunteer-${volunteerId}"
+                                    ${isChecked ? 'checked' : ''}
+                                    ${isAssigned ? 'disabled' : ''}>
+                                <label class="form-check-label" for="volunteer-${volunteerId}">
+                                    ${isAssigned ? 'Already Assigned' : 'Assign'}
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                volunteersList.innerHTML = html;
+
+                // Add event listeners to checkboxes
+                document.querySelectorAll('.form-check-input').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const volunteerId = this.value;
+
+                        if (this.checked) {
+                            if (!selectedVolunteers.includes(volunteerId)) {
+                                selectedVolunteers.push(volunteerId);
+                            }
+                        } else {
+                            selectedVolunteers = selectedVolunteers.filter(id => id !== volunteerId);
+                        }
+                    });
+                });
+            }
+
+            // Save volunteers button click handler
+            saveVolunteersBtn.addEventListener('click', async function() {
+                if (selectedVolunteers.length === 0) {
+                    alert('Please select at least one volunteer');
+                    return;
+                }
+
+                // Show loading spinner
+                volunteerSpinner.classList.remove('d-none');
+                saveVolunteersBtn.disabled = true;
+
+                try {
+                    const token = getToken();
+                    const errors = [];
+
+                    // Assign selected volunteers to the preparation
+                    for (const volunteerId of selectedVolunteers) {
+                        // Skip if already assigned
+                        if (assignedVolunteers[currentPreparationId] &&
+                            assignedVolunteers[currentPreparationId].includes(volunteerId)) {
+                            continue;
+                        }
+
+                        const response = await fetch(`/api/AidPreparation/${currentPreparationId}/volunteers`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                VolunteerID: parseInt(volunteerId)
+                            })
+                        });
+
+                        if (response.status === 401) {
+                            throw new Error('Session expired. Please log in again.');
+                        }
+
+                        if (!response.ok) {
+                            const errorResult = await response.json();
+                            errors.push(`Failed to assign volunteer ${volunteerId}: ${errorResult.message || 'Unknown error'}`);
+                        }
+                    }
+
+                    if (errors.length > 0) {
+                        alert(`Some assignments failed:\n${errors.join('\n')}`);
+                    } else {
+                        alert('Volunteers assigned successfully');
+                        volunteersModal.hide();
+                    }
+                } catch (error) {
+                    console.error('Error assigning volunteers:', error);
+                    alert(error.message);
+                } finally {
+                    volunteerSpinner.classList.add('d-none');
+                    saveVolunteersBtn.disabled = false;
+
+                    // Reset for next time
+                    selectedVolunteers = [];
+                }
+            });
+
+            // Complete preparation button click handler
+            confirmCompleteBtn.addEventListener('click', async function() {
+                const departureTime = departureTimeInput.value;
+                const estimatedArrival = estimatedArrivalInput.value;
+
+                if (!departureTime || !estimatedArrival) {
+                    alert('Please provide both departure time and estimated arrival');
+                    return;
+                }
+
+                // Show loading spinner
+                completeSpinner.classList.remove('d-none');
+                confirmCompleteBtn.disabled = true;
+
+                try {
+                    await completePreparation(currentPreparationId, currentRequestId, departureTime, estimatedArrival);
+                } catch (error) {
+                    console.error('Error completing preparation:', error);
+                    alert(error.message);
+                } finally {
+                    completeSpinner.classList.add('d-none');
+                    confirmCompleteBtn.disabled = false;
+                }
+            });
+
+            // Reset selected volunteers when modal is closed
+            document.getElementById('volunteersModal').addEventListener('hidden.bs.modal', function () {
+                selectedVolunteers = [];
+            });
+
+            // Reset form inputs when complete preparation modal is closed
+            document.getElementById('completePrepModal').addEventListener('hidden.bs.modal', function () {
+                departureTimeInput.value = '';
+                estimatedArrivalInput.value = '';
+            });
+        });
+    </script>
+</body>
+</html>

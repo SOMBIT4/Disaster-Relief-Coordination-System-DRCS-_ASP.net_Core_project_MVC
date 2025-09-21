@@ -1,0 +1,349 @@
+﻿@{
+    ViewData["Title"] = "Sign In";
+}
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-color: #2c5f2d;
+        --secondary-color: #97bc62;
+        --accent-color: #ffd700;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+    }
+
+    .split-container {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    .left-panel {
+        width: 50%;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1a3a1b 100%);
+        color: white;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: auto;
+    }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+    .logo-container {
+        position: relative;
+        z-index: 2;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .logo {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: white;
+    }
+
+    .tagline {
+        font-size: 1.4rem;
+        opacity: 0.9;
+    }
+
+    .mission-text {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        margin: 40px 0;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        padding: 0 20px;
+    }
+
+    .left-signup {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        margin-top: 40px;
+    }
+
+        .left-signup p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+    .btn-outline-light {
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-outline-light:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+    .right-panel {
+        width: 50%;
+        background: var(--bg-light);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+        overflow: auto;
+    }
+
+    .login-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+    }
+
+    .login-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .login-subtitle {
+        color: var(--text-light);
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+        }
+
+    .password-container {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: var(--text-light);
+        z-index: 5;
+    }
+
+    .btn-login {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border: none;
+        color: white;
+        padding: 12px;
+        font-weight: 600;
+        border-radius: 8px;
+        width: 100%;
+        transition: all 0.3s;
+        margin-top: 10px;
+    }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+        }
+
+    .signup-link {
+        text-align: center;
+        margin-top: 20px;
+        color: var(--text-light);
+    }
+
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+            .signup-link a:hover {
+                color: var(--secondary-color);
+                text-decoration: underline;
+            }
+</style>
+
+<div class="split-container">
+    <!-- Left Panel with Brand Info -->
+    <div class="left-panel">
+        <div class="logo-container">
+            <h1 class="logo">JonojibonAid</h1>
+            <p class="tagline">Empowering Communities Through Compassion</p>
+        </div>
+
+        <div class="mission-text">
+            <p>JonojibonAid is a humanitarian initiative dedicated to supporting communities in times of need, bringing relief, care, and hope to vulnerable individuals with transparency and compassion.</p>
+        </div>
+
+        <div class="left-signup">
+            <p>Join our mission to make a difference</p>
+            <a href="/AuthApi/Register" class="btn btn-outline-light">Create Account</a>
+        </div>
+    </div>
+
+    <!-- Right Panel with Login Form -->
+    <div class="right-panel">
+        <div class="login-card">
+            <h2 class="login-title">Sign In</h2>
+            <p class="login-subtitle">Welcome back! Please login to your account.</p>
+
+            <form id="loginForm">
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="Email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="Email" name="Email" placeholder="Enter your email" required />
+                </div>
+
+                <!-- Password -->
+                <div class="mb-4">
+                    <label for="Password" class="form-label">Password</label>
+                    <div class="password-container">
+                        <input type="password" class="form-control" id="Password" name="Password" placeholder="Enter your password" required />
+                        <span class="password-toggle" onclick="togglePassword()">
+                            <i id="eyeIcon" class="bi bi-eye-slash"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="btn btn-login">Login</button>
+
+                <!-- Sign Up Link -->
+                <div class="signup-link">
+                    <small>Don't have an account? <a href="/AuthApi/Register">Sign Up</a></small>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle password
+    function togglePassword() {
+        const passwordInput = document.getElementById('Password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.replace('bi-eye-slash', 'bi-eye');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.replace('bi-eye', 'bi-eye-slash');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Check if already logged in
+        try {
+            const checkResponse = await fetch('/api/auth/login-check', { credentials: 'include' });
+            const checkData = await checkResponse.json();
+
+            if (checkData.loggedIn) {
+                window.location.href = checkData.redirectUrl;
+                return;
+            }
+        } catch (e) {
+            console.warn("Login-check failed", e);
+        }
+
+        // Handle login form
+        const form = document.getElementById('loginForm');
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('Email').value.trim();
+            const password = document.getElementById('Password').value;
+
+              try {
+        // Call backend login
+        const loginResponse = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+            credentials: 'include' // keeps cookies for refresh
+        });
+
+        const data = await loginResponse.json();
+
+        if (!data.success) {
+            alert(data.message || 'Login failed');
+            return;
+        }
+
+        // Save tokens in localStorage
+        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("refresh_token", data.refresh_token);
+        localStorage.setItem("role", data.user_info.roleName);
+
+        // Get role
+        const role = data.user_info.roleName;
+        if(role=="Volunteer") localStorage.setItem("volunteer_id", data.volunteer_id);
+
+        // Redirect to dashboard by role
+        if (role.startsWith("Admin")) {
+            window.location.href = '/Dashboard/Admin';
+        } else if (role === "Volunteer") {
+            window.location.href = '/Dashboard/Volunteer';
+        } else {
+            window.location.href = '/Dashboard/User';
+        }
+
+        console.log("Login response:", data);
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred while logging in.');
+    }
+
+        });
+    });
+</script>

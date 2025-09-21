@@ -87,6 +87,143 @@ namespace backend.Database
 
             modelBuilder.Entity<Skill>()
                 .HasKey(s => s.SkillID);
+
+            // ========================
+            // Cascade delete relationships
+            // ========================
+
+            // Resource -> AidPreparationResource
+            modelBuilder.Entity<AidPreparationResource>()
+                .HasOne<Resource>()
+                .WithMany()
+                .HasForeignKey(apr => apr.ResourceID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // AidPreparation -> AidPreparationResource
+            modelBuilder.Entity<AidPreparationResource>()
+                .HasOne<AidPreparation>()
+                .WithMany()
+                .HasForeignKey(apr => apr.PreparationID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // AidPreparation -> AidPreparationVolunteer
+            modelBuilder.Entity<AidPreparationVolunteer>()
+                .HasOne<AidPreparation>()
+                .WithMany()
+                .HasForeignKey(apv => apv.PreparationID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // RescueTracking -> RescueTrackingVolunteer
+            modelBuilder.Entity<RescueTrackingVolunteer>()
+                .HasOne<RescueTracking>()
+                .WithMany()
+                .HasForeignKey(rtv => rtv.TrackingID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Skill -> VolunteerSkill
+            modelBuilder.Entity<VolunteerSkill>()
+                .HasOne<Skill>()
+                .WithMany()
+                .HasForeignKey(vs => vs.SkillID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Volunteer -> VolunteerSkill
+            modelBuilder.Entity<VolunteerSkill>()
+                .HasOne<Volunteer>()
+                .WithMany()
+                .HasForeignKey(vs => vs.VolunteerID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ReliefCenter -> Resource
+            modelBuilder.Entity<Resource>()
+                .HasOne<ReliefCenter>()
+                .WithMany()
+                .HasForeignKey(r => r.ReliefCenterID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ReliefCenter -> Volunteer
+            modelBuilder.Entity<Volunteer>()
+                .HasOne<ReliefCenter>()
+                .WithMany()
+                .HasForeignKey(v => v.AssignedCenter)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // AidRequest -> AidPreparation
+            modelBuilder.Entity<AidPreparation>()
+                .HasOne<AidRequest>()
+                .WithMany()
+                .HasForeignKey(ap => ap.RequestID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // AidRequest -> RescueTracking
+            modelBuilder.Entity<RescueTracking>()
+                .HasOne<AidRequest>()
+                .WithMany()
+                .HasForeignKey(rt => rt.RequestID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // AffectedArea -> AidRequest
+            modelBuilder.Entity<AidRequest>()
+                .HasOne<AffectedArea>()
+                .WithMany()
+                .HasForeignKey(ar => ar.AreaID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Donation -> (Optionally) link to ReliefCenter (can cascade if  want)
+            modelBuilder.Entity<Donation>()
+                .HasOne<ReliefCenter>()
+                .WithMany()
+                .HasForeignKey(d => d.AssociatedCenter)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // User -> AidRequest
+            modelBuilder.Entity<AidRequest>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(ar => ar.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // User -> Donation
+            modelBuilder.Entity<Donation>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(d => d.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // User -> Volunteer
+            modelBuilder.Entity<Volunteer>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(v => v.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ReliefCenter -> Resource
+            modelBuilder.Entity<Resource>()
+                .HasOne(r => r.ReliefCenter)
+                .WithMany(rc => rc.Resources)
+                .HasForeignKey(r => r.ReliefCenterID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ReliefCenter -> Volunteer
+            modelBuilder.Entity<Volunteer>()
+                .HasOne(v => v.ReliefCenter)
+                .WithMany(rc => rc.Volunteers)
+                .HasForeignKey(v => v.AssignedCenter)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ReliefCenter -> Donation
+            modelBuilder.Entity<Donation>()
+                .HasOne(d => d.ReliefCenter)
+                .WithMany(rc => rc.Donations)
+                .HasForeignKey(d => d.AssociatedCenter)
+                .OnDelete(DeleteBehavior.Cascade);
+           
+            modelBuilder.Entity<Volunteer>()
+                 .HasOne<User>()
+                 .WithMany()
+                 .HasForeignKey(v => v.UserID);
+
+
         }
     }
 }

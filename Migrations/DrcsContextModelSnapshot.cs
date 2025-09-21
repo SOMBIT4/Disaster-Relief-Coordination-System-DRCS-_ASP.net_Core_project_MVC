@@ -85,6 +85,8 @@ namespace DRCS.Migrations
 
                     b.HasKey("PreparationID");
 
+                    b.HasIndex("RequestID");
+
                     b.ToTable("AidPreparations");
                 });
 
@@ -113,6 +115,10 @@ namespace DRCS.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("PreparationID");
+
+                    b.HasIndex("ResourceID");
+
                     b.ToTable("AidPreparationResources");
                 });
 
@@ -137,6 +143,8 @@ namespace DRCS.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("PreparationID");
 
                     b.ToTable("AidPreparationVolunteers");
                 });
@@ -196,6 +204,10 @@ namespace DRCS.Migrations
 
                     b.HasKey("RequestID");
 
+                    b.HasIndex("AreaID");
+
+                    b.HasIndex("UserID");
+
                     b.ToTable("AidRequests");
                 });
 
@@ -234,6 +246,10 @@ namespace DRCS.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("DonationID");
+
+                    b.HasIndex("AssociatedCenter");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Donations");
                 });
@@ -306,6 +322,8 @@ namespace DRCS.Migrations
 
                     b.HasKey("TrackingID");
 
+                    b.HasIndex("RequestID");
+
                     b.ToTable("RescueTrackings");
                 });
 
@@ -330,6 +348,8 @@ namespace DRCS.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("TrackingID");
 
                     b.ToTable("RescueTrackingVolunteers");
                 });
@@ -362,6 +382,8 @@ namespace DRCS.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ResourceID");
+
+                    b.HasIndex("ReliefCenterID");
 
                     b.ToTable("Resources");
                 });
@@ -456,6 +478,10 @@ namespace DRCS.Migrations
 
                     b.HasKey("VolunteerID");
 
+                    b.HasIndex("AssignedCenter");
+
+                    b.HasIndex("UserID");
+
                     b.ToTable("Volunteers");
                 });
 
@@ -469,7 +495,143 @@ namespace DRCS.Migrations
 
                     b.HasKey("VolunteerID", "SkillID");
 
+                    b.HasIndex("SkillID");
+
                     b.ToTable("VolunteerSkills");
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.AidPreparation", b =>
+                {
+                    b.HasOne("backend.Models.Entities.AidRequest", null)
+                        .WithMany()
+                        .HasForeignKey("RequestID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.AidPreparationResource", b =>
+                {
+                    b.HasOne("backend.Models.Entities.AidPreparation", null)
+                        .WithMany()
+                        .HasForeignKey("PreparationID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Entities.Resource", null)
+                        .WithMany()
+                        .HasForeignKey("ResourceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.AidPreparationVolunteer", b =>
+                {
+                    b.HasOne("backend.Models.Entities.AidPreparation", null)
+                        .WithMany()
+                        .HasForeignKey("PreparationID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.AidRequest", b =>
+                {
+                    b.HasOne("backend.Models.Entities.AffectedArea", null)
+                        .WithMany()
+                        .HasForeignKey("AreaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.Donation", b =>
+                {
+                    b.HasOne("backend.Models.Entities.ReliefCenter", "ReliefCenter")
+                        .WithMany("Donations")
+                        .HasForeignKey("AssociatedCenter")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReliefCenter");
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.RescueTracking", b =>
+                {
+                    b.HasOne("backend.Models.Entities.AidRequest", null)
+                        .WithMany()
+                        .HasForeignKey("RequestID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.RescueTrackingVolunteer", b =>
+                {
+                    b.HasOne("backend.Models.Entities.RescueTracking", null)
+                        .WithMany()
+                        .HasForeignKey("TrackingID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.Resource", b =>
+                {
+                    b.HasOne("backend.Models.Entities.ReliefCenter", "ReliefCenter")
+                        .WithMany("Resources")
+                        .HasForeignKey("ReliefCenterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReliefCenter");
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.Volunteer", b =>
+                {
+                    b.HasOne("backend.Models.Entities.ReliefCenter", "ReliefCenter")
+                        .WithMany("Volunteers")
+                        .HasForeignKey("AssignedCenter")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("backend.Models.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReliefCenter");
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.VolunteerSkill", b =>
+                {
+                    b.HasOne("backend.Models.Entities.Skill", null)
+                        .WithMany()
+                        .HasForeignKey("SkillID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Entities.Volunteer", null)
+                        .WithMany()
+                        .HasForeignKey("VolunteerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Entities.ReliefCenter", b =>
+                {
+                    b.Navigation("Donations");
+
+                    b.Navigation("Resources");
+
+                    b.Navigation("Volunteers");
                 });
 #pragma warning restore 612, 618
         }

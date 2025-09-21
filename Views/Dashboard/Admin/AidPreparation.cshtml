@@ -1,0 +1,773 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_AdminLayout.cshtml";
+    ViewData["Title"] = "Aid Preparation";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aid Preparation</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --accent-color: #ffd700;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
+            --modal-bg: rgba(151, 188, 98, 0.1);
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+            .table thead th {
+                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                border: none;
+                text-align: left;
+            }
+
+            .table tbody td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .table tbody tr:hover {
+                background-color: rgba(151, 188, 98, 0.1);
+            }
+
+        .status-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .badge-pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #b8860b;
+        }
+
+        .badge-progress {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+        }
+
+        .badge-completed {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: #198754;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: 1px solid var(--secondary-color);
+            background-color: transparent;
+            color: var(--primary-color);
+        }
+
+            .btn-action:hover {
+                background-color: var(--secondary-color);
+                color: white;
+            }
+
+        .btn-disabled {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            cursor: not-allowed;
+        }
+
+        .volunteer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(151, 188, 98, 0.2);
+        }
+
+        .volunteer-info {
+            flex: 1;
+        }
+
+        .volunteer-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .volunteer-center {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .btn-join {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+            .btn-join:hover {
+                background-color: var(--primary-color);
+            }
+
+        .btn-joined {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: not-allowed;
+        }
+
+        .form-control {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+            background-color: white;
+        }
+
+            .form-control:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+            }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        
+
+        .auth-alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .max-h-96 {
+            max-height: 24rem;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="page-header">
+            <h1 class="page-title">Aid Preparation</h1>
+            <p class="page-subtitle">Manage aid preparations and assign volunteers</p>
+        </div>
+
+        <!-- Authentication Alert (initially hidden) -->
+        <div id="authAlert" class="auth-alert d-none">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span id="authMessage">Please log in to manage aid preparations</span>
+        </div>
+
+        <!-- Preparation Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Preparation ID</th>
+                            <th scope="col">Request ID</th>
+                            <th scope="col">Departure Time</th>
+                            <th scope="col">Estimated Arrival</th>
+                            <th scope="col" class="text-center">Status</th>
+                            <th scope="col" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="preparationTableBody">
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="loading-spinner"></div> Loading aid preparations...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timing Modal -->
+    <div class="modal fade" id="timingModal" tabindex="-1" aria-labelledby="timingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="timingModalLabel">Set Timing Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <label for="departureTime" class="form-label">Departure Time</label>
+                        <input type="datetime-local" class="form-control" id="departureTime">
+                    </div>
+                    <div class="mb-4">
+                        <label for="estimatedArrival" class="form-label">Estimated Arrival</label>
+                        <input type="datetime-local" class="form-control" id="estimatedArrival">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addVolunteersBtn">
+                        <span class="loading-spinner d-none" id="timingSpinner"></span>
+                        Add Volunteers to Rescue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Volunteers Modal -->
+    <div class="modal fade" id="volunteersModal" tabindex="-1" aria-labelledby="volunteersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="volunteersModalLabel">Available Volunteers</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="volunteersList" class="max-h-96 overflow-y-auto">
+                        <div class="text-center py-4">
+                            <div class="loading-spinner"></div> Loading volunteers...
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="doneBtn">
+                        <span class="loading-spinner d-none" id="volunteerSpinner"></span>
+                        Done
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const tableBody = document.getElementById('preparationTableBody');
+            const timingModal = new bootstrap.Modal(document.getElementById('timingModal'));
+            const volunteersModal = new bootstrap.Modal(document.getElementById('volunteersModal'));
+            const volunteersList = document.getElementById('volunteersList');
+            const addVolunteersBtn = document.getElementById('addVolunteersBtn');
+            const doneBtn = document.getElementById('doneBtn');
+            const departureTimeInput = document.getElementById('departureTime');
+            const estimatedArrivalInput = document.getElementById('estimatedArrival');
+            const timingSpinner = document.getElementById('timingSpinner');
+            const volunteerSpinner = document.getElementById('volunteerSpinner');
+            const authAlert = document.getElementById('authAlert');
+            const authMessage = document.getElementById('authMessage');
+
+            // Set current datetime as default for the inputs
+            const now = new Date();
+            const formattedNow = now.toISOString().slice(0, 16);
+            departureTimeInput.value = formattedNow;
+
+            // Set estimated arrival to 1 hour from now by default
+            const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+            estimatedArrivalInput.value = oneHourLater.toISOString().slice(0, 16);
+
+            let currentPreparationId = null;
+            let currentRequestId = null;
+            let currentTrackingId = null;
+            let joinedVolunteers = [];
+            let allVolunteers = [];
+
+            // Get token from localStorage
+            function getToken() {
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    authAlert.classList.remove('d-none');
+                    authMessage.textContent = 'Please log in to manage aid preparations';
+                    throw new Error('Please log in to manage aid preparations');
+                }
+                return token;
+            }
+
+            // Format date for display
+            function formatDate(dateString) {
+                if (!dateString || dateString === "0001-01-01T00:00:00") {
+                    return "Not set";
+                }
+
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleString();
+                } catch (e) {
+                    return "Invalid date";
+                }
+            }
+
+            // Load aid preparations on page load
+            try {
+                getToken(); // Check if user is authenticated
+                loadAidPreparations();
+            } catch (error) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-danger py-4">
+                            ${error.message}
+                        </td>
+                    </tr>
+                `;
+            }
+
+            // Function to load aid preparations from API
+            async function loadAidPreparations() {
+                try {
+                    const token = getToken();
+                    const response = await fetch('/api/AidPreparation/full-details', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch aid preparations');
+                    }
+
+                    const result = await response.json();
+
+                    // Check if the response has the expected structure
+                    if (result.success && result.data) {
+                        renderAidPreparations(result.data);
+                    } else {
+                        throw new Error('Invalid response format from server');
+                    }
+                } catch (error) {
+                    console.error('Error loading aid preparations:', error);
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center text-danger py-4">
+                                ${error.message}
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // Function to render aid preparations in the table
+            function renderAidPreparations(preparations) {
+                if (!preparations || preparations.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                No aid preparations found.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                preparations.forEach(prep => {
+                    const statusClass = getStatusClass(prep.status);
+
+                    html += `
+                        <tr>
+                            <td>${prep.preparationID}</td>
+                            <td>${prep.requestID}</td>
+                            <td>${formatDate(prep.departureTime)}</td>
+                            <td>${formatDate(prep.estimatedArrival)}</td>
+                            <td class="text-center"><span class="status-badge ${statusClass}">${prep.status}</span></td>
+                            <td class="text-center">
+                                ${prep.status === 'PreparationCompleted' ?
+                                    `<button class="btn-action" data-prep-id="${prep.preparationID}" data-req-id="${prep.requestID}">
+                                        Send Volunteers to Help
+                                    </button>` :
+                                    `<span class="text-muted">Still Preparing for this Request</span>`
+                                }
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableBody.innerHTML = html;
+
+                // Add event listeners to action buttons
+                document.querySelectorAll('.btn-action').forEach(button => {
+                    button.addEventListener('click', function() {
+                        currentPreparationId = this.getAttribute('data-prep-id');
+                        currentRequestId = this.getAttribute('data-req-id');
+                        timingModal.show();
+                    });
+                });
+            }
+
+            // Helper function to get status badge class
+            function getStatusClass(status) {
+                if (!status) return 'badge-pending';
+
+                switch (status.toLowerCase()) {
+                    case 'pending': return 'badge-pending';
+                    case 'preparing': return 'badge-progress';
+                    case 'preparation completed': return 'badge-completed';
+                    case 'completed': return 'badge-completed';
+                    case 'delivered': return 'badge-completed';
+                    default: return 'badge-pending';
+                }
+            }
+
+            // Function to load volunteers from API
+            async function loadVolunteers() {
+                try {
+                    const token = getToken();
+                    const response = await fetch('/api/users/volunteers', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch volunteers');
+                    }
+
+                    const result = await response.json();
+
+                    // Handle different response formats
+                    if (Array.isArray(result)) {
+                        allVolunteers = result;
+                    } else if (result.data && Array.isArray(result.data)) {
+                        allVolunteers = result.data;
+                    } else if (result.success && result.data && Array.isArray(result.data)) {
+                        allVolunteers = result.data;
+                    } else {
+                        throw new Error('Invalid volunteers data format');
+                    }
+
+                    populateVolunteers();
+                } catch (error) {
+                    console.error('Error loading volunteers:', error);
+                    volunteersList.innerHTML = `
+                        <div class="text-center text-danger py-4">
+                            ${error.message}
+                        </div>
+                    `;
+                }
+            }
+
+            // Populate volunteers modal
+            function populateVolunteers() {
+                if (!allVolunteers || allVolunteers.length === 0) {
+                    volunteersList.innerHTML = `
+                        <div class="text-center py-4">
+                            No volunteers available at the moment.
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                allVolunteers.forEach(volunteer => {
+                    // Use volunteerID (not userID) for identification
+                    const volunteerId = volunteer.volunteerID || volunteer.id;
+                    const isJoined = joinedVolunteers.includes(volunteerId);
+
+                    html += `
+                        <div class="volunteer-item">
+                            <div class="volunteer-info">
+                                <div class="volunteer-name">${volunteer.name || volunteer.fullName || 'Unknown Volunteer'}</div>
+                                <div class="volunteer-center">${volunteer.center || volunteer.location || volunteer.assignedCenter || 'No center assigned'}</div>
+                            </div>
+                            ${isJoined ?
+                                `<button class="btn-joined" disabled>Joined</button>` :
+                                `<button class="btn-join" data-volunteer-id="${volunteerId}">Join Rescue Team</button>`
+                            }
+                        </div>
+                    `;
+                });
+
+                volunteersList.innerHTML = html;
+
+                // Add event listeners to Join buttons
+                document.querySelectorAll('.btn-join').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const volunteerId = this.getAttribute('data-volunteer-id');
+                        joinRescueTeam(volunteerId);
+                    });
+                });
+            }
+
+            // Join rescue team function
+            function joinRescueTeam(volunteerId) {
+                // In a real application, you would make an API call here
+                joinedVolunteers.push(volunteerId);
+
+                // Update the button to show "Joined"
+                const joinButton = document.querySelector(`.btn-join[data-volunteer-id="${volunteerId}"]`);
+                if (joinButton) {
+                    joinButton.outerHTML = '<button class="btn-joined" disabled>Joined</button>';
+                }
+            }
+
+            // Add Volunteers button click handler
+            addVolunteersBtn.addEventListener('click', async function() {
+                const departureTime = departureTimeInput.value;
+                const estimatedArrival = estimatedArrivalInput.value;
+
+                if (!departureTime || !estimatedArrival) {
+                    alert('Please fill in both departure time and estimated arrival');
+                    return;
+                }
+
+                // Show loading spinner
+                timingSpinner.classList.remove('d-none');
+                addVolunteersBtn.disabled = true;
+
+                try {
+                    const token = getToken();
+
+                    // Update the aid preparation with timing details
+                    const updateData = {
+                        preparationID: parseInt(currentPreparationId),
+                        departureTime: departureTime,
+                        estimatedArrival: estimatedArrival,
+                        status: "In Progress" // Update status
+                    };
+
+                    const updateResponse = await fetch(`/api/AidPreparation/${currentPreparationId}/times`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updateData)
+                    });
+
+                    if (updateResponse.status === 401) {
+                        throw new Error('Session expired. Please log in again.');
+                    }
+
+                    if (!updateResponse.ok) {
+                        const errorData = await updateResponse.json();
+                        throw new Error(errorData.message || 'Failed to update aid preparation timing');
+                    }
+
+                    // Step 1: Create rescue tracking record with correct status value
+                    const currentTime = new Date().toISOString();
+                    const rescueTrackingData = {
+                        RequestID: parseInt(currentRequestId),
+                        TrackingStatus: "In Progress", // Using the correct status value
+                        OperationStartTime: currentTime,
+                        NumberOfPeopleHelped: 0, // Default value
+                        CompletionTime: null // Will be updated later
+                    };
+
+                    const trackingResponse = await fetch('/api/RescueTracking', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(rescueTrackingData)
+                    });
+
+                    if (!trackingResponse.ok) {
+                        const errorData = await trackingResponse.json();
+                        throw new Error(errorData.message || 'Failed to create rescue tracking record');
+                    }
+
+                    const trackingResult = await trackingResponse.json();
+                    currentTrackingId = trackingResult.data?.trackingID; // Store for future reference
+
+                    // Step 2: Update aid request status
+                    const statusUpdateResponse = await fetch(`/api/aid-requests/${currentRequestId}/status`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: "Rescue On Going" })
+                    });
+
+                    if (!statusUpdateResponse.ok) {
+                        const errorData = await statusUpdateResponse.json();
+                        throw new Error(errorData.message || 'Failed to update aid request status');
+                    }
+
+                    timingModal.hide();
+
+                    // Load volunteers and show volunteers modal
+                    await loadVolunteers();
+                    volunteersModal.show();
+
+                } catch (error) {
+                    console.error('Error updating aid preparation:', error);
+                    alert(error.message);
+                } finally {
+                    timingSpinner.classList.add('d-none');
+                    addVolunteersBtn.disabled = false;
+                }
+            });
+
+            // Done button click handler
+            doneBtn.addEventListener('click', async function() {
+                if (joinedVolunteers.length === 0) {
+                    alert('Please add at least one volunteer to the rescue team');
+                    return;
+                }
+
+                // Show loading spinner
+                volunteerSpinner.classList.remove('d-none');
+                doneBtn.disabled = true;
+
+                try {
+                    const token = getToken();
+
+                    // Assign each volunteer to the rescue tracking
+                    const assignmentPromises = joinedVolunteers.map(async (volunteerId) => {
+                        const assignmentData = {
+                            trackingID: currentTrackingId,
+                            volunteerID: parseInt(volunteerId) // Use the correct volunteerID
+                        };
+
+                        const response = await fetch('/api/RescueTrackingVolunteer', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(assignmentData)
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.message || `Failed to assign volunteer ${volunteerId}`);
+                        }
+
+                        return response.json();
+                    });
+
+                    // Wait for all assignments to complete
+                    const results = await Promise.allSettled(assignmentPromises);
+
+                    // Check if any assignments failed
+                    const failedAssignments = results.filter(result => result.status === 'rejected');
+
+                    if (failedAssignments.length > 0) {
+                        console.error('Some volunteer assignments failed:', failedAssignments);
+                        alert(`Warning: ${failedAssignments.length} volunteer assignment(s) failed. ` +
+                              `But ${joinedVolunteers.length - failedAssignments.length} were successful.`);
+                    } else {
+                        alert(`Successfully assigned ${joinedVolunteers.length} volunteer(s) to rescue tracking!`);
+                    }
+
+                    volunteersModal.hide();
+
+                    // Reload the aid preparations to update the UI
+                    await loadAidPreparations();
+
+                } catch (error) {
+                    console.error('Error assigning volunteers:', error);
+                    alert(`Error: ${error.message}`);
+                } finally {
+                    volunteerSpinner.classList.add('d-none');
+                    doneBtn.disabled = false;
+
+                    // Reset for next time
+                    currentPreparationId = null;
+                    currentRequestId = null;
+                    currentTrackingId = null;
+                    joinedVolunteers = [];
+                }
+            });
+
+            // Reset joined volunteers when modal is closed
+            document.getElementById('volunteersModal').addEventListener('hidden.bs.modal', function () {
+                joinedVolunteers = [];
+            });
+
+            // Load volunteers when the volunteers modal is shown
+            document.getElementById('volunteersModal').addEventListener('show.bs.modal', function () {
+                if (allVolunteers.length === 0) {
+                    loadVolunteers();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

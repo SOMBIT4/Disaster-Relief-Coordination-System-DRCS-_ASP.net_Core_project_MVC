@@ -1,0 +1,972 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_AdminLayout.cshtml";
+    ViewData["Title"] = "Relief Centers";
+}
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-color: #2c5f2d;
+        --secondary-color: #97bc62;
+        --accent-color: #ffd700;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+        --modal-bg: rgba(151, 188, 98, 0.1);
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .filter-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filter-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--secondary-color);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+        }
+
+        .form-select option:hover,
+        .form-select option:focus,
+        .form-select option:active,
+        .form-select option:checked {
+            background-color: var(--secondary-color) !important;
+            color: white !important;
+        }
+
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 1rem;
+            border: none;
+            text-align: left;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(151, 188, 98, 0.1);
+        }
+
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .page-link {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--secondary-color);
+        color: var(--primary-color);
+        border-radius: 8px;
+        margin: 0 0.25rem;
+        transition: all 0.3s;
+    }
+
+        .page-link:hover {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        border-color: #dee2e6;
+        background-color: white;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+            color: white;
+        }
+
+    .btn-reset {
+        background: transparent;
+        border: 1px solid var(--secondary-color);
+        color: var(--primary-color);
+        padding: 10px 20px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .btn-reset:hover {
+            background: rgba(151, 188, 98, 0.1);
+            border-color: var(--primary-color);
+        }
+
+    .highlight {
+        background-color: rgba(151, 188, 98, 0.2) !important;
+        transition: background-color 0.3s ease;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .btn-action {
+        padding: 0.35rem 0.65rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+        border: 1px solid var(--secondary-color);
+        background-color: transparent;
+        color: var(--primary-color);
+    }
+
+        .btn-action:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+    /* Modal styling */
+    .modal-content {
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .modal-title {
+        font-weight: 600;
+    }
+
+    .btn-close {
+        filter: invert(1);
+    }
+
+    .modal-footer {
+        border-top: 1px solid #eee;
+        padding: 1rem;
+    }
+
+    .loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+    }
+
+    .expanded-details {
+        background-color: rgba(151, 188, 98, 0.05);
+        border-top: 1px solid var(--secondary-color);
+    }
+
+    .details-table {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+        .details-table th {
+            background-color: rgba(151, 188, 98, 0.2);
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        .details-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(151, 188, 98, 0.2);
+            background-color: white;
+        }
+
+    .error-message {
+        color: #dc3545;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-light);
+    }
+
+    .btn-delete {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+        .btn-delete:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    .btn-edit {
+        background-color: rgba(25, 135, 84, 0.2);
+        color: #198754;
+        border: 1px solid #198754;
+    }
+
+        .btn-edit:hover {
+            background-color: #198754;
+            color: white;
+        }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">Relief Centers</h1>
+            <p class="page-subtitle">View and manage all relief centers in the system</p>
+        </div>
+        <button id="newCenterBtn" class="btn btn-primary-custom">
+            <i class="bi bi-plus-circle me-2"></i>Add New Relief Center
+        </button>
+    </div>
+
+    <!-- Filters, Sorting, and Search Controls -->
+    <div class="filter-section">
+        <h3 class="filter-title">Filter & Search Centers</h3>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Search by Center Name or Location</label>
+                <div class="position-relative">
+                    <input type="text" id="search" class="form-control" placeholder="Search centers...">
+                    <i class="bi bi-search search-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="form-label">Sort By</label>
+                <select id="sortOrder" class="form-select">
+                    <option value="latest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3 d-flex align-items-end">
+                <button id="applyFilters" class="btn btn-primary-custom w-100 me-2">Apply</button>
+                <button id="resetFilters" class="btn btn-reset">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loader-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="ms-2 mb-0">Loading relief centers...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message" style="display: none;">
+        <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+        <p class="mt-2" id="errorText">Failed to load relief centers</p>
+        <button class="btn btn-primary-custom mt-2" onclick="loadReliefCenters()">Try Again</button>
+    </div>
+
+    <!-- Centers Table -->
+    <div class="table-container" id="centersTableContainer" style="display: none;">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">#</th>
+                        <th scope="col">Center Name</th>
+                        <th scope="col">Location</th>
+                        <th scope="col" class="text-center">Volunteers</th>
+                        <th scope="col" class="text-center">Max Capacity</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="centersTableBody">
+                    <!-- Centers will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <i class="bi bi-building fs-1"></i>
+        <h4>No Relief Centers Found</h4>
+        <p>There are no relief centers in the system yet.</p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" id="paginationContainer" style="display: none;">
+        <nav aria-label="Centers pagination">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- New/Edit Center Modal -->
+<div class="modal fade" id="centerModal" tabindex="-1" aria-labelledby="centerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="centerModalLabel">New Relief Center</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="centerForm">
+                    <input type="hidden" id="centerId" name="Id" />
+                    <div class="mb-3">
+                        <label for="centerName" class="form-label">Center Name *</label>
+                        <input type="text" class="form-control" id="centerName" name="CenterName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location *</label>
+                        <input type="text" class="form-control" id="location" name="Location" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="maxCapacity" class="form-label">Max Capacity *</label>
+                        <input type="number" class="form-control" id="maxCapacity" name="MaxVolunteersCapacity" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="managerId" class="form-label">Manager ID *</label>
+                        <input type="number" class="form-control" id="managerId" name="ManagerID" required min="1">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary-custom" id="saveCenter">Save Center</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Relief Center</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this relief center?</p>
+                <div class="alert alert-warning mt-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i> This action cannot be undone.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Delete Center</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize modals
+        const centerModal = new bootstrap.Modal(document.getElementById('centerModal'));
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+        // Global variables
+        let allCenters = [];
+        let filteredCenters = [];
+        let currentCenterId = null;
+        let expandedCenter = null;
+        let expandedSection = "";
+
+        // Load relief centers when page loads
+        loadReliefCenters();
+
+        // Set up event listeners
+        setupEventListeners();
+
+        // Function to load relief centers from API
+        async function loadReliefCenters() {
+            try {
+                // Show loading, hide other elements
+                document.getElementById('loadingSpinner').style.display = 'flex';
+                document.getElementById('centersTableContainer').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('paginationContainer').style.display = 'none';
+
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('Please log in to view relief centers');
+                }
+
+                // Make API request
+                const response = await fetch('/api/relief-centers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed. Please log in again.');
+                    } else if (response.status === 403) {
+                        throw new Error('You do not have permission to view relief centers.');
+                    }
+                    throw new Error('Failed to fetch relief centers');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    allCenters = data.data;
+                    filteredCenters = [...allCenters];
+
+                    // Hide loading, show table
+                    document.getElementById('loadingSpinner').style.display = 'none';
+
+                    if (allCenters.length > 0) {
+                        document.getElementById('centersTableContainer').style.display = 'block';
+                        document.getElementById('paginationContainer').style.display = 'flex';
+                        populateCentersTable(allCenters);
+                        applyFilters(); // Apply any existing filters
+                    } else {
+                        document.getElementById('emptyState').style.display = 'block';
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to load relief centers');
+                }
+            } catch (error) {
+                console.error('Error loading relief centers:', error);
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorText').textContent = error.message;
+            }
+        }
+
+        // Function to populate centers table
+        function populateCentersTable(centers) {
+            const tableBody = document.getElementById('centersTableBody');
+            tableBody.innerHTML = '';
+
+            centers.forEach((center, index) => {
+                const row = document.createElement('tr');
+
+                // Count volunteers
+                const volunteersCount = center.volunteers ? center.volunteers.length : 0;
+
+                row.setAttribute('data-center-id', center.centerID);
+                row.setAttribute('data-date', center.createdAt || new Date().toISOString());
+
+                row.innerHTML = `
+                    <td class="text-center">${index + 1}</td>
+                    <td>${center.centerName}</td>
+                    <td>${center.location}</td>
+                    <td class="text-center">${volunteersCount}</td>
+                    <td class="text-center">${center.maxVolunteersCapacity}</td>
+                    <td class="text-center">
+                        <div class="action-buttons">
+                            <button class="btn-action" data-center-id="${center.centerID}" data-section="volunteers">
+                                Volunteers
+                            </button>
+                            <button class="btn-action" data-center-id="${center.centerID}" data-section="donations">
+                                Donations
+                            </button>
+                            <button class="btn-action" data-center-id="${center.centerID}" data-section="resources">
+                                Resources
+                            </button>
+                            <button class="btn-action btn-edit" data-center-id="${center.centerID}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-action btn-delete" data-center-id="${center.centerID}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+
+            // Set up event listeners for the action buttons
+            setupActionButtonListeners();
+        }
+
+        // Function to set up event listeners
+        function setupEventListeners() {
+            const searchInput = document.getElementById('search');
+            const sortOrder = document.getElementById('sortOrder');
+            const applyButton = document.getElementById('applyFilters');
+            const resetButton = document.getElementById('resetFilters');
+            const newCenterBtn = document.getElementById('newCenterBtn');
+            const saveCenterBtn = document.getElementById('saveCenter');
+            const confirmDeleteBtn = document.getElementById('confirmDelete');
+
+            // Filter and search
+            applyButton.addEventListener('click', applyFilters);
+            resetButton.addEventListener('click', resetFilters);
+            searchInput.addEventListener('keyup', applyFilters);
+            sortOrder.addEventListener('change', applyFilters);
+
+            // New center button
+            newCenterBtn.addEventListener('click', function() {
+                // Reset form
+                document.getElementById('centerForm').reset();
+                document.getElementById('centerId').value = '';
+                document.getElementById('centerModalLabel').textContent = 'New Relief Center';
+                currentCenterId = null;
+
+                // Show modal
+                centerModal.show();
+            });
+
+            // Save center button
+            saveCenterBtn.addEventListener('click', saveCenter);
+
+            // Confirm delete button
+            confirmDeleteBtn.addEventListener('click', deleteCenter);
+        }
+
+        // Function to set up action button listeners
+        function setupActionButtonListeners() {
+            // Detail buttons (volunteers, donations, resources)
+            document.querySelectorAll('.btn-action:not(.btn-edit):not(.btn-delete)').forEach(button => {
+                button.addEventListener('click', function() {
+                    const centerId = this.getAttribute('data-center-id');
+                    const section = this.getAttribute('data-section');
+                    toggleExpand(centerId, section);
+                });
+            });
+
+            // Edit buttons
+            document.querySelectorAll('.btn-edit').forEach(button => {
+                button.addEventListener('click', function() {
+                    const centerId = this.getAttribute('data-center-id');
+                    const center = allCenters.find(c => c.centerID == centerId);
+
+                    if (center) {
+                        document.getElementById('centerId').value = center.centerID;
+                        document.getElementById('centerName').value = center.centerName;
+                        document.getElementById('location').value = center.location;
+                        document.getElementById('maxCapacity').value = center.maxVolunteersCapacity;
+                        document.getElementById('managerId').value = center.managerID || '';
+                        document.getElementById('centerModalLabel').textContent = 'Edit Relief Center';
+                        currentCenterId = center.centerID;
+
+                        // Show modal
+                        centerModal.show();
+                    }
+                });
+            });
+
+            // Delete buttons
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const centerId = this.getAttribute('data-center-id');
+                    const center = allCenters.find(c => c.centerID == centerId);
+
+                    if (center) {
+                        currentCenterId = centerId;
+                        document.getElementById('deleteModalLabel').textContent = `Delete ${center.centerName}`;
+
+                        // Show modal
+                        deleteModal.show();
+                    }
+                });
+            });
+        }
+
+        // Function to save center (create or update)
+        async function saveCenter() {
+            try {
+                const centerId = document.getElementById('centerId').value;
+                const centerName = document.getElementById('centerName').value;
+                const location = document.getElementById('location').value;
+                const maxCapacity = document.getElementById('maxCapacity').value;
+                const managerId = document.getElementById('managerId').value;
+
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('Please log in to manage relief centers');
+                }
+
+                // Prepare request data
+                const requestData = {
+                    CenterName: centerName,
+                    Location: location,
+                    MaxVolunteersCapacity: parseInt(maxCapacity),
+                    ManagerID: parseInt(managerId)
+                };
+
+                let response;
+                let url = '/api/relief-centers';
+                let method = 'POST';
+
+                if (centerId) {
+                    // Update existing center
+                    url = `/api/relief-centers/${centerId}`;
+                    method = 'PUT';
+                }
+
+                // Make API request
+                response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed. Please log in again.');
+                    } else if (response.status === 403) {
+                        throw new Error('You do not have permission to manage relief centers. Admin access required.');
+                    }
+
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to save relief center');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Close modal and reload centers
+                    centerModal.hide();
+                    loadReliefCenters();
+                    alert(`Relief center ${centerId ? 'updated' : 'created'} successfully!`);
+                } else {
+                    throw new Error(data.message || 'Failed to save relief center');
+                }
+            } catch (error) {
+                console.error('Error saving relief center:', error);
+                alert('Error saving relief center: ' + error.message);
+            }
+        }
+
+        // Function to delete center
+        async function deleteCenter() {
+            try {
+                if (!currentCenterId) {
+                    throw new Error('No center selected for deletion');
+                }
+
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('Please log in to delete relief centers');
+                }
+
+                // Make API request
+                const response = await fetch(`/api/relief-centers/${currentCenterId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed. Please log in again.');
+                    } else if (response.status === 403) {
+                        throw new Error('You do not have permission to delete relief centers. Admin access required.');
+                    }
+
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to delete relief center');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Close modal and reload centers
+                    deleteModal.hide();
+                    loadReliefCenters();
+                    alert('Relief center deleted successfully!');
+                } else {
+                    throw new Error(data.message || 'Failed to delete relief center');
+                }
+            } catch (error) {
+                console.error('Error deleting relief center:', error);
+                alert('Error deleting relief center: ' + error.message);
+            }
+        }
+
+        // Function to toggle expanded details
+        function toggleExpand(centerId, section) {
+            // Remove any existing expanded rows
+            document.querySelectorAll('.expanded-details').forEach(row => {
+                row.remove();
+            });
+
+            if (expandedCenter === centerId && expandedSection === section) {
+                // If clicking the same button again, collapse
+                expandedCenter = null;
+                expandedSection = "";
+                return;
+            }
+
+            expandedCenter = centerId;
+            expandedSection = section;
+
+            // Find the center data
+            const center = allCenters.find(c => c.centerID == centerId);
+            if (!center) return;
+
+            // Find the row to expand
+            const rowToExpand = document.querySelector(`button[data-center-id="${centerId}"]`).closest('tr');
+
+            // Create expanded row
+            const expandedRow = document.createElement('tr');
+            expandedRow.className = 'expanded-details';
+            expandedRow.innerHTML = `
+                <td colspan="6" class="p-3">
+                    <h6 class="mb-2">${section.charAt(0).toUpperCase() + section.slice(1)} for ${center.centerName}</h6>
+                    ${generateDetailsContent(section, center)}
+                </td>
+            `;
+
+            // Insert after the current row
+            rowToExpand.after(expandedRow);
+        }
+
+        // Generate content for expanded details
+        function generateDetailsContent(section, center) {
+            if (section === 'volunteers') {
+                if (!center.volunteers || center.volunteers.length === 0) {
+                    return '<p>No volunteers assigned to this center.</p>';
+                }
+
+                return `
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${center.volunteers.map(volunteer => `
+                                <tr>
+                                    <td>${volunteer.name || 'Unknown'}</td>
+                                    <td>${volunteer.status || 'Unknown'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (section === 'donations') {
+                if (!center.donations || center.donations.length === 0) {
+                    return '<p>No donations received at this center.</p>';
+                }
+
+                return `
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Donor</th>
+                                <th>Type</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${center.donations.map(donation => `
+                                <tr>
+                                    <td>${donation.donorName || 'Unknown'}</td>
+                                    <td>${donation.donationType || 'Unknown'}</td>
+                                    <td>${donation.quantity || 'Unknown'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (section === 'resources') {
+                if (!center.resources || center.resources.length === 0) {
+                    return '<p>No resources available at this center.</p>';
+                }
+
+                return `
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${center.resources.map(resource => `
+                                <tr>
+                                    <td>${resource.resourceType || 'Unknown'}</td>
+                                    <td>${resource.quantity || 0}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+            return '<p>No data available.</p>';
+        }
+
+        // Apply filters function
+        function applyFilters() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const sortValue = document.getElementById('sortOrder').value;
+
+            filteredCenters = allCenters.filter(center => {
+                let matches = true;
+
+                // Apply search filter
+                if (searchTerm && !center.centerName.toLowerCase().includes(searchTerm) && !center.location.toLowerCase().includes(searchTerm)) {
+                    matches = false;
+                }
+
+                return matches;
+            });
+
+            // Apply sorting
+            if (sortValue === 'latest') {
+                // Sort by ID descending (assuming newer centers have higher IDs)
+                filteredCenters.sort((a, b) => b.centerID - a.centerID);
+            } else if (sortValue === 'oldest') {
+                // Sort by ID ascending
+                filteredCenters.sort((a, b) => a.centerID - b.centerID);
+            }
+
+            populateCentersTable(filteredCenters);
+        }
+
+        // Reset filters function
+        function resetFilters() {
+            document.getElementById('search').value = '';
+            document.getElementById('sortOrder').value = 'latest';
+
+            filteredCenters = [...allCenters];
+            populateCentersTable(filteredCenters);
+
+            // Reset expanded center
+            expandedCenter = null;
+            expandedSection = "";
+        }
+    });
+</script>

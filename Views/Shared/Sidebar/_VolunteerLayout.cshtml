@@ -1,0 +1,229 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - DRCS</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --accent-color: #ffd700;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: -250px;
+            z-index: 1050;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+        .sidebar-header {
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .sidebar h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+            .sidebar a i {
+                margin-right: 12px;
+                font-size: 18px;
+            }
+
+            .sidebar a:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-left-color: var(--accent-color);
+            }
+
+            .sidebar a.active {
+                background-color: rgba(255, 255, 255, 0.15);
+                border-left-color: white;
+                font-weight: 600;
+            }
+
+        .content {
+            margin-left: 0;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+            .content.shift {
+                margin-left: 250px;
+            }
+
+        .navbar-green {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+            .navbar-green .navbar-brand {
+                color: white !important;
+                font-weight: 600;
+                font-size: 1.5rem;
+            }
+
+        .toggle-btn {
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            font-size: 24px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+            .toggle-btn:hover {
+                background-color: var(--accent-color);
+                color: white;
+            }
+
+        .welcome-text {
+            color: white;
+            font-size: 1.2rem;
+            margin-left: 15px;
+        }
+
+        @@media (max-width: 768px) {
+            .content.shift
+
+        {
+            margin-left: 0;
+        }
+
+        .sidebar.open {
+            left: 0;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar {
+            width: 250px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div id="volSidebar" class="sidebar">
+
+        <h4 class="text-center py-3">Volunteer Panel</h4>
+        <a href="/Dashboard/Volunteer">Dashboard</a>
+        <a href="/Volunteer/Tasks">Assigned Tasks</a>
+        <a href="/Volunteer/Tracking">Rescue Tracking Tasks</a>
+        <a href="#" id="logoutLink">Logout</a>
+        <script>
+            document.getElementById('logoutLink').addEventListener('click', async (e) => {
+                e.preventDefault(); // prevent default link behavior
+
+                // 1️⃣ Clear localStorage
+                localStorage.clear();
+
+                // 2️⃣ Call backend logout endpoint to delete cookies
+                try {
+                    await fetch('/api/auth/logout', {
+                        method: 'GET',
+                        credentials: 'include' // send cookies
+                    });
+                } catch (err) {
+                    console.error('Logout failed', err);
+                }
+
+                // 3️⃣ Redirect to homepage
+                window.location.href = '/';
+            });
+        </script>
+
+    </div>
+
+    <!-- Main content -->
+    <div id="volContent" class="content">
+        <nav class="navbar navbar-green">
+            <div class="container-fluid">
+                <button class="toggle-btn" id="volToggleBtn">☰</button>
+                <span class="navbar-brand mb-0 h1 ms-3">
+                    <i class="bi bi-person-check"></i> Welcome, Volunteer
+                </span>
+            </div>
+        </nav>
+
+        @RenderBody()
+    </div>
+
+    <script>
+        const volSidebar = document.getElementById("volSidebar");
+        const volContent = document.getElementById("volContent");
+        const volToggleBtn = document.getElementById("volToggleBtn");
+
+        volToggleBtn.addEventListener("click", () => {
+            volSidebar.classList.toggle("open");
+            volContent.classList.toggle("shift");
+        });
+
+        // Add active class to current page link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const links = document.querySelectorAll('.sidebar a');
+
+            // Handle dashboard path specifically
+            const isDashboard = currentPath === '/' || currentPath === '/Dashboard/Volunteer';
+
+            links.forEach(link => {
+                if (isDashboard && link.getAttribute('href') === '/Dashboard/Volunteer') {
+                    link.classList.add('active');
+                } else if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

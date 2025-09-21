@@ -1,0 +1,417 @@
+﻿@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-color: #2c5f2d;
+        --secondary-color: #97bc62;
+        --accent-color: #ffd700;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+    }
+
+    .split-container {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    .left-panel {
+        width: 50%;
+        background: var(--bg-light);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+        overflow: auto;
+    }
+
+    .signup-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .signup-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+        }
+
+    .btn-signup {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border: none;
+        color: white;
+        padding: 12px;
+        font-weight: 600;
+        border-radius: 8px;
+        width: 100%;
+        transition: all 0.3s;
+        margin-top: 10px;
+    }
+
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+        }
+
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        color: var(--text-light);
+    }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+            .login-link a:hover {
+                color: var(--secondary-color);
+                text-decoration: underline;
+            }
+
+    .skill-btn {
+        margin: 4px;
+        border-radius: 20px;
+        transition: all 0.2s;
+    }
+
+    .right-panel {
+        width: 50%;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1a3a1b 100%);
+        color: white;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: auto;
+    }
+
+        .right-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+    .logo-container {
+        position: relative;
+        z-index: 2;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .logo {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: white;
+    }
+
+    .tagline {
+        font-size: 1.4rem;
+        opacity: 0.9;
+    }
+
+    .mission-text {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        margin: 40px 0;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        padding: 0 20px;
+    }
+
+ 
+    .right-login {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        margin-top: 40px;
+    }
+
+        .right-login p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+    .btn-outline-light {
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-outline-light:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+</style>
+
+<div class="split-container">
+    <!-- Left Panel with Sign Up Form -->
+    <div class="left-panel">
+        <div class="signup-card">
+            <h2 class="signup-title">Create Account</h2>
+            <form id="signupForm" method="post" action="/api/AuthApi/register">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" name="phoneNo" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" name="confirmPassword" class="form-control" required />
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="isVolunteer" />
+                    <label class="form-check-label" for="isVolunteer">
+                        Sign up as Volunteer
+                    </label>
+                </div>
+
+                <!-- Volunteer-specific fields -->
+                <div id="volunteerFields" style="display: none;">
+                    <div class="mb-3">
+                        <label class="form-label">Assigned Center</label>
+                        <select name="assignedCenterId" class="form-select">
+                            <option value="">Select a center</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Select Skills</label>
+                        <div id="skillsContainer" class="d-flex flex-wrap gap-2">
+                            <!-- Skill buttons populated from backend -->
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-signup">Sign Up</button>
+            </form>
+
+            <div class="login-link">
+                <small>Already have an account? <a href="/AuthApi/Login">Sign In</a></small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel with Brand Info -->
+    <div class="right-panel">
+        <div class="logo-container">
+            <h1 class="logo">JonojibonAid</h1>
+            <p class="tagline">Empowering Communities Through Compassion</p>
+        </div>
+
+        <div class="mission-text">
+            <p>JonojibonAid is a humanitarian initiative dedicated to supporting communities in times of need, bringing relief, care, and hope to vulnerable individuals with transparency and compassion.</p>
+        </div>
+
+
+        <div class="right-login">
+            <p>Already part of our community?</p>
+            <a href="/AuthApi/Login" class="btn btn-outline-light">Sign In</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const isVolunteerCheckbox = document.getElementById('isVolunteer');
+    const volunteerFields = document.getElementById('volunteerFields');
+    const assignedCenterSelect = document.querySelector('select[name="assignedCenterId"]');
+    const skillsContainer = document.getElementById('skillsContainer');
+    const selectedSkills = new Set(); // Track selected skill IDs
+
+    // Safe login-check (does not block registration if it fails)
+    (async function() {
+        try {
+            const res = await fetch('/api/auth/login-check', { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.loggedIn) {
+                    window.location.replace(data.redirectUrl);
+                    return;
+                }
+            }
+        } catch (err) {
+            console.warn("Login-check failed, ignoring it for now.", err);
+        }
+    })();
+
+    // Toggle volunteer fields
+    isVolunteerCheckbox.addEventListener('change', function () {
+        volunteerFields.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Fetch centers from backend
+    fetch('/api/relief-centers')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.data) {
+                data.data.forEach(center => {
+                    const option = document.createElement('option');
+                    option.value = center.centerID; // Correct property
+                    option.textContent = center.centerName; // Correct property
+                    assignedCenterSelect.appendChild(option);
+                });
+            }
+        })
+        .catch(err => console.error("Failed to load centers:", err));
+
+    // Fetch skills from backend and create button-style selection
+    fetch('/api/skill')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.data) {
+                data.data.forEach(skill => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.textContent = skill.skillName;
+                    button.className = 'btn btn-outline-primary btn-sm skill-btn';
+
+                    // Toggle selection
+                    button.addEventListener('click', () => {
+                        if (selectedSkills.has(skill.skillID)) {
+                            selectedSkills.delete(skill.skillID);
+                            button.classList.remove('btn-primary');
+                            button.classList.add('btn-outline-primary');
+                        } else {
+                            selectedSkills.add(skill.skillID);
+                            button.classList.remove('btn-outline-primary');
+                            button.classList.add('btn-primary');
+                        }
+                    });
+
+                    skillsContainer.appendChild(button);
+                });
+            }
+        })
+        .catch(err => console.error("Failed to load skills:", err));
+
+    // Handle form submission
+    const signupForm = document.getElementById('signupForm');
+    signupForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(signupForm);
+        const password = formData.get('password');
+        const confirmPassword = formData.get('confirmPassword');
+
+        // Password match check
+        if (password !== confirmPassword) {
+            alert("Passwords do not match.");
+            return; // stop submission
+        }
+
+        const payload = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phoneNo: formData.get('phoneNo'),
+            password: formData.get('password'),
+            confirmPassword: formData.get('confirmPassword'),
+            roleName: isVolunteerCheckbox.checked ? "Volunteer" : "User",
+            assignedCenterId: isVolunteerCheckbox.checked
+                            ? (assignedCenterSelect.value || null)
+                            : null,
+            skillIds: Array.from(selectedSkills)
+        };
+
+        console.log("Payload to send:", payload);
+
+        fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Server response:", data);
+            // Optionally, redirect or show success message
+            if (data.success) {
+                // Redirect based on role
+                const role = data.user_info.roleName;
+                 // Save tokens in localStorage
+        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("refresh_token", data.refresh_token);
+        localStorage.setItem("role", data.user_info.roleName);
+
+                if (role === "Volunteer") {
+                    window.location.href = '/Dashboard/Volunteer';
+                } else {
+                    window.location.href = '/Dashboard/User';
+                }
+            } else {
+                alert(data.message || "Registration failed");
+            }
+        })
+        .catch(err => console.error("Registration failed:", err));
+    });
+</script>

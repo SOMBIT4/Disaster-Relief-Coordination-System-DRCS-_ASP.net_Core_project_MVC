@@ -1,0 +1,776 @@
+﻿@{
+    Layout = "~/Views/Shared/Sidebar/_UserLayout.cshtml";
+    ViewData["Title"] = "All Aid Requests";
+}
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-color: #2c5f2d;
+        --secondary-color: #97bc62;
+        --accent-color: #ffd700;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .filter-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filter-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--secondary-color);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(151, 188, 98, 0.25);
+        }
+
+        /* Custom dropdown styling with green hover */
+        .form-select option:hover,
+        .form-select option:focus,
+        .form-select option:active,
+        .form-select option:checked {
+            background-color: var(--secondary-color) !important;
+            color: white !important;
+        }
+
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 1rem;
+            border: none;
+            text-align: left;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(151, 188, 98, 0.1);
+        }
+
+    .status-badge {
+        padding: 0.35rem 0.65rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .badge-completed {
+        background-color: rgba(151, 188, 98, 0.2);
+        color: #2c5f2d;
+    }
+
+    .badge-pending {
+        background-color: rgba(255, 215, 0, 0.2);
+        color: #b8860b;
+    }
+
+    .badge-rejected {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+
+    .badge-processing {
+        background-color: rgba(13, 110, 253, 0.2);
+        color: #0d6efd;
+    }
+
+    .request-badge {
+        padding: 0.35rem 0.65rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .badge-medical {
+        background-color: rgba(70, 130, 180, 0.2);
+        color: #4169e1;
+    }
+
+    .badge-food {
+        background-color: rgba(151, 188, 98, 0.2);
+        color: #2c5f2d;
+    }
+
+    .badge-shelter {
+        background-color: rgba(139, 69, 19, 0.2);
+        color: #8b4513;
+    }
+
+    .badge-other {
+        background-color: rgba(128, 128, 128, 0.2);
+        color: #666;
+    }
+
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .page-link {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--secondary-color);
+        color: var(--primary-color);
+        border-radius: 8px;
+        margin: 0 0.25rem;
+        transition: all 0.3s;
+    }
+
+        .page-link:hover {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        border-color: #dee2e6;
+        background-color: white;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+    }
+
+    .btn-filter {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .btn-filter:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #234f24 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.4);
+            color: white;
+        }
+
+    .btn-reset {
+        background: transparent;
+        border: 1px solid var(--secondary-color);
+        color: var(--primary-color);
+        padding: 10px 20px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .btn-reset:hover {
+            background: rgba(151, 188, 98, 0.1);
+            border-color: var(--primary-color);
+        }
+
+    /* Highlight for filtered rows */
+    .highlight {
+        background-color: rgba(151, 188, 98, 0.2) !important;
+        transition: background-color 0.3s ease;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="page-header">
+        <h1 class="page-title">My Aid Requests</h1>
+        <p class="page-subtitle">View and manage all your aid requests in one place</p>
+    </div>
+
+    <!-- Filters, Sorting, and Search Controls -->
+    <div class="filter-section">
+        <h3 class="filter-title">Filter & Search Aid Requests</h3>
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label class="form-label">Request Type</label>
+                <select id="requestTypeFilter" class="form-select">
+                    <option value="all">All Types</option>
+                    <option value="Medical">Medical</option>
+                    <option value="Food">Food</option>
+                    <option value="Shelter">Shelter</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="form-label">Status</label>
+                <select id="statusFilter" class="form-select">
+                    <option value="all">All Statuses</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-3">
+                <label class="form-label">Sort By</label>
+                <select id="sortOrder" class="form-select">
+                    <option value="latest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-3">
+                <label class="form-label">Search by Date</label>
+                <div class="position-relative">
+                    <input type="text" id="search" class="form-control" placeholder="e.g., 2025-09-01">
+                    <i class="bi bi-search search-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-2 mb-3 d-flex align-items-end">
+                <button id="applyFilters" class="btn btn-filter w-100 me-2">Apply</button>
+                <button id="resetFilters" class="btn btn-reset">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aid Requests Table -->
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Request Type</th>
+                        <th scope="col">Description</th>
+                        <th scope="col" class="text-center">Date</th>
+                        <th scope="col" class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="aidRequestsTableBody">
+                    <!-- Example data - Will be filtered by JavaScript -->
+                    <tr data-type="Medical" data-status="Completed" data-date="2025-09-01">
+                        <td><span class="request-badge badge-medical">Medical</span></td>
+                        <td>Need basic medicines</td>
+                        <td class="text-center">Sep 1, 2025</td>
+                        <td class="text-center"><span class="status-badge badge-completed">Completed</span></td>
+                    </tr>
+                    <tr data-type="Food" data-status="Pending" data-date="2025-09-04">
+                        <td><span class="request-badge badge-food">Food</span></td>
+                        <td>Family of 4 needs supplies</td>
+                        <td class="text-center">Sep 4, 2025</td>
+                        <td class="text-center"><span class="status-badge badge-pending">Pending</span></td>
+                    </tr>
+                    <tr data-type="Shelter" data-status="Processing" data-date="2025-09-03">
+                        <td><span class="request-badge badge-shelter">Shelter</span></td>
+                        <td>Temporary housing needed after flood</td>
+                        <td class="text-center">Sep 3, 2025</td>
+                        <td class="text-center"><span class="status-badge badge-processing">Processing</span></td>
+                    </tr>
+                    <tr data-type="Medical" data-status="Rejected" data-date="2025-08-28">
+                        <td><span class="request-badge badge-medical">Medical</span></td>
+                        <td>Specialized medical equipment</td>
+                        <td class="text-center">Aug 28, 2025</td>
+                        <td class="text-center"><span class="status-badge badge-rejected">Rejected</span></td>
+                    </tr>
+                    <tr data-type="Other" data-status="Completed" data-date="2025-08-25">
+                        <td><span class="request-badge badge-other">Other</span></td>
+                        <td>School supplies for children</td>
+                        <td class="text-center">Aug 25, 2025</td>
+                        <td class="text-center"><span class="status-badge badge-completed">Completed</span></td>
+                    </tr>
+                    <tr data-type="Food" data-status="Processing" data-date="2025-08-20">
+                        <td><span class="request-badge badge-food">Food</span></td>
+                        <td>Weekly food assistance</td>
+                        <td class="text-center">Aug 20, 2025</td>
+                        <td class="text-center"><span class="status-badge badge-processing">Processing</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+        <nav aria-label="Aid requests pagination">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<!-- Add this script after your existing JavaScript code -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Global variables to store all aid requests
+        let allAidRequests = [];
+        let rows = [];
+        let originalRows = [];
+
+        // Function to safely parse dates from API in format: "2025-09-16 14:49:00.978853+06"
+        function parseApiDate(dateString) {
+            if (!dateString) return new Date(NaN);
+
+            try {
+                // Handle the specific format: "2025-09-16 14:49:00.978853+06"
+                const regex = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{3})\d*([+-]\d{2})$/;
+                const match = dateString.match(regex);
+
+                if (match) {
+                    // Extract components from the regex match
+                    const year = parseInt(match[1], 10);
+                    const month = parseInt(match[2], 10) - 1; // Months are 0-indexed in JS
+                    const day = parseInt(match[3], 10);
+                    const hours = parseInt(match[4], 10);
+                    const minutes = parseInt(match[5], 10);
+                    const seconds = parseInt(match[6], 10);
+                    const milliseconds = parseInt(match[7], 10);
+                    const timezoneOffset = parseInt(match[8], 10);
+
+                    // Create date object (UTC time)
+                    const utcDate = new Date(Date.UTC(year, month, day, hours, minutes, seconds, milliseconds));
+
+                    // Adjust for timezone offset (convert to local time)
+                    const localDate = new Date(utcDate.getTime() - (timezoneOffset * 60 * 60 * 1000));
+
+                    return localDate;
+                }
+
+                // Fallback to default parsing if regex doesn't match
+                return new Date(dateString);
+            } catch (e) {
+                console.error('Error parsing date:', e);
+                return new Date(NaN);
+            }
+        }
+
+        // Function to format date for display
+        function formatDisplayDate(date) {
+            if (isNaN(date.getTime())) {
+                return 'Invalid Date';
+            }
+
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Function to get date for filtering (YYYY-MM-DD format)
+        function getFilterDate(date) {
+            if (isNaN(date.getTime())) {
+                return '0000-00-00';
+            }
+
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        }
+
+        // Function to parse JWT token and extract user ID
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Function to fetch aid requests from API
+        async function fetchAidRequests() {
+            try {
+                // Get token from localStorage
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    console.error('No access token found');
+                    showError('Please log in to view your aid requests');
+                    return;
+                }
+
+                // Extract user ID from token
+                const decodedToken = parseJwt(token);
+                if (!decodedToken || !decodedToken.userId) {
+                    console.error('Invalid token: user ID not found');
+                    showError('Invalid authentication token');
+                    return;
+                }
+
+                const userId = decodedToken.userId;
+
+                // Show loading indicator
+                showLoading();
+
+                // Make API call
+                const response = await fetch(`/api/aid-requests/user/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Hide loading indicator
+                hideLoading();
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        console.error('Unauthorized: Please log in again');
+                        showError('Your session has expired. Please log in again.');
+                        return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                allAidRequests = data;
+                renderAidRequests(allAidRequests);
+
+            } catch (error) {
+                console.error('Error fetching aid requests:', error);
+                hideLoading();
+                showError('Failed to load aid requests. Please try again later.');
+            }
+        }
+
+        // Function to show loading indicator
+        function showLoading() {
+            const tableBody = document.getElementById('aidRequestsTableBody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading your aid requests...</p>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Function to hide loading indicator
+        function hideLoading() {
+            // Loading indicator will be replaced when data renders
+        }
+
+        // Function to show error message
+        function showError(message) {
+            const tableBody = document.getElementById('aidRequestsTableBody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-danger">
+                        <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                        <p class="mt-2">${message}</p>
+                        <button class="btn btn-primary mt-2" onclick="fetchAidRequests()">Try Again</button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Function to render aid requests in the table
+        function renderAidRequests(requests) {
+            const tableBody = document.getElementById('aidRequestsTableBody');
+
+            if (!requests || requests.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center py-4">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mt-2">You haven't made any aid requests yet.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tableBody.innerHTML = '';
+
+            requests.forEach(request => {
+                const row = document.createElement('tr');
+
+                // Parse and format the date safely - try different date fields
+                let requestDate;
+                if (request.requestDate) {
+                    requestDate = parseApiDate(request.requestDate);
+                } else if (request.createdAt) {
+                    requestDate = parseApiDate(request.createdAt);
+                } else if (request.updatedAt) {
+                    requestDate = parseApiDate(request.updatedAt);
+                } else if (request.date) {
+                    requestDate = parseApiDate(request.date);
+                } else {
+                    requestDate = new Date(NaN);
+                }
+
+                const formattedDate = formatDisplayDate(requestDate);
+                const filterDate = getFilterDate(requestDate);
+
+                // Set data attributes for filtering
+                row.setAttribute('data-type', request.requestType || 'Other');
+                row.setAttribute('data-status', request.status || 'Pending');
+                row.setAttribute('data-date', filterDate);
+
+                // Determine badge class based on type
+                let typeBadgeClass = 'badge-other';
+                switch (request.requestType) {
+                    case 'Medical':
+                        typeBadgeClass = 'badge-medical';
+                        break;
+                    case 'Food':
+                        typeBadgeClass = 'badge-food';
+                        break;
+                    case 'Shelter':
+                        typeBadgeClass = 'badge-shelter';
+                        break;
+                }
+
+                // Determine status badge class
+                let statusBadgeClass = 'badge-pending';
+                switch (request.status) {
+                    case 'Completed':
+                        statusBadgeClass = 'badge-completed';
+                        break;
+                    case 'Processing':
+                        statusBadgeClass = 'badge-processing';
+                        break;
+                    case 'Rejected':
+                        statusBadgeClass = 'badge-rejected';
+                        break;
+                }
+
+                row.innerHTML = `
+                    <td><span class="request-badge ${typeBadgeClass}">${request.requestType || 'Other'}</span></td>
+                    <td>${request.description || 'No description provided'}</td>
+                    <td class="text-center">${formattedDate}</td>
+                    <td class="text-center"><span class="status-badge ${statusBadgeClass}">${request.status || 'Pending'}</span></td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+
+            // Update rows and originalRows variables
+            rows = tableBody.querySelectorAll('tr');
+            originalRows = Array.from(rows);
+        }
+
+        // The rest of your functions (applyFilters, sortTable, resetFilters, etc.)
+        // remain the same as in your original code
+
+        // Modify the existing applyFilters function to work with API data
+        function applyFilters() {
+            const typeFilter = document.getElementById('requestTypeFilter').value;
+            const statusValue = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const sortValue = document.getElementById('sortOrder').value;
+
+            // First, show all rows
+            rows.forEach(row => {
+                row.style.display = '';
+                row.classList.remove('highlight');
+            });
+
+            // Apply type filter
+            if (typeFilter !== 'all') {
+                rows.forEach(row => {
+                    const rowType = row.getAttribute('data-type');
+                    if (rowType !== typeFilter) {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            // Apply status filter
+            if (statusValue !== 'all') {
+                rows.forEach(row => {
+                    if (row.style.display !== 'none') {
+                        const rowStatus = row.getAttribute('data-status');
+                        if (rowStatus !== statusValue) {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // Apply date search filter
+            if (searchTerm) {
+                rows.forEach(row => {
+                    if (row.style.display !== 'none') {
+                        const rowDate = row.getAttribute('data-date');
+                        if (rowDate && rowDate.includes(searchTerm)) {
+                            row.classList.add('highlight');
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // Apply sorting
+            if (sortValue === 'latest') {
+                sortTable(true);
+            } else if (sortValue === 'oldest') {
+                sortTable(false);
+            }
+        }
+
+        // Modify the existing sortTable function
+        function sortTable(newestFirst = true) {
+            const tableBody = document.getElementById('aidRequestsTableBody');
+            const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+
+            visibleRows.sort((a, b) => {
+                const dateA = new Date(a.getAttribute('data-date'));
+                const dateB = new Date(b.getAttribute('data-date'));
+
+                return newestFirst ? dateB - dateA : dateA - dateB;
+            });
+
+            // Reorder the table
+            visibleRows.forEach(row => {
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Modify the existing resetFilters function
+        function resetFilters() {
+            document.getElementById('requestTypeFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('sortOrder').value = 'latest';
+            document.getElementById('search').value = '';
+
+            // Show all rows and remove highlights
+            rows.forEach(row => {
+                row.style.display = '';
+                row.classList.remove('highlight');
+            });
+
+            // Restore original order
+            const tableBody = document.getElementById('aidRequestsTableBody');
+            originalRows.forEach(row => {
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Initialize the page
+        function initPage() {
+            // Fetch aid requests from API
+            fetchAidRequests();
+
+            // Set up event listeners
+            document.getElementById('applyFilters').addEventListener('click', applyFilters);
+            document.getElementById('resetFilters').addEventListener('click', resetFilters);
+
+            // Also apply filters when search input changes (optional)
+            document.getElementById('search').addEventListener('keyup', function() {
+                if (this.value.length === 0 || this.value.length >= 4) {
+                    applyFilters();
+                }
+            });
+
+            // Apply filters when dropdowns change (optional)
+            document.getElementById('requestTypeFilter').addEventListener('change', applyFilters);
+            document.getElementById('statusFilter').addEventListener('change', applyFilters);
+            document.getElementById('sortOrder').addEventListener('change', applyFilters);
+        }
+
+        // Start the page initialization
+        initPage();
+    });
+</script>
