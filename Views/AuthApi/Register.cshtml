@@ -402,6 +402,10 @@
         localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("refresh_token", data.refresh_token);
         localStorage.setItem("role", data.user_info.roleName);
+         // Get role
+       
+        if(role=="Volunteer") localStorage.setItem("volunteer_id", data.volunteer_id);
+
 
                 if (role === "Volunteer") {
                     window.location.href = '/Dashboard/Volunteer';

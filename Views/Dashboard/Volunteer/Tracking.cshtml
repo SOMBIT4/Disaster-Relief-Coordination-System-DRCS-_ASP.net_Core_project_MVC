@@ -313,7 +313,7 @@
             // Get volunteer ID from server-side (this would typically come from your authentication system)
             // For now, we'll extract it from the URL or use a default value
             const urlParams = new URLSearchParams(window.location.search);
-            let volunteerId = urlParams.get('volunteerId') || 3; // Default to 3 if not provided
+            let volunteerId = localStorage.getItem('volunteer_id');
 
             const tasksTableBody = document.getElementById('tasksTableBody');
             const emptyState = document.getElementById('emptyState');

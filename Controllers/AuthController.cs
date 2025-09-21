@@ -26,13 +26,12 @@ namespace DRCS.Controllers
             _config = config;
         }
 
-        // REGISTER
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request/*, [FromQuery] int? assignedCenter = null*/)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var assignedCenter = request.AssignedCenterId;
 
-            // Check if role is Volunteer and required fields are provided
+            // Validation for Volunteer role
             if (request.RoleName.Equals("Volunteer", StringComparison.OrdinalIgnoreCase))
             {
                 if (!assignedCenter.HasValue)
@@ -56,7 +55,7 @@ namespace DRCS.Controllers
                 }
             }
 
-            User user = new User
+            var user = new User
             {
                 Name = request.Name,
                 Email = request.Email,
@@ -69,7 +68,7 @@ namespace DRCS.Controllers
 
             if (user.RoleName == "Volunteer" && assignedCenter.HasValue && request.SkillIds.Any())
             {
-                // Pass skill ids to service
+                // Register volunteer
                 createdUser = await _authService.RegisterVolunteerAsync(
                     user,
                     assignedCenter.Value,
@@ -85,8 +84,18 @@ namespace DRCS.Controllers
             if (createdUser == null)
                 return BadRequest(new { success = false, message = "Registration failed" });
 
+            // Generate tokens
             var tokens = GenerateTokens(createdUser);
             SetTokenCookies(Response, tokens.accessToken, tokens.refreshToken);
+
+            // Fetch volunteer ID if applicable
+            int? volunteerId = null;
+            if (createdUser.RoleName == "Volunteer")
+            {
+                var volunteer = await _db.Volunteers.FirstOrDefaultAsync(v => v.UserID == createdUser.UserID);
+                if (volunteer != null)
+                    volunteerId = volunteer.VolunteerID;
+            }
 
             return Created("", new
             {
@@ -95,9 +104,11 @@ namespace DRCS.Controllers
                 message = "Registration successful",
                 user_info = createdUser,
                 access_token = tokens.accessToken,
-                refresh_token = tokens.refreshToken
+                refresh_token = tokens.refreshToken,
+                volunteer_id = volunteerId // include here
             });
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest login)

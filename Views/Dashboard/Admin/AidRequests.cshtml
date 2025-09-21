@@ -745,6 +745,7 @@
                     loadAidPreparations();
 
                     alert('Preparation started successfully!');
+                    window.location.reload();
                 } catch (error) {
                     console.error('Error starting preparation:', error);
                     alert(error.message);

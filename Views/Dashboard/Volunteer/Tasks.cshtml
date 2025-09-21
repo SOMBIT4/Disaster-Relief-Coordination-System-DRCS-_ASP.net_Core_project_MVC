@@ -160,25 +160,24 @@
             cursor: not-allowed;
         }
 
-        /* Modal styling with light green background */
         /* Modal styling with white background */
         .modal-content {
-            background-color: white; /* Changed from var(--modal-bg) to white */
+            background-color: white;
             border: 1px solid var(--secondary-color);
-            border-radius: 12px; /* Added for consistency with other elements */
+            border-radius: 12px;
         }
 
         .modal-header {
             border-bottom: 1px solid var(--secondary-color);
             background-color: var(--secondary-color);
-            border-top-left-radius: 12px; /* Match the modal-content radius */
+            border-top-left-radius: 12px;
             border-top-right-radius: 12px;
         }
 
         .modal-footer {
             border-top: 1px solid var(--secondary-color);
             background-color: rgba(151, 188, 98, 0.2);
-            border-bottom-left-radius: 12px; /* Match the modal-content radius */
+            border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
         }
 
@@ -258,6 +257,18 @@
         .toast-info {
             border-left-color: #0dcaf0;
         }
+
+        .no-tasks-container {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .no-tasks-icon {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -282,14 +293,7 @@
                         </tr>
                     </thead>
                     <tbody id="tasksTableBody">
-                        <tr>
-                            <td colspan="6" class="text-center py-4">
-                                <div class="spinner-border text-success" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2">Loading tasks...</p>
-                            </td>
-                        </tr>
+                        <!-- Content will be populated dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -338,16 +342,16 @@
         const modalContent = document.getElementById('modalContent');
         const prepareTaskBtn = document.getElementById('prepareTaskBtn');
         const toastContainer = document.getElementById('toastContainer');
+
         // Get token from localStorage
-            function getToken() {
-                const token = localStorage.getItem('access_token');
-                if (!token) {
-                    authAlert.classList.remove('d-none');
-                    authMessage.textContent = 'Please log in to manage aid preparations';
-                    throw new Error('Please log in to manage aid preparations');
-                }
-                return token;
+        function getToken() {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                showToast('Please log in to manage aid preparations', 'error');
+                throw new Error('Please log in to manage aid preparations');
             }
+            return token;
+        }
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
@@ -360,6 +364,18 @@
         // Function to load assigned tasks
         async function loadAssignedTasks() {
             try {
+                // Show loading state
+                tasksTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-4">
+                            <div class="spinner-border text-success" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading tasks...</p>
+                        </td>
+                    </tr>
+                `;
+
                 const token = getToken();
                 const response = await fetch(`/api/volunteers/${VOLUNTEER_ID}/aid-prep-tasks`, {
                     headers: {
@@ -372,29 +388,40 @@
                     throw new Error(`Failed to fetch tasks: ${response.statusText}`);
                 }
 
-                const result = await response.json();
+                const result = await response.json() || [];
 
                 if (result.success) {
                     renderTasksTable(result.data);
                 } else {
-                    showToast('Error loading tasks: ' + result.message, 'error');
+                    showNoTasksMessage('Error loading tasks: ' + result.message);
                 }
             } catch (error) {
                 console.error('Error loading tasks:', error);
-                showToast('Error loading tasks. Please try again.', 'error');
+                showNoTasksMessage('Error loading tasks. Please try again.');
             }
+        }
+
+        // Function to show no tasks message
+        function showNoTasksMessage(message) {
+            tasksTableBody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="no-tasks-container">
+                            <div class="no-tasks-icon">
+                                <i class="bi bi-inbox"></i>
+                            </div>
+                            <h4>No tasks assigned</h4>
+                            <p>${message}</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
         }
 
         // Function to render tasks table
         function renderTasksTable(tasks) {
-            if (tasks.length === 0) {
-                tasksTableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center py-4">
-                            No tasks assigned at the moment.
-                        </td>
-                    </tr>
-                `;
+            if (!tasks || tasks.length === 0) {
+                showNoTasksMessage('You have no assigned tasks at the moment.');
                 return;
             }
 
@@ -472,12 +499,12 @@
             currentPreparationId = taskId; // In this implementation, task_id is the preparationId
 
             try {
-                 const token = getToken();
+                const token = getToken();
                 // Load available resources
                 const resourcesResponse = await fetch(`/api/resource`, {
                     headers: {
-                         'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 });
 
@@ -499,7 +526,7 @@
                 try {
                     selectedResourcesResponse = await fetch(`${API_BASE_URL}/api/AidPreparation/${currentPreparationId}/resources`, {
                         headers: {
-                            'Authorization': `Bearer ${getAuthToken()}`
+                            'Authorization': `Bearer ${token}`
                         }
                     });
 
@@ -619,8 +646,8 @@
                 const response = await fetch(`/api/AidPreparation/${currentPreparationId}/resources`, {
                     method: 'POST',
                     headers: {
-                         'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         resourceID: resource.resourceID,
@@ -695,7 +722,7 @@
         }
 
         // Function to prepare task (close modal and update status)
-                async function prepareTask() {
+        async function prepareTask() {
             try {
                 const token = getToken();
                 // Check if any resources are selected
@@ -758,7 +785,7 @@
             }
         }
 
-               // Function to mark task as complete
+        // Function to mark task as complete
         async function markTaskComplete(taskId) {
             if (!confirm("Are you sure you want to mark this task as complete?")) {
                 return;
@@ -835,6 +862,7 @@
                 showToast('Error completing task. Please try again.', 'error');
             }
         }
+
         // Helper function to get urgency class
         function getUrgencyClass(urgencyLevel) {
             switch (urgencyLevel.toLowerCase()) {
@@ -866,8 +894,6 @@
                 default: return status;
             }
         }
-
-      
 
         // Function to show toast notifications
         function showToast(message, type = 'info') {
